@@ -186,10 +186,9 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 
 /* GALLERY STRIP */
 .gallery-strip{padding:0 0 4.5rem}
-.gallery-strip .row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1rem}
-.gallery-strip img{border-radius:8px;width:100%;height:100%;object-fit:cover}
-.gallery-strip .tall{grid-row:span 2}
-@media(max-width:760px){.gallery-strip .row{grid-template-columns:1fr 1fr}.gallery-strip .tall{grid-row:auto}}
+.gallery-strip .row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.gallery-strip img{border-radius:8px;width:100%;height:340px;object-fit:cover}
+@media(max-width:760px){.gallery-strip .row{grid-template-columns:1fr}.gallery-strip img{height:260px}}
 
 /* FAQ */
 .faq{background:var(--cream-2);padding:4.5rem 0}

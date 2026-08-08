@@ -44,14 +44,11 @@
     });
   }
   function whatsappCheckoutUrl() {
-    var cart = getCart();
-    if (!cart.length) return 'https://wa.me/' + WA_NUMBER;
-    var lines = ["Hi Munchingo, I'd like to order:"];
-    cart.forEach(function (c) {
-      lines.push('- ' + c.name + ' x' + c.qty + ' (' + c.unit + ') — ₹' + (c.price * c.qty));
-    });
-    lines.push('Total: ₹' + cartTotal());
-    return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
+    // Deliberately just a greeting, not the cart contents as text: the WhatsApp bot
+    // doesn't parse free-text order dumps, so a customer would get a generic reply
+    // instead of anything actionable. Opening with "Hi" triggers the bot's own
+    // welcome flow, which hands off into its native catalog + cart ordering path.
+    return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hi Munchingo 👋');
   }
 
   window.MunchingoCart = {
@@ -118,7 +115,7 @@
       { title: 'Atta Ajwain', desc: 'Savoury, spiced with ajwain. ₹279 / 250g.', type: 'Product', url: 'gifting.html#atta-ajwain' },
       { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed. ₹789.', type: 'Gift Set', url: 'gifting.html#trio-gift-set' },
       { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes. ₹1,079.', type: 'Gift Set', url: 'gifting.html#full-range-set' },
-      { title: 'About Us', desc: 'Our story — baked by a family-run bakery in Bikaner.', type: 'Page', url: 'about.html' },
+      { title: 'About Us', desc: 'Our story — baked in Bikaner for over a decade.', type: 'Page', url: 'about.html' },
       { title: 'Contact', desc: 'WhatsApp, email, Instagram, corporate gifting.', type: 'Page', url: 'contact.html' },
       { title: 'Your Cart', desc: 'Review your bag and check out on WhatsApp.', type: 'Page', url: 'cart.html' },
       { title: 'Is Atta Lite-sugar safe for diabetics?', desc: 'Sweetened with maltitol, no added sugar. Contains polyols; may have a laxative effect.', type: 'FAQ', url: 'contact.html#faq-diabetic' },
