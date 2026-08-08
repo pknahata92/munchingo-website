@@ -119,7 +119,7 @@
       { title: 'Contact', desc: 'WhatsApp, email, Instagram, corporate gifting.', type: 'Page', url: 'contact.html' },
       { title: 'Your Cart', desc: 'Review your bag and check out on WhatsApp.', type: 'Page', url: 'cart.html' },
       { title: 'Is Atta Lite-sugar safe for diabetics?', desc: 'Sweetened with maltitol, no added sugar. Contains polyols; may have a laxative effect.', type: 'FAQ', url: 'contact.html#faq-diabetic' },
-      { title: "What's the shelf life?", desc: 'Best before 6 months from packing.', type: 'FAQ', url: 'contact.html#faq-shelf-life' },
+      { title: "What's the shelf life?", desc: 'Best before 90 days from packing.', type: 'FAQ', url: 'contact.html#faq-shelf-life' },
       { title: 'Can I customise a corporate hamper?', desc: 'Corporate gifting and bulk orders from 25 boxes.', type: 'FAQ', url: 'contact.html#faq-hamper' },
       { title: 'Where is it made?', desc: 'Krazy Baker, Gangashahar, Bikaner, Rajasthan.', type: 'FAQ', url: 'contact.html#faq-location' },
       { title: 'How do I pay?', desc: 'WhatsApp confirmation, then a UPI payment link. Pre-paid.', type: 'FAQ', url: 'contact.html#faq-payment' }
