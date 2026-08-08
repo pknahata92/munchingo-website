@@ -78,6 +78,10 @@
         <label for="ck-address">Delivery address</label>
         <textarea id="ck-address" placeholder="Flat/house no., area, city, state, pincode" required></textarea>
       </div>
+      <div class="field">
+        <label for="ck-email">Email (optional)</label>
+        <input type="email" id="ck-email" placeholder="For an order confirmation email">
+      </div>
       <button type="submit" class="btn solid block" id="ck-submit">Pay ₹0</button>
       <p class="checkout-note">You'll be redirected to Razorpay's secure payment page. Order confirmation and shipping updates are sent to the WhatsApp number above.</p>
     </form>
@@ -161,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var name = document.getElementById('ck-name').value.trim();
     var phone = document.getElementById('ck-phone').value.trim();
     var address = document.getElementById('ck-address').value.trim();
+    var email = document.getElementById('ck-email').value.trim();
 
     if (!name || !phone || !address) { showError('Please fill in all fields.'); return; }
 
@@ -177,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
           name: name,
           phone: phone,
           address: address,
+          email: email,
           items: cart,
           total: MunchingoCart.cartTotal(),
         }),
