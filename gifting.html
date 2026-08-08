@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gifting &amp; The Range — Munchingo</title>
+<meta name="description" content="Four atta cookies and two gift sets. Whole wheat atta, pure desi ghee, baked in Bikaner. Add to your cart and send your order straight to WhatsApp.">
+<meta property="og:title" content="Gifting &amp; The Range — Munchingo">
+<meta property="og:description" content="Four atta cookies and two gift sets. Whole wheat atta, pure desi ghee, baked in Bikaner. Add to your cart and send your order straight to WhatsApp.">
+<meta property="og:image" content="https://munchingo.com/images/family-thali.jpg">
+<meta property="og:url" content="https://munchingo.com/gifting.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gifting &amp; The Range — Munchingo">
+<meta name="twitter:description" content="Four atta cookies and two gift sets. Whole wheat atta, pure desi ghee, baked in Bikaner. Add to your cart and send your order straight to WhatsApp.">
+<meta name="twitter:image" content="https://munchingo.com/images/family-thali.jpg">
+<link rel="icon" type="image/png" href="images/logo-maroon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="announce">
+  <span>Baked fresh in Bikaner</span><span>Pre-paid WhatsApp orders</span><span>Shipping across India</span>
+</div>
+
+<nav>
+  <div class="nav-top">
+    <a class="brand" href="index.html">
+      <img class="mark" src="images/logo-gold.png" alt="Munchingo">
+    </a>
+  </div>
+  <div class="navrow">
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
+    <ul>
+      <li class="hide-m"><a class="navlink" href="gifting.html" style="color:var(--terra)">Gifting</a></li>
+      <li class="hide-m"><a class="navlink" href="about.html">About Us</a></li>
+      <li class="hide-m"><a class="navlink" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="nav-icons">
+      <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      </button>
+      <a href="cart.html" aria-label="Cart" style="position:relative">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+        <span class="bagcount" data-cart-count style="display:none">0</span>
+      </a>
+      <a class="btn solid" style="padding:.5rem 1.1rem;font-size:.68rem" href="https://wa.me/919988992024?text=Hi%20Munchingo%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" aria-label="Order on WhatsApp" title="Message us directly on WhatsApp to place an order">Order Now</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="search-panel" data-search-panel>
+  <div class="search-panel-inner">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search flavours, gift sets, FAQs..." data-search-input autocomplete="off">
+      <button class="search-close" aria-label="Close search" data-search-close>&times;</button>
+    </div>
+    <div class="search-results" data-search-results></div>
+  </div>
+</div>
+
+
+<div class="wrap crumb"><a href="index.html">Home</a> / Gifting</div>
+
+<div class="pagehead">
+  <div class="wrap">
+    <span class="eyebrow">The Range</span>
+    <h1>Four flavours. Two gift sets.</h1>
+    <p>Same whole wheat atta and pure desi ghee across all of them — the differences are in what we add, or leave out. Add what you want to your cart, then send the whole order to us on WhatsApp in one message.</p>
+    <div class="pills">
+      <a class="pill active" data-filter="all" href="#">All</a>
+      <a class="pill" data-filter="sweet" href="#">Sweet</a>
+      <a class="pill" data-filter="savoury" href="#">Savoury</a>
+      <a class="pill" data-filter="sugar" href="#">No added sugar</a>
+      <a class="pill" data-filter="gift" href="#gifting">Gift sets</a>
+    </div>
+  </div>
+</div>
+
+<section class="products" id="products" style="padding-top:0">
+  <div class="wrap">
+    <div class="grid4" id="grid4">
+      <div class="sku sku-original" data-cat="sweet" id="atta-original">
+        <div class="photo"><img src="images/box-original.jpg" alt="Atta Original box"><div class="tag">Gently Sweet</div></div>
+        <div class="body">
+          <h3>Atta Original</h3>
+          <p>Cardamom, whole wheat atta, pure desi ghee. No pretenders.</p>
+          <div class="price">₹279 <s>₹330</s> <small>/ 250 g</small></div>
+          <button class="btn solid block" data-add-to-cart data-slug="atta-original" data-name="Atta Original" data-price="279" data-unit="250g" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+        </div>
+      </div>
+      <div class="sku sku-kesari" data-cat="sweet" id="atta-kesari">
+        <div class="photo"><img src="images/box-kesari.jpg" alt="Atta Kesari box"><div class="tag">Royally Sweet</div></div>
+        <div class="body">
+          <h3>Atta Kesari</h3>
+          <p>Real saffron, hand-mixed into every batch.</p>
+          <div class="price">₹319 <s>₹375</s> <small>/ 250 g</small></div>
+          <button class="btn solid block" data-add-to-cart data-slug="atta-kesari" data-name="Atta Kesari" data-price="319" data-unit="250g" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+        </div>
+      </div>
+      <div class="sku sku-lite" data-cat="sugar" id="atta-lite-sugar">
+        <div class="photo"><img src="images/box-lite.jpg" alt="Atta Lite-sugar box"><div class="tag">No Added Sugar</div></div>
+        <div class="body">
+          <h3>Atta Lite-sugar</h3>
+          <p>95% less sugar than our Original. For the person who reads the back of the pack before the front.</p>
+          <div class="note">Sweetened with maltitol. Excess consumption may have a laxative effect.</div>
+          <div class="price">₹319 <s>₹375</s> <small>/ 250 g</small></div>
+          <button class="btn solid block" data-add-to-cart data-slug="atta-lite-sugar" data-name="Atta Lite-sugar" data-price="319" data-unit="250g" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+        </div>
+      </div>
+      <div class="sku sku-ajwain" data-cat="savoury" id="atta-ajwain">
+        <div class="photo"><img src="images/box-ajwain.jpg" alt="Atta Ajwain box"><div class="tag">Savoury &amp; Spiced</div></div>
+        <div class="body">
+          <h3>Atta Ajwain</h3>
+          <p>The one that changes the room when the pack is opened.</p>
+          <div class="price">₹279 <s>₹330</s> <small>/ 250 g</small></div>
+          <button class="btn solid block" data-add-to-cart data-slug="atta-ajwain" data-name="Atta Ajwain" data-price="279" data-unit="250g" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gifting" id="gifting">
+  <div class="wrap">
+    <div class="headrow">
+      <span class="eyebrow">Gifting</span>
+      <h2>Gifting, made simple.</h2>
+      <p>Two curated sets for when a single box isn't enough — corporate gifting, festival hampers, or just showing up somewhere with something good.</p>
+    </div>
+    <div class="gift-grid">
+      <div class="gift-card light" id="trio-gift-set">
+        <span class="eyebrow">Build your own · Save ₹88</span>
+        <h3>The Trio gift set</h3>
+        <p>Choose any 3 of our 4 flavours — 250g each, gift-boxed together. ₹789 instead of ₹877, and we'll leave the prices off the box.</p>
+        <div class="flavour-picker" data-trio-picker>
+          <label class="flavour-chip"><input type="checkbox" value="Original" checked>Original</label>
+          <label class="flavour-chip"><input type="checkbox" value="Kesari" checked>Kesari</label>
+          <label class="flavour-chip"><input type="checkbox" value="Lite-sugar">Lite-sugar</label>
+          <label class="flavour-chip"><input type="checkbox" value="Ajwain" checked>Ajwain</label>
+        </div>
+        <p class="flavour-note" data-trio-note></p>
+        <div class="gift-price">₹789 <span>750g total · ships in 2 days from Bikaner</span></div>
+        <button class="btn solid block" data-add-to-cart data-slug="trio-gift-set" data-name="Trio Gift Set" data-price="789" data-unit="750g, 3 flavours" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+      </div>
+      <div class="gift-card dark" id="full-range-set">
+        <span class="eyebrow" style="color:var(--gold)">The complete set · 4 boxes</span>
+        <h3 class="on-dark">The Full Range gift set</h3>
+        <p style="color:#C7D3DE">One of each — Original, Kesari, Lite-sugar and Ajwain. Our most popular corporate gifting option.</p>
+        <div class="gift-price" style="color:#fff">₹1,079 <s style="font-size:.76rem;color:#9FB1C1;font-weight:500">₹1,196</s> <span style="color:#9FB1C1">1kg total · 4 × 250g</span></div>
+        <button class="btn gold block" data-add-to-cart data-slug="full-range-set" data-name="Full Range Gift Set" data-price="1079" data-unit="1kg, one of each" title="Add to your cart — combine with other items before sending one order on WhatsApp">Add to Bag</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap top">
+    <div class="brandcol">
+      <img src="images/logo-cream.png" alt="Munchingo">
+      <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <a href="gifting.html">The Range</a>
+      <a href="gifting.html#gifting">Gift Sets</a>
+      <a href="cart.html">Cart</a>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="contact.html#faq">FAQ</a>
+      <a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a>
+    </div>
+    <div>
+      <h4>Talk to Us</h4>
+      <a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">Instagram @munchingo.delhi</a>
+      <a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a>
+      <a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <span>Marketed by Munchingo (Prashant Nahata), Faridabad — UDYAM-HR-03-0070086 — FSSAI Lic. 10826003000333</span>
+    <span>Manufactured by Krazy Baker, Gangashahar, Bikaner — FSSAI Lic. 12217017000126</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/919988992024?text=Hi%20Munchingo" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-1.9 1.4-.5.1-1.1.2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.4 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.3.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
+</a>
+
+<script>
+document.querySelectorAll('.pill[data-filter]').forEach(function(pill){
+  pill.addEventListener('click', function(e){
+    var f = pill.getAttribute('data-filter');
+    if (f === 'gift') return;
+    e.preventDefault();
+    document.querySelectorAll('.pill[data-filter]').forEach(function(p){ p.classList.remove('active'); });
+    pill.classList.add('active');
+    document.querySelectorAll('#grid4 .sku').forEach(function(card){
+      var cat = card.getAttribute('data-cat');
+      card.style.display = (f === 'all' || cat === f) ? '' : 'none';
+    });
+  });
+});
+
+// Trio Gift Set — build-your-own flavour picker
+(function(){
+  var picker = document.querySelector('[data-trio-picker]');
+  if (!picker) return;
+  var note = document.querySelector('[data-trio-note]');
+  var card = picker.closest('.gift-card');
+  var button = card.querySelector('[data-add-to-cart]');
+  var checkboxes = Array.prototype.slice.call(picker.querySelectorAll('input[type=checkbox]'));
+
+  function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+  function update(){
+    var checked = checkboxes.filter(function(c){ return c.checked; });
+    checkboxes.forEach(function(c){
+      var chip = c.closest('.flavour-chip');
+      chip.classList.toggle('chip-checked', c.checked);
+      var disable = !c.checked && checked.length >= 3;
+      c.disabled = disable;
+      chip.classList.toggle('chip-disabled', disable);
+    });
+    if (checked.length === 3) {
+      var flavours = checked.map(function(c){ return c.value; });
+      button.disabled = false;
+      button.textContent = 'Add to Bag';
+      button.setAttribute('data-name', 'Trio Gift Set (' + flavours.join(', ') + ')');
+      button.setAttribute('data-slug', 'trio-gift-set-' + flavours.map(slugify).sort().join('-'));
+      note.textContent = flavours.join(' + ') + ' — ready to add.';
+      note.classList.add('ok');
+    } else {
+      button.disabled = true;
+      button.textContent = 'Choose 3 flavours';
+      note.textContent = 'Pick exactly 3 of the 4 flavours (' + checked.length + ' selected).';
+      note.classList.remove('ok');
+    }
+  }
+
+  checkboxes.forEach(function(c){ c.addEventListener('change', update); });
+  update();
+})();
+</script>
+<script src="js/cart.js?v=3" defer></script>
+
+</body>
+</html>
