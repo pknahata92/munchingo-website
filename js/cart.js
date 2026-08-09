@@ -90,8 +90,114 @@
     isFlavourSoldOut: isFlavourSoldOut
   };
 
+  // ---- Lightbox for ingredients/nutrition panel images ----
+  // These are screenshots of dense label text — at card width (~290px) they
+  // scale down to single-digit pixel heights and become unreadable, so any
+  // click opens the same image at a legible size.
+  function initLightbox() {
+    var overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = '<button class="lightbox-close" aria-label="Close">&times;</button><img class="lightbox-img" alt="">';
+    document.body.appendChild(overlay);
+    var lightboxImg = overlay.querySelector('.lightbox-img');
+
+    function open(src, alt) {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt || '';
+      overlay.classList.add('open');
+    }
+    function close() {
+      overlay.classList.remove('open');
+    }
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay || e.target.classList.contains('lightbox-close')) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+
+    document.querySelectorAll('.ni-img').forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function () { open(img.src, img.alt); });
+    });
+    document.querySelectorAll('.photo-carousel .slide:not(:first-child) img').forEach(function (img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function () { open(img.src, img.alt); });
+    });
+  }
+
+  // ---- Product photo / ingredients / nutrition carousel ----
+  function initCarousels() {
+    document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
+      var slides = Array.prototype.slice.call(carousel.querySelectorAll('.slide'));
+      var dots = Array.prototype.slice.call(carousel.querySelectorAll('.dot'));
+      var slidesEl = carousel.querySelector('.slides');
+
+      function currentIndex() {
+        return slides.findIndex(function (s) { return s.classList.contains('active'); });
+      }
+      function showSlide(index) {
+        index = Math.max(0, Math.min(index, slides.length - 1));
+        slides.forEach(function (s, i) { s.classList.toggle('active', i === index); });
+        dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
+        carousel.classList.toggle('on-info', index !== 0);
+      }
+      function step(delta) { showSlide(currentIndex() + delta); }
+
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          showSlide(parseInt(dot.getAttribute('data-slide'), 10));
+        });
+      });
+
+      // Prev/next arrow buttons, overlaid on the image frame
+      var prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-arrow prev';
+      prevBtn.setAttribute('aria-label', 'Previous photo');
+      prevBtn.innerHTML = '&#8249;';
+      var nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-arrow next';
+      nextBtn.setAttribute('aria-label', 'Next photo');
+      nextBtn.innerHTML = '&#8250;';
+      prevBtn.addEventListener('click', function () { step(-1); });
+      nextBtn.addEventListener('click', function () { step(1); });
+      slidesEl.appendChild(prevBtn);
+      slidesEl.appendChild(nextBtn);
+
+      // "Tap to enlarge" badge — an overlay inside the fixed-size frame, not
+      // a block element, so its appearance/disappearance on info slides
+      // never changes the carousel's height (which broke card alignment).
+      var hint = document.createElement('span');
+      hint.className = 'carousel-hint';
+      hint.textContent = 'Tap to enlarge';
+      slidesEl.appendChild(hint);
+
+      // Keyboard navigation when the carousel has focus
+      carousel.setAttribute('tabindex', '0');
+      carousel.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+        else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
+      });
+
+      // Basic swipe support for touch devices
+      var touchStartX = null;
+      carousel.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      carousel.addEventListener('touchend', function (e) {
+        if (touchStartX === null) return;
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        touchStartX = null;
+        if (Math.abs(dx) < 40) return;
+        step(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     renderBadge();
+    initCarousels();
+    initLightbox();
     document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {
       var staticSlug = btn.getAttribute('data-slug');
       // Trio's button slug changes as flavours are picked (handled by its

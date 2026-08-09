@@ -130,6 +130,67 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 @media(max-width:980px){.grid4{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.grid4{grid-template-columns:1fr}}
 
+/* PHOTO CAROUSEL (product photo + ingredients + nutrition panel) — all
+   slides share one fixed square frame, matching the product photo's size.
+   Info slides use object-fit:contain (letterboxed, not cropped) since
+   they're label screenshots, not photography; click to enlarge via lightbox. */
+.photo-carousel{position:relative}
+.photo-carousel .slides{position:relative;aspect-ratio:1/1;overflow:hidden;background:#FBF7EF}
+.photo-carousel .slide{display:none;width:100%;height:100%;align-items:center;justify-content:center}
+.photo-carousel .slide.active{display:flex}
+.photo-carousel .slide:first-child img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-carousel .slide:not(:first-child) img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.photo-carousel .dots{position:relative;margin-top:-22px;display:flex;justify-content:center;gap:6px;z-index:2}
+.photo-carousel .dot{width:7px;height:7px;padding:0;border-radius:999px;border:none;background:rgba(14,31,63,.28);cursor:pointer}
+.photo-carousel .dot.active{background:#fff;box-shadow:0 0 0 1.5px var(--terra)}
+.photo-carousel.on-info .dot{background:rgba(14,31,63,.35)}
+.photo-carousel.on-info .dot.active{background:var(--terra);box-shadow:none}
+.photo-carousel .carousel-hint{display:none;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:.62rem;color:#fff;background:rgba(11,45,80,.65);padding:3px 9px;border-radius:999px;font-style:italic;z-index:2;pointer-events:none}
+.photo-carousel.on-info .carousel-hint{display:block}
+.photo-carousel:focus{outline:none}
+.photo-carousel:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+.photo-carousel .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:999px;border:none;background:rgba(11,45,80,.5);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.photo-carousel .carousel-arrow:hover{background:rgba(11,45,80,.75)}
+.photo-carousel .carousel-arrow.prev{left:8px}
+.photo-carousel .carousel-arrow.next{right:8px}
+
+/* INGREDIENTS / NUTRITION DISCLOSURES (product cards) */
+.sku .nutri{border-top:1px solid rgba(14,31,63,.12);margin-top:2px;padding-top:8px}
+.sku .nutri summary{cursor:pointer;list-style:none;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);display:flex;justify-content:space-between;align-items:center;padding:.2rem 0}
+.sku .nutri summary::-webkit-details-marker{display:none}
+.sku .nutri summary::after{content:"+";font-size:1rem;color:var(--terra);font-weight:400}
+.sku .nutri[open] summary::after{content:"–"}
+.sku .nutri-body{padding-top:.6rem}
+.sku .ni-img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid rgba(14,31,63,.1)}
+.sku .ni-ingredients{font-size:.74rem;line-height:1.55;color:var(--fg-2);margin-bottom:.5rem}
+.sku .ni-contains{font-size:.72rem;line-height:1.5;color:var(--fg-3);margin-bottom:.4rem}
+.sku .ni-warning{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.5rem .7rem;font-size:.7rem;margin:.4rem 0 0}
+.sku .ni-servesize{font-size:.66rem;color:var(--fg-3);margin-bottom:.6rem;font-style:italic}
+.sku .ni-table{width:100%;border-collapse:collapse;font-size:.68rem;margin-bottom:.4rem}
+.sku .ni-table th{text-align:right;font-weight:700;color:var(--navy);border-bottom:1.5px solid rgba(14,31,63,.18);padding:.3rem .2rem}
+.sku .ni-table th:first-child{text-align:left}
+.sku .ni-table td{padding:.28rem .2rem;text-align:right;border-bottom:1px solid rgba(14,31,63,.08);color:var(--fg-2)}
+.sku .ni-table td:first-child{text-align:left}
+.sku .ni-table tr:first-child td{font-weight:700;color:var(--navy)}
+.sku .ni-table tr.ni-sub td:first-child{padding-left:.9rem;color:var(--fg-3)}
+.sku .ni-rda{font-size:.62rem;color:var(--fg-3);font-style:italic;margin:0}
+
+/* Nutrition Option B: key-stat tiles + collapsed full table */
+.sku .ni-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.6rem}
+.sku .ni-stat{background:var(--cream);border:1px solid rgba(14,31,63,.1);border-radius:6px;padding:.5rem .6rem;display:flex;flex-direction:column;gap:2px}
+.sku .ni-stat-val{font-weight:700;color:var(--navy);font-size:.92rem}
+.sku .ni-stat-label{font-size:.6rem;color:var(--fg-3);line-height:1.3}
+.sku .ni-full{border-top:1px dashed rgba(14,31,63,.15);padding-top:.5rem}
+.sku .ni-full summary{cursor:pointer;font-size:.68rem;font-weight:600;color:var(--terra);list-style:none;margin-bottom:.5rem}
+.sku .ni-full summary::-webkit-details-marker{display:none}
+.sku .ni-hint{font-size:.64rem;color:var(--fg-3);text-align:center;margin:.35rem 0 0;font-style:italic}
+
+/* LIGHTBOX (enlarges ingredients/nutrition screenshots on click) */
+.lightbox-overlay{position:fixed;inset:0;background:rgba(11,20,38,.86);display:none;align-items:center;justify-content:center;z-index:999;padding:2rem}
+.lightbox-overlay.open{display:flex}
+.lightbox-overlay .lightbox-img{max-width:min(94vw,900px);max-height:90vh;width:auto;height:auto;border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.lightbox-overlay .lightbox-close{position:absolute;top:18px;right:22px;background:none;border:none;color:#fff;font-size:2.2rem;line-height:1;cursor:pointer;padding:.2rem .5rem}
+
 /* REORDER STRIP */
 .reorder{padding:4rem 0 1rem}
 .reorder .headrow,.reorder h2{margin-bottom:1.6rem}
