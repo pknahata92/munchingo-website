@@ -312,6 +312,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .cart-summary .total-row{display:flex;justify-content:space-between;font-weight:700;color:var(--navy);font-size:1.15rem;margin-bottom:1.1rem}
 .cart-summary p{font-size:.82rem;color:var(--sub);margin-top:.9rem}
 .cart-summary p.gst-note{font-size:.72rem;color:var(--fg-3);margin-top:-.6rem;margin-bottom:1.1rem}
+.cart-summary p.min-order-note{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.6rem .9rem;font-size:.78rem;margin-top:-.4rem}
 @media(max-width:640px){.cart-row{grid-template-columns:1fr;gap:.6rem}.cart-row .price{text-align:left}.cart-summary{max-width:none}.cart-page{padding-bottom:6rem}}
 
 /* LEGAL PAGES (privacy policy, terms) */

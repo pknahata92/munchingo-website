@@ -86,6 +86,7 @@
   <div id="cart-summary" class="cart-summary" style="display:none">
     <div class="total-row"><span>Total</span><span id="cart-total">₹0</span></div>
     <p class="gst-note">Price inclusive of 5% GST (GSTIN 06AIIPN5005C2ZP)</p>
+    <p class="min-order-note" id="cart-min-note" style="display:none"></p>
     <a id="cart-checkout" class="btn solid block" href="#" target="_blank" rel="noopener">Continue on WhatsApp</a>
     <p>You'll pick your items again in our WhatsApp catalog, then we'll confirm and share a UPI payment link. All orders are pre-paid, ships within 2 days from Bikaner.</p>
   </div>
@@ -127,6 +128,11 @@
 
 <script src="js/cart.js?v=3"></script>
 <script>
+// Must match MIN_ORDER_VALUE in webhook-backend (routes/checkout.js and
+// messageHandler.js) — this is just an early UX nudge; the bot enforces it
+// for real when the order actually reaches WhatsApp.
+var MIN_ORDER_VALUE = 599;
+
 function renderCart() {
   var cart = MunchingoCart.getCart();
   var listEl = document.getElementById('cart-list');
@@ -169,8 +175,17 @@ function renderCart() {
     listEl.appendChild(row);
   });
 
-  document.getElementById('cart-total').textContent = '₹' + MunchingoCart.cartTotal();
+  var total = MunchingoCart.cartTotal();
+  document.getElementById('cart-total').textContent = '₹' + total;
   document.getElementById('cart-checkout').href = MunchingoCart.whatsappCheckoutUrl();
+
+  var minNoteEl = document.getElementById('cart-min-note');
+  if (total < MIN_ORDER_VALUE) {
+    minNoteEl.textContent = 'Add ₹' + (MIN_ORDER_VALUE - total) + ' more to meet our ₹' + MIN_ORDER_VALUE + ' minimum order value for delivery. (Want just one box? Message us directly to arrange it.)';
+    minNoteEl.style.display = '';
+  } else {
+    minNoteEl.style.display = 'none';
+  }
 }
 document.addEventListener('DOMContentLoaded', renderCart);
 </script>

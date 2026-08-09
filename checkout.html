@@ -16,6 +16,7 @@
 .checkout-summary .row{display:flex;justify-content:space-between;font-size:14px;padding:.4rem 0;color:var(--fg-2)}
 .checkout-summary .row.total{border-top:1px solid rgba(14,31,63,.14);margin-top:.6rem;padding-top:.8rem;font-weight:600;color:var(--navy);font-size:16px}
 .checkout-summary .row.gst-note{font-size:11.5px;color:var(--fg-3);padding-top:.2rem}
+.checkout-summary .row.min-order-note{display:block;background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.6rem .9rem;font-size:12.5px;margin-top:.8rem}
 .checkout-form .field{margin-bottom:1.2rem}
 .checkout-form label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:.4rem;letter-spacing:.03em}
 .checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--navy);background:#fff}
@@ -122,6 +123,10 @@
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
+// Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js — this is
+// just the UX pre-check; the backend enforces it for real. Orders below this
+// are only fulfilled hyperlocally/manually, not through this checkout.
+var MIN_ORDER_VALUE = 599;
 
 function renderSummary() {
   var cart = MunchingoCart.getCart();
@@ -140,10 +145,13 @@ function renderSummary() {
 
   var total = MunchingoCart.cartTotal();
   var gstAmount = Math.round(total - (total / 1.05));
+  var belowMin = total < MIN_ORDER_VALUE;
   summaryEl.innerHTML = rows +
     '<div class="row total"><span>Total</span><span>₹' + total + '</span></div>' +
-    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
-  submitBtn.textContent = 'Pay ₹' + total;
+    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>' +
+    (belowMin ? '<div class="row min-order-note">Add ₹' + (MIN_ORDER_VALUE - total) + ' more to meet our ₹' + MIN_ORDER_VALUE + ' minimum order value for delivery.</div>' : '');
+  submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : 'Pay ₹' + total;
+  submitBtn.disabled = belowMin;
 }
 
 function showError(msg) {
