@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="js/cart.js?v=3"></script>
 </head>
 <body>
 
@@ -219,9 +220,22 @@ document.querySelectorAll('.pill[data-filter]').forEach(function(pill){
 
   function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
 
+  // One-time pass: sold-out flavours (see js/cart.js's SOLD_OUT_SLUGS) are
+  // permanently unselectable in the picker, not just at the 3-chosen limit.
+  checkboxes.forEach(function(c){
+    if (window.MunchingoCart && window.MunchingoCart.isFlavourSoldOut(c.value)) {
+      c.checked = false;
+      c.disabled = true;
+      var chip = c.closest('.flavour-chip');
+      chip.classList.add('chip-disabled');
+      chip.setAttribute('title', c.value + ' is currently sold out');
+    }
+  });
+
   function update(){
     var checked = checkboxes.filter(function(c){ return c.checked; });
     checkboxes.forEach(function(c){
+      if (window.MunchingoCart && window.MunchingoCart.isFlavourSoldOut(c.value)) return; // stays disabled regardless of selection count
       var chip = c.closest('.flavour-chip');
       chip.classList.toggle('chip-checked', c.checked);
       var disable = !c.checked && checked.length >= 3;
@@ -248,7 +262,6 @@ document.querySelectorAll('.pill[data-filter]').forEach(function(pill){
   update();
 })();
 </script>
-<script src="js/cart.js?v=3" defer></script>
 
 </body>
 </html>

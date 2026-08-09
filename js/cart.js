@@ -3,6 +3,32 @@
   var KEY = 'munchingo_cart';
   var WA_NUMBER = '919988992024';
 
+  // Manual stock control for the website only (WhatsApp ordering reflects
+  // stock set separately in Meta Commerce Manager). List a base flavour slug
+  // here to mark it sold out on the site; remove it to restock. Must match
+  // utils/catalog.js's SOLD_OUT_SLUGS on the backend, which is the check
+  // that actually blocks a sold-out item at checkout — this file only
+  // controls what the UI shows before that.
+  var SOLD_OUT_SLUGS = [];
+
+  function isSlugSoldOut(slug) {
+    if (!slug) return false;
+    if (SOLD_OUT_SLUGS.indexOf(slug) !== -1) return true;
+    if (slug === 'full-range-set') return SOLD_OUT_SLUGS.length > 0;
+    if (slug.indexOf('trio-gift-set-') === 0) {
+      return SOLD_OUT_SLUGS.some(function (soldSlug) {
+        var token = soldSlug.replace(/^atta-/, '');
+        return new RegExp('(^|-)' + token + '(-|$)').test(slug);
+      });
+    }
+    return false;
+  }
+  // Whether a trio-picker flavour value (e.g. "Lite-sugar") is sold out.
+  function isFlavourSoldOut(flavourValue) {
+    var token = flavourValue.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    return SOLD_OUT_SLUGS.indexOf('atta-' + token) !== -1;
+  }
+
   function getCart() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; }
     catch (e) { return []; }
@@ -59,12 +85,24 @@
     cartCount: cartCount,
     cartTotal: cartTotal,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
-    renderBadge: renderBadge
+    renderBadge: renderBadge,
+    isSlugSoldOut: isSlugSoldOut,
+    isFlavourSoldOut: isFlavourSoldOut
   };
 
   document.addEventListener('DOMContentLoaded', function () {
     renderBadge();
     document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {
+      var staticSlug = btn.getAttribute('data-slug');
+      // Trio's button slug changes as flavours are picked (handled by its
+      // own script in gifting.html) — only grey out buttons with a fixed
+      // slug here (base SKUs + Full Range).
+      if (staticSlug && staticSlug.indexOf('trio-gift-set') !== 0 && isSlugSoldOut(staticSlug)) {
+        btn.disabled = true;
+        btn.textContent = 'Sold Out';
+        btn.classList.add('sold-out');
+        return;
+      }
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         addToCart({
