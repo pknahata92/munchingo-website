@@ -108,13 +108,15 @@
     </div>
     <div class="field">
       <label for="cf-order">Order number <span>(optional)</span></label>
-      <input type="text" id="cf-order" placeholder="e.g. MG-1042">
+      <input type="text" id="cf-order" placeholder="e.g. MNG-AB12-0908">
     </div>
     <div class="field">
       <label for="cf-message">Message</label>
       <textarea id="cf-message" placeholder="What can we help with?" required></textarea>
     </div>
-    <button type="submit" class="btn solid block">Send via WhatsApp</button>
+    <div class="contact-error" id="cf-error" style="display:none"></div>
+    <div class="contact-success" id="cf-success" style="display:none">Thanks — we've got your message and will reply within a working day.</div>
+    <button type="submit" class="btn solid block" id="cf-submit">Send Message</button>
   </form>
 </div>
 
@@ -182,16 +184,44 @@
 </a>
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', function(e){
+var CONTACT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/contact';
+
+document.getElementById('contactForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  var name = document.getElementById('cf-name').value;
-  var email = document.getElementById('cf-email').value;
-  var order = document.getElementById('cf-order').value;
-  var msg = document.getElementById('cf-message').value;
-  var text = "Hi Munchingo, I'm " + name + " (" + email + ")." +
-    (order ? " Order #: " + order + "." : "") +
-    " " + msg;
-  window.open("https://wa.me/919988992024?text=" + encodeURIComponent(text), "_blank");
+  var errEl = document.getElementById('cf-error');
+  var okEl = document.getElementById('cf-success');
+  var submitBtn = document.getElementById('cf-submit');
+  errEl.style.display = 'none';
+  okEl.style.display = 'none';
+
+  var name = document.getElementById('cf-name').value.trim();
+  var email = document.getElementById('cf-email').value.trim();
+  var order = document.getElementById('cf-order').value.trim();
+  var msg = document.getElementById('cf-message').value.trim();
+
+  var originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch(CONTACT_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, orderNumber: order, message: msg }),
+    });
+    var data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+
+    okEl.style.display = 'block';
+    document.getElementById('contactForm').reset();
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not send your message. Please try again or email us directly at info.munchingo@gmail.com.';
+    errEl.style.display = 'block';
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  }
 });
 </script>
 <script src="js/cart.js?v=3" defer></script>
