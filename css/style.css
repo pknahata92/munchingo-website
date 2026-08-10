@@ -86,8 +86,7 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 .nav-toggle{display:none;background:none;border:none;color:var(--navy);cursor:pointer;padding:.5rem;margin-right:.2rem}
 .nav-toggle svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5}
 @media(max-width:820px){
-  .nav-top{padding:12px 16px 0}
-  .brand{background:var(--navy);padding:.45rem 1rem;border-radius:10px}
+  .nav-top{padding:12px 16px;background:var(--navy)}
   .brand img.mark{height:34px;width:auto}
   .navrow{grid-template-columns:auto 1fr auto;padding:12px 16px}
   .nav-toggle{display:flex;align-items:center;order:-1;grid-column:1}
