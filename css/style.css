@@ -19,6 +19,7 @@ h3.on-dark{color:#fff}
 img{max-width:100%;display:block}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--terra)}
+@media(max-width:480px){.hero .eyebrow{letter-spacing:.09em;font-size:.66rem;white-space:nowrap}}
 .script{font-family:var(--f-script);font-size:1.6rem;color:var(--terra);font-weight:600}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-weight:600;padding:15px 30px;border-radius:4px;text-decoration:none;font-size:13px;letter-spacing:.10em;text-transform:uppercase;transition:background .24s cubic-bezier(.2,.7,.2,1),transform .08s ease,box-shadow .15s ease;border:1.5px solid transparent}
@@ -35,10 +36,16 @@ img{max-width:100%;display:block}
 .btn.block{width:100%}
 .btn.small{padding:12px 20px;font-size:12px}
 
-/* ANNOUNCEMENT BAR */
-.announce{background:var(--terra);color:#FFF6E8;text-align:center;font-size:.76rem;font-weight:600;letter-spacing:.18em;padding:.6rem 1rem;text-transform:uppercase}
-.announce span{margin:0 1.6rem}
-.announce span:not(:first-child)::before{content:"·";opacity:.45;margin-right:1.6rem}
+/* ANNOUNCEMENT BAR — infinite marquee. Markup is two identical copies of the
+   spans back to back (second copy aria-hidden); animating the track by -50%
+   loops seamlessly since both halves are the same width. */
+.announce{background:var(--terra);color:#FFF6E8;padding:.6rem 0;text-transform:uppercase;overflow:hidden}
+.announce-track{display:flex;width:max-content;font-size:.76rem;font-weight:600;letter-spacing:.18em;animation:marquee 26s linear infinite}
+.announce-track span{margin:0 1.6rem;white-space:nowrap}
+.announce-track span:not(:first-child)::before{content:"·";opacity:.45;margin-right:1.6rem}
+@media(max-width:600px){.announce-track{font-size:.62rem;letter-spacing:.1em;animation-duration:18s}.announce-track span{margin:0 .9rem}.announce-track span:not(:first-child)::before{margin-right:.9rem}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.announce-track,.stripbar-track{animation:none}}
 
 /* NAV — letterhead arrangement: logo centred above, nav row below, cream, opaque, no blur */
 nav{position:sticky;top:0;z-index:50;background:var(--cream);border-bottom:1px solid rgba(14,31,63,.14)}
@@ -100,17 +107,21 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 .hero .facts span::before{content:"— "}
 .hero .photo{border-radius:8px;overflow:hidden;box-shadow:0 26px 60px rgba(11,45,80,.22)}
 @media(max-width:900px){.hero .grid{grid-template-columns:1fr}.hero .photo{max-width:440px;margin:0 auto}}
+@media(max-width:600px){.hero .facts{padding-right:64px}}
 
-/* BADGE STRIP — spec: claim strip, navy bg, 26px 40px padding, gold 0.18em caps */
-.stripbar{background:var(--navy);color:var(--gold);padding:26px 40px;overflow:hidden}
-.stripbar .track{display:flex;justify-content:center;gap:2.6rem;flex-wrap:wrap;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+/* BADGE STRIP — infinite marquee, same technique as the announcement bar:
+   two identical copies of the spans, animate the track by -50% to loop. */
+.stripbar{background:var(--navy);color:var(--gold);padding:26px 0;overflow:hidden}
+.stripbar-track{display:flex;width:max-content;gap:2.6rem;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;animation:marquee 32s linear infinite}
+.stripbar-track span{white-space:nowrap}
+@media(max-width:600px){.stripbar{padding:16px 0}.stripbar-track{gap:1.6rem;font-size:10.5px;animation-duration:22s}}
 
 /* PRODUCTS */
 .products{padding:4.5rem 0}
 .products .headrow{text-align:center;margin-bottom:2.6rem}
 .products h2{font-size:clamp(1.5rem,2.6vw,2rem)}
 .products .headrow p{color:var(--sub);max-width:34rem;margin:.8rem auto 0}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem;align-items:start}
 .sku{background:#fff;border:1px solid rgba(14,31,63,.14);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(14,31,63,.06),0 1px 1px rgba(14,31,63,.04);transition:box-shadow .24s cubic-bezier(.2,.7,.2,1)}
 .sku:hover{box-shadow:0 4px 12px rgba(14,31,63,.08),0 2px 4px rgba(14,31,63,.05)}
 .sku .photo{position:relative;aspect-ratio:1/1;overflow:hidden}
@@ -120,7 +131,7 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 .sku.sku-kesari .tag{color:var(--kesari)}
 .sku.sku-ajwain .tag{color:var(--slate)}
 .sku.sku-lite .tag{color:var(--mauve)}
-.sku .body{padding:1.2rem 1.3rem 1.4rem;display:flex;flex-direction:column;gap:10px;flex:1}
+.sku .body{padding:1.7rem 1.3rem 1.4rem;display:flex;flex-direction:column;gap:10px;flex:1}
 .sku h3{font-size:24px;color:var(--navy);margin-bottom:0}
 .sku p{font-size:13.5px;line-height:1.6;color:var(--fg-2);margin-bottom:0;flex:1}
 .sku .price{font-weight:600;color:var(--navy);margin-bottom:0;font-size:16px}
