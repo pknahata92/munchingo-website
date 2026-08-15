@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=12">
-<script src="js/cart.js?v=6"></script>
+<script src="js/cart.js?v=7"></script>
 <script type="application/ld+json">
 [
   {
@@ -59,7 +59,7 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "Munchingo Atta Lite-Sugar",
+    "name": "Munchingo Atta Sugar-Lite",
     "sku": "MN-LITE-250",
     "image": "https://munchingo.com/images/box-lite.jpg",
     "description": "No added sugar, sweetened with maltitol — 95% less sugar than our Original. Whole wheat atta cookies, baked with pure desi ghee. 250g pack.",
@@ -355,9 +355,9 @@
         <div class="photo-carousel" data-carousel>
           <div class="tag">No Added Sugar</div>
           <div class="slides">
-            <div class="slide active"><img loading="lazy" src="images/box-lite.jpg" alt="Atta Lite-sugar box"></div>
-            <div class="slide"><img loading="lazy" src="images/ingredients-lite-sugar.png" alt="Atta Lite-sugar ingredients list"></div>
-            <div class="slide"><img loading="lazy" src="images/nutrition-lite-sugar.png" alt="Atta Lite-sugar nutrition information"></div>
+            <div class="slide active"><img loading="lazy" src="images/box-lite.jpg" alt="Atta Sugar-Lite box"></div>
+            <div class="slide"><img loading="lazy" src="images/ingredients-lite-sugar.png" alt="Atta Sugar-Lite ingredients list"></div>
+            <div class="slide"><img loading="lazy" src="images/nutrition-lite-sugar.png" alt="Atta Sugar-Lite nutrition information"></div>
           </div>
           <div class="dots">
             <button class="dot active" data-slide="0" aria-label="Product photo"></button>
@@ -366,11 +366,11 @@
           </div>
         </div>
         <div class="body">
-          <h3>Atta Lite-sugar</h3>
+          <h3>Atta Sugar-Lite</h3>
           <p>95% less sugar than our Original. For the person who reads the back of the pack before the front.</p>
           <div class="note">Sweetened with maltitol. Excess consumption may have a laxative effect.</div>
           <div class="price">₹319 <s>₹375</s> <small>/ 250 g</small></div>
-          <button class="btn solid block" data-add-to-cart data-slug="atta-lite-sugar" data-name="Atta Lite-sugar" data-price="319" data-unit="250g" title="Add to your cart — you'll complete checkout on WhatsApp">Add to Bag</button>
+          <button class="btn solid block" data-add-to-cart data-slug="atta-lite-sugar" data-name="Atta Sugar-Lite" data-price="319" data-unit="250g" title="Add to your cart — you'll complete checkout on WhatsApp">Add to Bag</button>
           <details class="nutri">
             <summary>Ingredients</summary>
             <div class="nutri-body">
@@ -436,7 +436,7 @@
         <div class="flavour-picker" data-trio-picker>
           <label class="flavour-chip"><input type="checkbox" value="Original" checked>Original</label>
           <label class="flavour-chip"><input type="checkbox" value="Kesari" checked>Kesari</label>
-          <label class="flavour-chip"><input type="checkbox" value="Lite-sugar">Lite-sugar</label>
+          <label class="flavour-chip"><input type="checkbox" value="Lite-sugar" data-label="Sugar-Lite">Sugar-Lite</label>
           <label class="flavour-chip"><input type="checkbox" value="Ajwain" checked>Ajwain</label>
         </div>
         <p class="flavour-note" data-trio-note></p>
@@ -446,7 +446,7 @@
       <div class="gift-card dark" id="full-range-set">
         <span class="eyebrow" style="color:var(--gold)">The complete set · 4 boxes</span>
         <h3 class="on-dark">The Full Range gift set</h3>
-        <p style="color:#C7D3DE">One of each — Original, Kesari, Lite-sugar and Ajwain. Our most popular corporate gifting option.</p>
+        <p style="color:#C7D3DE">One of each — Original, Kesari, Sugar-Lite and Ajwain. Our most popular corporate gifting option.</p>
         <div class="gift-price" style="color:#fff">₹1,079 <s style="font-size:.76rem;color:#9FB1C1;font-weight:500">₹1,196</s> <span style="color:#9FB1C1">1kg total · 4 × 250g</span></div>
         <button class="btn gold block" data-add-to-cart data-slug="full-range-set" data-name="Full Range Gift Set" data-price="1079" data-unit="1kg, one of each" title="Add to your cart — you'll complete checkout on WhatsApp">Add to Bag</button>
       </div>
@@ -522,7 +522,7 @@ document.querySelectorAll('.pill[data-filter]').forEach(function(pill){
       c.disabled = true;
       var chip = c.closest('.flavour-chip');
       chip.classList.add('chip-disabled');
-      chip.setAttribute('title', c.value + ' is currently sold out');
+      chip.setAttribute('title', (c.dataset.label || c.value) + ' is currently sold out');
     }
   });
 
@@ -538,11 +538,12 @@ document.querySelectorAll('.pill[data-filter]').forEach(function(pill){
     });
     if (checked.length === 3) {
       var flavours = checked.map(function(c){ return c.value; });
+      var flavourLabels = checked.map(function(c){ return c.dataset.label || c.value; });
       button.disabled = false;
       button.textContent = 'Add to Bag';
-      button.setAttribute('data-name', 'Trio Gift Set (' + flavours.join(', ') + ')');
+      button.setAttribute('data-name', 'Trio Gift Set (' + flavourLabels.join(', ') + ')');
       button.setAttribute('data-slug', 'trio-gift-set-' + flavours.map(slugify).sort().join('-'));
-      note.textContent = flavours.join(' + ') + ' — ready to add.';
+      note.textContent = flavourLabels.join(' + ') + ' — ready to add.';
       note.classList.add('ok');
     } else {
       button.disabled = true;
