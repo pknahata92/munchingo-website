@@ -112,9 +112,9 @@ a.search-result:hover,a.search-result.active{background:rgba(14,31,63,.06)}
 /* BADGE STRIP — infinite marquee, same technique as the announcement bar:
    two identical copies of the spans, animate the track by -50% to loop. */
 .stripbar{background:var(--navy);color:var(--gold);padding:26px 0;overflow:hidden}
-.stripbar-track{display:flex;width:max-content;gap:2.6rem;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;animation:marquee 32s linear infinite}
+.stripbar-track{display:flex;width:max-content;gap:3.9rem;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;animation:marquee 32s linear infinite}
 .stripbar-track span{white-space:nowrap}
-@media(max-width:600px){.stripbar{padding:16px 0}.stripbar-track{gap:1.6rem;font-size:10.5px;animation-duration:22s}}
+@media(max-width:600px){.stripbar{padding:16px 0}.stripbar-track{gap:2.4rem;font-size:10.5px;animation-duration:22s}}
 
 /* PRODUCTS */
 .products{padding:4.5rem 0}
