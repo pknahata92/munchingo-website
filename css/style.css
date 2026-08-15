@@ -291,6 +291,9 @@ footer .brandcol img{height:88px;max-width:220px;object-fit:contain;object-posit
 footer .brandcol .word{font-family:var(--f-script);color:var(--gold);font-size:1.5rem;margin-bottom:.3rem}
 footer .brandcol p{color:#9FB1C1;font-size:.82rem;max-width:16rem}
 footer .brandcol p.legal-ids{color:#7C90A2;font-size:.72rem;margin-top:.6rem}
+footer .brandcol .krazy-credit{display:flex;align-items:center;gap:8px;margin-top:.7rem}
+footer .brandcol .krazy-credit span{color:#7C90A2;font-size:.72rem}
+footer .brandcol img.kb-credit-logo{height:16px;width:auto;max-width:none;object-position:left;margin-bottom:0}
 footer h4{color:var(--gold);font-family:var(--f-body);text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;margin-bottom:.9rem;font-weight:700}
 footer a{color:#D6E0E8;text-decoration:none;display:block;margin-bottom:.55rem;font-size:.86rem}
 footer a:hover{color:var(--gold)}
