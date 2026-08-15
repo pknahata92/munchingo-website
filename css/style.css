@@ -291,9 +291,9 @@ footer .brandcol img{height:88px;max-width:220px;object-fit:contain;object-posit
 footer .brandcol .word{font-family:var(--f-script);color:var(--gold);font-size:1.5rem;margin-bottom:.3rem}
 footer .brandcol p{color:#9FB1C1;font-size:.82rem;max-width:16rem}
 footer .brandcol p.legal-ids{color:#7C90A2;font-size:.72rem;margin-top:.6rem}
-footer .brandcol .krazy-credit{display:flex;align-items:center;gap:8px;margin-top:.7rem}
-footer .brandcol .krazy-credit span{color:#7C90A2;font-size:.72rem}
-footer .brandcol img.kb-credit-logo{height:16px;width:auto;max-width:none;object-position:left;margin-bottom:0}
+footer .brandcol .krazy-credit{display:flex;align-items:center;gap:10px;margin-top:.9rem}
+footer .brandcol .krazy-credit span{color:#9FB1C1;font-size:.78rem}
+footer .brandcol img.kb-credit-logo{height:32px;width:auto;max-width:none;object-position:left;margin-bottom:0}
 footer h4{color:var(--gold);font-family:var(--f-body);text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;margin-bottom:.9rem;font-weight:700}
 footer a{color:#D6E0E8;text-decoration:none;display:block;margin-bottom:.55rem;font-size:.86rem}
 footer a:hover{color:var(--gold)}
@@ -326,6 +326,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .cert-strip{background:var(--cream-2);padding:3rem 0}
 .cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem}
 .cert-grid .c h4{color:var(--terra);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;font-weight:700}
+.cert-grid .c img.mfg-logo{height:34px;width:auto;object-fit:contain;object-position:left;margin-bottom:.6rem;display:block}
 .cert-grid .c p{font-size:.88rem;color:var(--ink);line-height:1.7}
 .cert-grid .c a{color:var(--terra);font-weight:600;font-size:.85rem}
 @media(max-width:820px){.cert-grid{grid-template-columns:1fr}}
