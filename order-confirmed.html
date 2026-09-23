@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Order Confirmed — Munchingo</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=19">
+<style>
+.confirm-wrap{max-width:640px;margin:0 auto;padding:3rem 24px 4rem;text-align:center}
+.confirm-check{width:56px;height:56px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem}
+.confirm-check svg{width:28px;height:28px;stroke:var(--gold);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.confirm-wrap h1{margin:0 0 .5rem}
+.confirm-sub{color:var(--fg-2);margin:0 0 2rem}
+.confirm-card{background:#fff;border:1px solid rgba(14,31,63,.14);border-radius:8px;padding:1.6rem 1.8rem;margin-bottom:1.6rem;text-align:left}
+.confirm-card .oid{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:.9rem}
+.confirm-item-row{display:flex;justify-content:space-between;font-size:14px;color:var(--fg-2);padding:.35rem 0}
+.confirm-total-row{display:flex;justify-content:space-between;font-weight:600;color:var(--navy);font-size:16px;border-top:1px solid rgba(14,31,63,.14);margin-top:.6rem;padding-top:.8rem}
+.confirm-next{background:var(--cream-2);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:2rem;text-align:left}
+.confirm-next h3{font-size:.9rem;margin:0 0 .7rem;color:var(--navy)}
+.confirm-next ul{margin:0;padding-left:1.2rem;color:var(--fg-2);font-size:13.5px;line-height:1.8}
+.confirm-ctas{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem}
+.confirm-ctas .btn{flex:1;min-width:180px}
+.confirm-loading{padding:4rem 0;color:var(--fg-2)}
+.confirm-spinner{width:32px;height:32px;border:3px solid rgba(14,31,63,.15);border-top-color:var(--terra);border-radius:50%;margin:0 auto 1rem;animation:confirm-spin .8s linear infinite}
+@keyframes confirm-spin{to{transform:rotate(360deg)}}
+.confirm-fallback{padding:3rem 0}
+.confirm-cross-sell{text-align:left;margin-bottom:1rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="brand" href="index.html">
+      <img class="mark" src="images/logo-gold-v2.png" alt="Munchingo">
+    </a>
+  </div>
+  <div class="navrow">
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
+    <ul>
+      <li class="hide-m"><a class="navlink" href="gifting.html">Gifting</a></li>
+      <li class="hide-m"><a class="navlink" href="about.html">About Us</a></li>
+      <li class="hide-m"><a class="navlink" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-right"></div>
+  </div>
+</nav>
+
+<div class="confirm-wrap">
+
+  <div id="confirm-loading" class="confirm-loading">
+    <div class="confirm-spinner"></div>
+    <p>Confirming your payment…</p>
+  </div>
+
+  <div id="confirm-success" style="display:none">
+    <div class="confirm-check">
+      <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h1>Order confirmed!</h1>
+    <p class="confirm-sub" id="confirm-greeting">Thank you for ordering from Munchingo.</p>
+
+    <div class="confirm-card">
+      <div class="oid" id="confirm-order-id"></div>
+      <div id="confirm-items"></div>
+      <div class="confirm-total-row"><span>Total paid</span><span id="confirm-total"></span></div>
+    </div>
+
+    <div class="confirm-next">
+      <h3>What happens next</h3>
+      <ul>
+        <li>You'll get a WhatsApp confirmation with your order details shortly.</li>
+        <li>Your box is packed fresh in Bikaner and ships within 2 business days.</li>
+        <li>Any questions — just reply on WhatsApp, we read every message ourselves.</li>
+      </ul>
+    </div>
+
+    <div class="confirm-ctas">
+      <a class="btn outline block" href="gifting.html">Continue Shopping</a>
+      <a class="btn solid block" href="https://wa.me/919988992024" target="_blank" rel="noopener">Chat on WhatsApp</a>
+    </div>
+
+    <div class="confirm-cross-sell">
+      <div id="confirm-cross-sell-strip"></div>
+    </div>
+  </div>
+
+  <div id="confirm-fallback" class="confirm-fallback" style="display:none">
+    <h1>Payment received!</h1>
+    <p class="confirm-sub">We're still finishing up your order confirmation on our end — you'll get a WhatsApp message with your order details within a few minutes. If anything looks off, just message us.</p>
+    <div class="confirm-ctas">
+      <a class="btn outline block" href="gifting.html">Continue Shopping</a>
+      <a class="btn solid block" href="https://wa.me/919988992024" target="_blank" rel="noopener">Chat on WhatsApp</a>
+    </div>
+  </div>
+
+  <div id="confirm-notfound" style="display:none">
+    <h1>We couldn't find that order</h1>
+    <p class="confirm-sub">If you just completed a payment, it's likely still processing — you'll get a WhatsApp confirmation shortly. If you're not sure what happened, message us and we'll sort it out.</p>
+    <div class="confirm-ctas">
+      <a class="btn outline block" href="gifting.html">Continue Shopping</a>
+      <a class="btn solid block" href="https://wa.me/919988992024" target="_blank" rel="noopener">Chat on WhatsApp</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap top">
+    <div class="brandcol">
+      <img src="images/logo-gold-v2.png" alt="Munchingo">
+      <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
+      <p class="legal-ids">GSTIN: 06AIIPN5005C2ZP &middot; FSSAI Lic. No. 10826003000333</p>
+      <div class="krazy-credit">
+        <span>A unit of</span>
+        <img loading="lazy" class="kb-credit-logo" src="images/krazy-bakers-logo.png" alt="Krazy Bakers">
+      </div>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <a href="gifting.html">The Range</a>
+      <a href="gifting.html#gifting">Gift Sets</a>
+      <a href="cart.html">Cart</a>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="contact.html#faq">FAQ</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+    <div>
+      <h4>Talk to Us</h4>
+      <a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">Instagram @munchingo.delhi</a>
+      <a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a>
+      <a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/cart.js?v=14"></script>
+<script>
+var ORDER_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/order/';
+var POLL_INTERVAL_MS = 2000;
+var POLL_MAX_TRIES = 8; // ~16s — generous margin over normal webhook delivery lag
+
+function showSection(id) {
+  ['confirm-loading', 'confirm-success', 'confirm-fallback', 'confirm-notfound'].forEach(function (s) {
+    document.getElementById(s).style.display = (s === id) ? '' : 'none';
+  });
+}
+
+function renderOrder(order) {
+  document.getElementById('confirm-greeting').textContent = 'Thank you, ' + (order.customerName || 'there') + '!';
+  document.getElementById('confirm-order-id').textContent = 'Order #' + order.orderId;
+  document.getElementById('confirm-items').innerHTML = order.items.map(function (item) {
+    return '<div class="confirm-item-row"><span>' + item.name + ' × ' + item.quantity + '</span><span>₹' + (item.price * item.quantity) + '</span></div>';
+  }).join('');
+  document.getElementById('confirm-total').textContent = '₹' + order.total;
+
+  // Cart and gift note belong to the order that was just placed — clear
+  // them now so a "continue shopping" click starts a genuinely fresh cart.
+  MunchingoCart.clearCart();
+  MunchingoCart.setGiftNote('');
+
+  var stripEl = document.getElementById('confirm-cross-sell-strip');
+  var stripHtml = MunchingoCart.renderCrossSellHtml();
+  if (stripHtml) {
+    stripEl.innerHTML = stripHtml;
+    MunchingoCart.initCrossSell(stripEl, function () {}); // adds silently; they'll see it next time they open the cart
+  }
+
+  showSection('confirm-success');
+}
+
+function getOrderIdFromUrl() {
+  var params = new URLSearchParams(window.location.search);
+  return params.get('razorpay_payment_link_reference_id') || params.get('order');
+}
+
+function pollOrder(orderId, triesLeft) {
+  fetch(ORDER_API + encodeURIComponent(orderId))
+    .then(function (res) {
+      if (res.status === 404) { showSection('confirm-notfound'); return null; }
+      return res.json();
+    })
+    .then(function (data) {
+      if (!data) return;
+      if (!data.ok) { showSection('confirm-notfound'); return; }
+
+      if (data.status === 'paid') {
+        renderOrder(data);
+      } else if (triesLeft > 0) {
+        setTimeout(function () { pollOrder(orderId, triesLeft - 1); }, POLL_INTERVAL_MS);
+      } else {
+        // Order exists but the webhook hasn't landed yet after a generous
+        // wait — payment almost certainly went through (they got here via
+        // Razorpay's own success redirect); don't leave them staring at a
+        // spinner, tell them plainly what's happening instead.
+        showSection('confirm-fallback');
+      }
+    })
+    .catch(function () {
+      if (triesLeft > 0) {
+        setTimeout(function () { pollOrder(orderId, triesLeft - 1); }, POLL_INTERVAL_MS);
+      } else {
+        showSection('confirm-fallback');
+      }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var orderId = getOrderIdFromUrl();
+  if (!orderId) { showSection('confirm-notfound'); return; }
+  pollOrder(orderId, POLL_MAX_TRIES);
+});
+</script>
+
+</body>
+</html>

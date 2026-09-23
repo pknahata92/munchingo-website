@@ -29,9 +29,16 @@
 .checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--navy);background:#fff}
 .checkout-form input:focus,.checkout-form textarea:focus{outline:none;border-color:var(--terra)}
 .checkout-form textarea{resize:vertical;min-height:80px}
+.checkout-form .addr-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin-bottom:1.2rem}
+.checkout-form .addr-row .field{margin-bottom:0}
+.checkout-form .addr-row .field.full{grid-column:1/-1}
+.checkout-form .addr-hint{font-size:11.5px;color:var(--fg-3);margin:-.9rem 0 1.2rem}
 .checkout-note{font-size:12.5px;color:var(--fg-3);margin-top:1rem;line-height:1.6}
 .checkout-error{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.8rem 1rem;font-size:13px;margin-bottom:1.2rem;display:none}
 .checkout-summary .row.discount-row{color:#2f6b4f}
+.checkout-promo-featured{display:flex;align-items:center;justify-content:space-between;gap:.8rem;background:#FDF6E8;border:1px dashed var(--gold, #CEAD5E);border-radius:6px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:13px;color:var(--navy)}
+.checkout-promo-featured button{white-space:nowrap;padding:.5rem .9rem;border-radius:4px;border:1px solid var(--terra);background:#fff;color:var(--terra);font-size:12px;font-weight:700;cursor:pointer}
+.checkout-promo-featured button:disabled{opacity:.5;cursor:default}
 .checkout-promo{display:flex;gap:.6rem;margin-bottom:1.4rem}
 .checkout-promo input{flex:1;padding:.7rem .9rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:13.5px;color:var(--navy);background:#fff;text-transform:uppercase}
 .checkout-promo input:focus{outline:none;border-color:var(--terra)}
@@ -44,6 +51,10 @@
 .subscribe-toggle{display:flex;align-items:flex-start;gap:.7rem;background:#FDF6E8;border:1px solid var(--gold, #CEAD5E);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:1rem;cursor:pointer;font-size:13px;color:var(--navy);line-height:1.5}
 .subscribe-toggle input{margin-top:.2rem;flex-shrink:0}
 .subscribe-toggle span strong{color:var(--navy)}
+.trust-row{display:flex;justify-content:space-between;gap:.6rem;margin:1.4rem 0 1.2rem;padding:.9rem .4rem;border-top:1px solid rgba(14,31,63,.1);border-bottom:1px solid rgba(14,31,63,.1)}
+.trust-item{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1;text-align:center}
+.trust-item svg{width:20px;height:20px;stroke:var(--terra);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.trust-item span{font-size:10.5px;font-weight:600;color:var(--fg-2);letter-spacing:.01em;line-height:1.3}
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -107,8 +118,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       <span><strong>Subscribe &amp; Save 8%</strong> — delivered monthly, cancel or pause anytime on WhatsApp</span>
     </label>
 
+    <div class="checkout-promo-featured" id="ck-promo-featured">
+      <span>🎁 First order? Use <strong id="ck-promo-featured-code">FOUNDING10</strong> for 10% off (up to ₹100)</span>
+      <button type="button" id="ck-promo-featured-apply">Apply</button>
+    </div>
     <div class="checkout-promo" id="ck-promo-row">
-      <input type="text" id="ck-promo-input" placeholder="Promo code">
+      <input type="text" id="ck-promo-input" placeholder="Have a different code?">
       <button type="button" id="ck-promo-apply">Apply</button>
     </div>
     <p class="checkout-promo-msg" id="ck-promo-msg"></p>
@@ -125,12 +140,44 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <input type="tel" id="ck-phone" placeholder="10-digit mobile number" required>
       </div>
       <div class="field">
-        <label for="ck-address">Delivery address</label>
-        <textarea id="ck-address" placeholder="Flat/house no., area, city, state, pincode" required></textarea>
+        <label for="ck-addr-line1">Flat / house no., street</label>
+        <input type="text" id="ck-addr-line1" placeholder="e.g. B-42, Sector 14" required>
+      </div>
+      <div class="field">
+        <label for="ck-addr-area">Area / locality</label>
+        <input type="text" id="ck-addr-area" placeholder="e.g. Near City Park" required>
+      </div>
+      <div class="addr-row">
+        <div class="field">
+          <label for="ck-addr-city">City</label>
+          <input type="text" id="ck-addr-city" placeholder="City" required>
+        </div>
+        <div class="field">
+          <label for="ck-addr-state">State</label>
+          <input type="text" id="ck-addr-state" placeholder="State" required>
+        </div>
+        <div class="field full">
+          <label for="ck-addr-pincode">Pincode</label>
+          <input type="text" inputmode="numeric" maxlength="6" id="ck-addr-pincode" placeholder="6-digit pincode" required>
+        </div>
       </div>
       <div class="field">
         <label for="ck-email" id="ck-email-label">Email (optional)</label>
         <input type="email" id="ck-email" placeholder="For an order confirmation email">
+      </div>
+      <div class="trust-row">
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <span>Secure Payments</span>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.2 8 8 9 4.8-1 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>FSSAI Licensed</span>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+          <span>Ships in 2 Days</span>
+        </div>
       </div>
       <button type="submit" class="btn solid block" id="ck-submit">Pay ₹0</button>
       <p class="checkout-note">You'll be redirected to Razorpay's secure payment page. Order confirmation and shipping updates are sent to the WhatsApp number above. Prices shown are inclusive of GST — GSTIN 06AIIPN5005C2ZP.</p>
@@ -171,7 +218,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </footer>
 
-<script src="js/cart.js?v=13"></script>
+<script src="js/cart.js?v=14"></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
@@ -182,6 +229,10 @@ var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/v
 var MIN_ORDER_VALUE = 499;
 // Must match SUBSCRIPTION_DISCOUNT_PCT in webhook-backend/routes/checkout.js.
 var SUBSCRIPTION_DISCOUNT_PCT = 8;
+// The coupon proactively advertised at checkout instead of a blank promo
+// field. Update (or blank out to hide the banner) when this code changes —
+// see coupons_migration_v2.sql for what's actually live in Supabase.
+var FEATURED_COUPON_CODE = 'FOUNDING10';
 
 // Set once a promo code is successfully applied; cleared if the code is
 // removed or fails re-validation. The backend re-validates this at final
@@ -214,6 +265,11 @@ function renderSummary() {
   // subscribe:true is sent, never both stacked.
   document.getElementById('ck-promo-row').style.display = subscribeChecked ? 'none' : '';
   document.getElementById('ck-promo-msg').style.display = subscribeChecked ? 'none' : '';
+  // Featured-coupon banner: hidden once subscribed (mutually exclusive with
+  // any coupon), once a coupon is already applied (no need to advertise
+  // one anymore), or if FEATURED_COUPON_CODE has been blanked out to retire it.
+  document.getElementById('ck-promo-featured').style.display =
+    (subscribeChecked || appliedCoupon || !FEATURED_COUPON_CODE) ? 'none' : '';
 
   var payable = total;
   var discountHtml = '';
@@ -307,6 +363,14 @@ function hideError() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('ck-promo-featured-code').textContent = FEATURED_COUPON_CODE;
+  document.getElementById('ck-promo-featured-apply').addEventListener('click', function () {
+    var btn = this;
+    document.getElementById('ck-promo-input').value = FEATURED_COUPON_CODE;
+    btn.disabled = true;
+    applyPromoCode().finally(function () { btn.disabled = false; });
+  });
+
   renderSummary();
 
   document.getElementById('ck-promo-apply').addEventListener('click', applyPromoCode);
@@ -336,12 +400,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var name = document.getElementById('ck-name').value.trim();
     var phone = document.getElementById('ck-phone').value.trim();
-    var address = document.getElementById('ck-address').value.trim();
+    var addrLine1 = document.getElementById('ck-addr-line1').value.trim();
+    var addrArea = document.getElementById('ck-addr-area').value.trim();
+    var addrCity = document.getElementById('ck-addr-city').value.trim();
+    var addrState = document.getElementById('ck-addr-state').value.trim();
+    var addrPincode = document.getElementById('ck-addr-pincode').value.trim();
     var email = document.getElementById('ck-email').value.trim();
     var subscribe = document.getElementById('ck-subscribe').checked;
 
-    if (!name || !phone || !address) { showError('Please fill in all fields.'); return; }
+    if (!name || !phone || !addrLine1 || !addrArea || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
+    if (!/^[0-9]{6}$/.test(addrPincode)) { showError('Pincode should be exactly 6 digits.'); return; }
     if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
+
+    // Backend still stores address as a single string — the structured
+    // fields are a frontend UX improvement (real validation, no illegible
+    // one-line addresses), not a backend/schema change.
+    var address = addrLine1 + ', ' + addrArea + ', ' + addrCity + ', ' + addrState + ' - ' + addrPincode;
 
     var submitBtn = document.getElementById('ck-submit');
     var originalText = submitBtn.textContent;
@@ -361,6 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
           total: MunchingoCart.cartTotal(),
           couponCode: (!subscribe && appliedCoupon) ? appliedCoupon.code : undefined,
           subscribe: subscribe || undefined,
+          giftNote: MunchingoCart.getGiftNote() || undefined,
         }),
       });
       var data = await res.json();
@@ -369,7 +444,9 @@ document.addEventListener('DOMContentLoaded', function () {
         throw new Error(data.error || 'Something went wrong. Please try again.');
       }
 
-      // Success — hand off to Razorpay's hosted payment page.
+      // Success — clear the gift note so it doesn't carry over to a future
+      // order, then hand off to Razorpay's hosted payment page.
+      MunchingoCart.setGiftNote('');
       window.location.href = data.paymentUrl;
     } catch (err) {
       showError(err.message || 'Could not start checkout. Please try again or message us on WhatsApp.');

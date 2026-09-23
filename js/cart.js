@@ -1,6 +1,7 @@
 // Munchingo cart — client-side only, no backend. Hands off to WhatsApp at checkout.
 (function () {
   var KEY = 'munchingo_cart';
+  var GIFT_NOTE_KEY = 'munchingo_gift_note';
   var WA_NUMBER = '919988992024';
 
   // Manual stock control for the website only (WhatsApp ordering reflects
@@ -37,16 +38,31 @@
     localStorage.setItem(KEY, JSON.stringify(cart));
     renderBadge();
   }
+
+  // Optional gift note — set on cart.html, read (and cleared after a
+  // successful order) on checkout.html. Separate key from the cart itself
+  // so it survives independently of cart edits.
+  function getGiftNote() {
+    try { return localStorage.getItem(GIFT_NOTE_KEY) || ''; }
+    catch (e) { return ''; }
+  }
+  function setGiftNote(note) {
+    try { localStorage.setItem(GIFT_NOTE_KEY, note || ''); }
+    catch (e) { /* ignore — private-browsing / storage blocked */ }
+  }
   function addToCart(item) {
     var cart = getCart();
     var existing = cart.find(function (c) { return c.slug === item.slug; });
     if (existing) { existing.qty += 1; }
-    else { cart.push({ slug: item.slug, name: item.name, price: item.price, unit: item.unit, qty: 1 }); }
+    else { cart.push({ slug: item.slug, name: item.name, price: item.price, mrp: item.mrp, unit: item.unit, qty: 1 }); }
     saveCart(cart);
     return cart;
   }
   function removeFromCart(slug) {
     saveCart(getCart().filter(function (c) { return c.slug !== slug; }));
+  }
+  function clearCart() {
+    saveCart([]);
   }
   function setQty(slug, qty) {
     var cart = getCart();
@@ -181,10 +197,10 @@
   // those are dark patterns, not persuasion, and don't fit how Munchingo
   // talks to people.
   var CROSS_SELL_PRODUCTS = [
-    { slug: 'atta-original',   name: 'Atta Original',    price: 259, unit: '250g', img: 'images/box-original.jpg' },
-    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, unit: '250g', img: 'images/box-kesari.jpg' },
-    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, unit: '250g', img: 'images/box-ajwain.jpg' },
-    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, unit: '250g', img: 'images/box-lite.jpg' }
+    { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.jpg' },
+    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.jpg' },
+    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.jpg' },
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.jpg' }
   ];
 
   function renderCrossSellHtml() {
@@ -203,7 +219,7 @@
             '<div class="cross-sell-name">' + p.name + '</div>' +
             '<div class="cross-sell-price">₹' + p.price + ' · ' + p.unit + '</div>' +
           '</div>' +
-          '<button type="button" class="cross-sell-add" data-cross-sell-add data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-unit="' + p.unit + '" aria-label="Add ' + p.name + ' to cart">+ Add</button>' +
+          '<button type="button" class="cross-sell-add" data-cross-sell-add data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="' + p.unit + '" aria-label="Add ' + p.name + ' to cart">+ Add</button>' +
         '</div>';
     }).join('');
 
@@ -223,10 +239,12 @@
     if (!containerEl) return;
     containerEl.querySelectorAll('[data-cross-sell-add]').forEach(function (btn) {
       btn.addEventListener('click', function () {
+        var mrpAttr = btn.getAttribute('data-mrp');
         addToCart({
           slug: btn.getAttribute('data-slug'),
           name: btn.getAttribute('data-name'),
           price: parseInt(btn.getAttribute('data-price'), 10),
+          mrp: mrpAttr ? parseInt(mrpAttr, 10) : undefined,
           unit: btn.getAttribute('data-unit')
         });
         if (typeof onAdded === 'function') onAdded();
@@ -238,6 +256,7 @@
     getCart: getCart,
     addToCart: addToCart,
     removeFromCart: removeFromCart,
+    clearCart: clearCart,
     setQty: setQty,
     cartCount: cartCount,
     cartTotal: cartTotal,
@@ -248,7 +267,9 @@
     renderAovProgressHtml: renderAovProgressHtml,
     initAovUpgrade: initAovUpgrade,
     renderCrossSellHtml: renderCrossSellHtml,
-    initCrossSell: initCrossSell
+    initCrossSell: initCrossSell,
+    getGiftNote: getGiftNote,
+    setGiftNote: setGiftNote
   };
 
   // ---- Lightbox for ingredients/nutrition panel images ----
@@ -372,10 +393,12 @@
       }
       btn.addEventListener('click', function (e) {
         e.preventDefault();
+        var mrpAttr = btn.getAttribute('data-mrp');
         addToCart({
           slug: btn.getAttribute('data-slug'),
           name: btn.getAttribute('data-name'),
           price: parseInt(btn.getAttribute('data-price'), 10),
+          mrp: mrpAttr ? parseInt(mrpAttr, 10) : undefined,
           unit: btn.getAttribute('data-unit')
         });
         var original = btn.textContent;
