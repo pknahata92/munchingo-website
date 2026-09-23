@@ -390,7 +390,35 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .cart-summary .total-row{display:flex;justify-content:space-between;font-weight:700;color:var(--navy);font-size:1.15rem;margin-bottom:1.1rem}
 .cart-summary p{font-size:.82rem;color:var(--sub);margin-top:.9rem}
 .cart-summary p.gst-note{font-size:.72rem;color:var(--fg-3);margin-top:-.6rem;margin-bottom:1.1rem}
-.cart-summary p.min-order-note{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.6rem .9rem;font-size:.78rem;margin-top:-.4rem}
+
+/* AOV goal-gradient progress bar (cart.html, checkout.html) — rendered by
+   MunchingoCart.renderAovProgressHtml(), shared so both pages match. */
+.aov-progress{margin:.5rem 0 1.1rem}
+.aov-progress-track{position:relative;height:10px;background:#EFE3C2;border-radius:999px;overflow:visible}
+.aov-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--terra),var(--gold));transition:width .5s cubic-bezier(.22,.9,.34,1)}
+.aov-progress-marker{position:absolute;top:-3px;width:2px;height:16px;background:rgba(14,31,63,.35)}
+.aov-progress-marker .aov-marker-dot{display:block;width:100%;height:100%;background:inherit}
+.aov-progress-marker .aov-marker-label{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--fg-3);white-space:nowrap}
+.aov-progress-msg{margin-top:1.3rem;font-size:.8rem;font-weight:500}
+.aov-progress-msg b{font-weight:700}
+.aov-progress-msg.pending{color:var(--terra-deep)}
+.aov-progress-msg.upsell{color:var(--navy)}
+.aov-progress-msg.unlocked{color:#2f6b4f;font-weight:600}
+.aov-upgrade-btn{margin-top:.6rem;padding:.5rem 1rem;border-radius:5px;border:none;background:var(--navy);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer}
+.aov-upgrade-btn:hover{background:var(--navy-deep)}
+
+/* "Complete your box" cross-sell strip (cart.html, checkout.html) —
+   rendered by MunchingoCart.renderCrossSellHtml(). */
+.cross-sell-strip{margin:0 0 1.4rem}
+.cross-sell-lbl{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:.6rem}
+.cross-sell-row{display:flex;gap:.7rem;overflow-x:auto;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
+.cross-sell-card{flex:0 0 auto;width:132px;background:#fff;border:1px solid rgba(14,31,63,.12);border-radius:8px;padding:.7rem;display:flex;flex-direction:column;gap:.4rem}
+.cross-sell-card img{width:100%;height:84px;object-fit:cover;border-radius:5px}
+.cross-sell-name{font-size:.76rem;font-weight:700;color:var(--navy);line-height:1.25}
+.cross-sell-price{font-size:.7rem;color:var(--fg-3)}
+.cross-sell-add{margin-top:.1rem;padding:.4rem;border-radius:5px;border:1px solid var(--terra);background:#fff;color:var(--terra);font-size:.72rem;font-weight:700;cursor:pointer;transition:background .15s,color .15s}
+.cross-sell-add:hover{background:var(--terra);color:#fff}
+.cross-sell-add.just-added{background:#2f6b4f;border-color:#2f6b4f;color:#fff}
 @media(max-width:640px){.cart-row{grid-template-columns:1fr;gap:.6rem}.cart-row .price{text-align:left}.cart-summary{max-width:none}.cart-page{padding-bottom:6rem}}
 
 /* LEGAL PAGES (privacy policy, terms) */

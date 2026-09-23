@@ -77,6 +77,163 @@
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hi Munchingo 👋');
   }
 
+  // ---- AOV progress bar (cart.html + checkout.html) ----
+  // A visual goal-gradient bar toward two thresholds: the ₹499 minimum
+  // order value, then the ₹999 Full Range Gift Set price. People push
+  // harder to finish a visibly-nearly-complete bar than they respond to
+  // the same information as plain text — this is the single mechanism
+  // Blinkit's own cart leans on hardest for AOV (a live progress bar
+  // toward "unlock free delivery", not a static line of copy). Shared
+  // here so cart.html and checkout.html render an identical bar instead
+  // of two hand-maintained copies.
+  var AOV_MIN_ORDER = 499;
+  var AOV_FULL_RANGE_PRICE = 999;
+  var AOV_FULL_RANGE_SAVING = 117;
+
+  var BASE_SLUGS_FOR_UPGRADE = ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'];
+
+  // Whether the cart holds at least 1 of each of the 4 base flavours as
+  // loose singles — i.e. a real, one-tap-swappable Full Range Gift Set
+  // sitting unassembled in the cart.
+  function hasFullRangeUpgrade(cart) {
+    return BASE_SLUGS_FOR_UPGRADE.every(function (slug) {
+      var item = cart.find(function (c) { return c.slug === slug; });
+      return item && item.qty >= 1;
+    });
+  }
+
+  // Swaps 1 unit of each of the 4 base flavours for 1 Full Range Gift Set
+  // — decrements (or removes, if that was the only unit) each base flavour
+  // by exactly 1, leaving any extra quantity untouched, then adds the set.
+  function upgradeToFullRange() {
+    BASE_SLUGS_FOR_UPGRADE.forEach(function (slug) {
+      var item = getCart().find(function (c) { return c.slug === slug; });
+      if (!item) return;
+      if (item.qty > 1) setQty(slug, item.qty - 1);
+      else removeFromCart(slug);
+    });
+    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' });
+  }
+
+  // total is derived from cart, not passed separately, so this can never
+  // drift out of sync with what's actually in the cart.
+  function renderAovProgressHtml(cart) {
+    var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
+    var fillPct = Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
+    var movMarkerPct = Math.round((AOV_MIN_ORDER / AOV_FULL_RANGE_PRICE) * 100);
+
+    var hasSet = cart.some(function (c) { return c.slug === 'full-range-set'; });
+    var canUpgrade = !hasSet && hasFullRangeUpgrade(cart);
+
+    var msgClass, msgHtml, upgradeBtnHtml = '';
+    if (total < AOV_MIN_ORDER) {
+      msgClass = 'pending';
+      msgHtml = 'Add <b>₹' + (AOV_MIN_ORDER - total) + '</b> more to unlock delivery (₹' + AOV_MIN_ORDER + ' minimum)';
+    } else if (hasSet) {
+      // Genuinely holds the discounted set — this claim is real.
+      msgClass = 'unlocked';
+      msgHtml = '🎉 Full Range value unlocked — you\'re saving up to ₹' + AOV_FULL_RANGE_SAVING + ' vs buying separately';
+    } else if (canUpgrade) {
+      // All 4 flavours present as loose singles: real one-tap swap
+      // available, not just a text nudge.
+      msgClass = 'upsell';
+      msgHtml = 'You\'ve got all 4 flavours in your cart — swap for the Full Range Gift Set and save ₹' + AOV_FULL_RANGE_SAVING;
+      upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-upgrade>Swap &amp; Save ₹' + AOV_FULL_RANGE_SAVING + '</button>';
+    } else if (total < AOV_FULL_RANGE_PRICE) {
+      msgClass = 'upsell';
+      msgHtml = 'Delivery unlocked ✓ — add <b>₹' + (AOV_FULL_RANGE_PRICE - total) + '</b> more for the Full Range Gift Set, save ₹' + AOV_FULL_RANGE_SAVING;
+    } else {
+      // Spent past the Full Range price without actually holding that set
+      // or all 4 flavours (e.g. several units of just 1-2 flavours) — no
+      // specific savings claim applies here, so none is made.
+      msgClass = 'unlocked';
+      msgHtml = 'Delivery unlocked ✓ — you\'re all set';
+    }
+
+    return '' +
+      '<div class="aov-progress">' +
+        '<div class="aov-progress-track">' +
+          '<div class="aov-progress-fill" style="width:' + fillPct + '%"></div>' +
+          '<div class="aov-progress-marker" style="left:' + movMarkerPct + '%"><span class="aov-marker-dot"></span><span class="aov-marker-label">₹' + AOV_MIN_ORDER + '</span></div>' +
+        '</div>' +
+        '<p class="aov-progress-msg ' + msgClass + '">' + msgHtml + '</p>' +
+        upgradeBtnHtml +
+      '</div>';
+  }
+
+  // Wires the "Swap & Save" button if present in the given container.
+  function initAovUpgrade(containerEl, onUpgraded) {
+    if (!containerEl) return;
+    var btn = containerEl.querySelector('[data-aov-upgrade]');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      upgradeToFullRange();
+      if (typeof onUpgraded === 'function') onUpgraded();
+    });
+  }
+
+  // ---- "Complete your box" cross-sell strip (cart.html + checkout.html) ----
+  // One-tap add cards for whichever base flavours aren't already in the
+  // cart — the single mechanism the impulse-buying research kept pointing
+  // to hardest: zero-friction, one-tap add, shown at the exact moment
+  // someone's already mid-purchase. Deliberately NOT: countdown timers,
+  // "only X left" scarcity messaging, or anything not literally true —
+  // those are dark patterns, not persuasion, and don't fit how Munchingo
+  // talks to people.
+  var CROSS_SELL_PRODUCTS = [
+    { slug: 'atta-original',   name: 'Atta Original',    price: 259, unit: '250g', img: 'images/box-original.jpg' },
+    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, unit: '250g', img: 'images/box-kesari.jpg' },
+    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, unit: '250g', img: 'images/box-ajwain.jpg' },
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, unit: '250g', img: 'images/box-lite.jpg' }
+  ];
+
+  function renderCrossSellHtml() {
+    var cart = getCart();
+    var cartSlugs = cart.map(function (c) { return c.slug; });
+    var candidates = CROSS_SELL_PRODUCTS.filter(function (p) {
+      return cartSlugs.indexOf(p.slug) === -1 && !isSlugSoldOut(p.slug);
+    });
+    if (!candidates.length) return '';
+
+    var cards = candidates.map(function (p) {
+      return '' +
+        '<div class="cross-sell-card">' +
+          '<img src="' + p.img + '" alt="' + p.name + '">' +
+          '<div class="cross-sell-body">' +
+            '<div class="cross-sell-name">' + p.name + '</div>' +
+            '<div class="cross-sell-price">₹' + p.price + ' · ' + p.unit + '</div>' +
+          '</div>' +
+          '<button type="button" class="cross-sell-add" data-cross-sell-add data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-unit="' + p.unit + '" aria-label="Add ' + p.name + ' to cart">+ Add</button>' +
+        '</div>';
+    }).join('');
+
+    return '' +
+      '<div class="cross-sell-strip">' +
+        '<div class="cross-sell-lbl">Complete your box</div>' +
+        '<div class="cross-sell-row">' + cards + '</div>' +
+      '</div>';
+  }
+
+  // Wires up any [data-cross-sell-add] buttons currently in the DOM (call
+  // again after re-rendering the strip's innerHTML — new buttons need new
+  // listeners). Calls back into onAdded() after a successful add so the
+  // page can re-render its totals/progress bar/cross-sell strip itself,
+  // rather than this shared module knowing about page-specific DOM.
+  function initCrossSell(containerEl, onAdded) {
+    if (!containerEl) return;
+    containerEl.querySelectorAll('[data-cross-sell-add]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        addToCart({
+          slug: btn.getAttribute('data-slug'),
+          name: btn.getAttribute('data-name'),
+          price: parseInt(btn.getAttribute('data-price'), 10),
+          unit: btn.getAttribute('data-unit')
+        });
+        if (typeof onAdded === 'function') onAdded();
+      });
+    });
+  }
+
   window.MunchingoCart = {
     getCart: getCart,
     addToCart: addToCart,
@@ -87,7 +244,11 @@
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,
-    isFlavourSoldOut: isFlavourSoldOut
+    isFlavourSoldOut: isFlavourSoldOut,
+    renderAovProgressHtml: renderAovProgressHtml,
+    initAovUpgrade: initAovUpgrade,
+    renderCrossSellHtml: renderCrossSellHtml,
+    initCrossSell: initCrossSell
   };
 
   // ---- Lightbox for ingredients/nutrition panel images ----
@@ -253,12 +414,12 @@
 
     // ---- Site search ----
     var SEARCH_INDEX = [
-      { title: 'Atta Original', desc: 'Cardamom, whole wheat atta, pure desi ghee. ₹279 / 250g.', type: 'Product', url: 'gifting.html#atta-original' },
-      { title: 'Atta Kesari', desc: 'Real saffron, hand-mixed into every batch. ₹319 / 250g.', type: 'Product', url: 'gifting.html#atta-kesari' },
-      { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. ₹319 / 250g.', type: 'Product', url: 'gifting.html#atta-lite-sugar' },
-      { title: 'Atta Ajwain', desc: 'Savoury, spiced with ajwain. ₹279 / 250g.', type: 'Product', url: 'gifting.html#atta-ajwain' },
-      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed. ₹789.', type: 'Gift Set', url: 'gifting.html#trio-gift-set' },
-      { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes. ₹1,079.', type: 'Gift Set', url: 'gifting.html#full-range-set' },
+      { title: 'Atta Original', desc: 'Cardamom, whole wheat atta, pure desi ghee. ₹259 / 250g.', type: 'Product', url: 'gifting.html#atta-original' },
+      { title: 'Atta Kesari', desc: 'Real saffron, hand-mixed into every batch. ₹299 / 250g.', type: 'Product', url: 'gifting.html#atta-kesari' },
+      { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. ₹299 / 250g.', type: 'Product', url: 'gifting.html#atta-lite-sugar' },
+      { title: 'Atta Ajwain', desc: 'Savoury, spiced with ajwain. ₹259 / 250g.', type: 'Product', url: 'gifting.html#atta-ajwain' },
+      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed. ₹739.', type: 'Gift Set', url: 'gifting.html#trio-gift-set' },
+      { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes. ₹999.', type: 'Gift Set', url: 'gifting.html#full-range-set' },
       { title: 'About Us', desc: 'Our story — baked in Bikaner for over a decade.', type: 'Page', url: 'about.html' },
       { title: 'Contact', desc: 'WhatsApp, email, Instagram, corporate gifting.', type: 'Page', url: 'contact.html' },
       { title: 'Your Cart', desc: 'Review your bag and check out on WhatsApp.', type: 'Page', url: 'cart.html' },

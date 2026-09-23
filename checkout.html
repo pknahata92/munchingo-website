@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/style.css?v=19">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -24,7 +24,6 @@
 .checkout-summary .row{display:flex;justify-content:space-between;font-size:14px;padding:.4rem 0;color:var(--fg-2)}
 .checkout-summary .row.total{border-top:1px solid rgba(14,31,63,.14);margin-top:.6rem;padding-top:.8rem;font-weight:600;color:var(--navy);font-size:16px}
 .checkout-summary .row.gst-note{font-size:11.5px;color:var(--fg-3);padding-top:.2rem}
-.checkout-summary .row.min-order-note{display:block;background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.6rem .9rem;font-size:12.5px;margin-top:.8rem}
 .checkout-form .field{margin-bottom:1.2rem}
 .checkout-form label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:.4rem;letter-spacing:.03em}
 .checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--navy);background:#fff}
@@ -32,8 +31,37 @@
 .checkout-form textarea{resize:vertical;min-height:80px}
 .checkout-note{font-size:12.5px;color:var(--fg-3);margin-top:1rem;line-height:1.6}
 .checkout-error{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.8rem 1rem;font-size:13px;margin-bottom:1.2rem;display:none}
-.checkout-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:.8rem}
+.checkout-summary .row.discount-row{color:#2f6b4f}
+.checkout-promo{display:flex;gap:.6rem;margin-bottom:1.4rem}
+.checkout-promo input{flex:1;padding:.7rem .9rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:13.5px;color:var(--navy);background:#fff;text-transform:uppercase}
+.checkout-promo input:focus{outline:none;border-color:var(--terra)}
+.checkout-promo button{white-space:nowrap;padding:.7rem 1.1rem;border-radius:4px;border:1px solid var(--navy);background:#fff;color:var(--navy);font-size:13px;font-weight:600;cursor:pointer}
+.checkout-promo button:disabled{opacity:.5;cursor:default}
+.checkout-promo-msg{font-size:12.5px;margin:-.9rem 0 1.2rem;min-height:1em}
+.checkout-promo-msg.success{color:#2f6b4f}
+.checkout-promo-msg.error{color:var(--terra-deep)}
+#checkout-aov-progress{margin-bottom:1.6rem}
+.subscribe-toggle{display:flex;align-items:flex-start;gap:.7rem;background:#FDF6E8;border:1px solid var(--gold, #CEAD5E);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:1rem;cursor:pointer;font-size:13px;color:var(--navy);line-height:1.5}
+.subscribe-toggle input{margin-top:.2rem;flex-shrink:0}
+.subscribe-toggle span strong{color:var(--navy)}
 </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '975114194987428');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -62,7 +90,6 @@
 </nav>
 
 <div class="checkout-wrap">
-  <span class="checkout-badge">Beta — pay online</span>
   <h1 style="margin:0 0 .3rem">Checkout</h1>
   <p style="color:var(--fg-2);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. We'll confirm your order on WhatsApp once payment goes through.</p>
 
@@ -72,6 +99,19 @@
 
   <div id="checkout-body">
     <div class="checkout-summary" id="checkout-summary"></div>
+    <div id="checkout-aov-progress"></div>
+    <div id="checkout-cross-sell"></div>
+
+    <label class="subscribe-toggle" id="ck-subscribe-label">
+      <input type="checkbox" id="ck-subscribe">
+      <span><strong>Subscribe &amp; Save 8%</strong> — delivered monthly, cancel or pause anytime on WhatsApp</span>
+    </label>
+
+    <div class="checkout-promo" id="ck-promo-row">
+      <input type="text" id="ck-promo-input" placeholder="Promo code">
+      <button type="button" id="ck-promo-apply">Apply</button>
+    </div>
+    <p class="checkout-promo-msg" id="ck-promo-msg"></p>
 
     <div class="checkout-error" id="checkout-error"></div>
 
@@ -89,7 +129,7 @@
         <textarea id="ck-address" placeholder="Flat/house no., area, city, state, pincode" required></textarea>
       </div>
       <div class="field">
-        <label for="ck-email">Email (optional)</label>
+        <label for="ck-email" id="ck-email-label">Email (optional)</label>
         <input type="email" id="ck-email" placeholder="For an order confirmation email">
       </div>
       <button type="submit" class="btn solid block" id="ck-submit">Pay ₹0</button>
@@ -131,14 +171,23 @@
   </div>
 </footer>
 
-<script src="js/cart.js?v=8"></script>
+<script src="js/cart.js?v=13"></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
+var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/validate-coupon';
 // Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js — this is
 // just the UX pre-check; the backend enforces it for real. Orders below this
 // are only fulfilled hyperlocally/manually, not through this checkout.
-var MIN_ORDER_VALUE = 599;
+var MIN_ORDER_VALUE = 499;
+// Must match SUBSCRIPTION_DISCOUNT_PCT in webhook-backend/routes/checkout.js.
+var SUBSCRIPTION_DISCOUNT_PCT = 8;
+
+// Set once a promo code is successfully applied; cleared if the code is
+// removed or fails re-validation. The backend re-validates this at final
+// submit regardless — this is only what lets the summary/submit button
+// show the discounted amount before then.
+var appliedCoupon = null;
 
 function renderSummary() {
   var cart = MunchingoCart.getCart();
@@ -158,12 +207,94 @@ function renderSummary() {
   var total = MunchingoCart.cartTotal();
   var gstAmount = Math.round(total - (total / 1.05));
   var belowMin = total < MIN_ORDER_VALUE;
+
+  var subscribeChecked = document.getElementById('ck-subscribe').checked;
+  // Mutually exclusive with a promo code — matches the backend, which
+  // always applies the subscription discount instead of any coupon when
+  // subscribe:true is sent, never both stacked.
+  document.getElementById('ck-promo-row').style.display = subscribeChecked ? 'none' : '';
+  document.getElementById('ck-promo-msg').style.display = subscribeChecked ? 'none' : '';
+
+  var payable = total;
+  var discountHtml = '';
+  if (subscribeChecked && !belowMin) {
+    var subDiscount = Math.round(total * (SUBSCRIPTION_DISCOUNT_PCT / 100));
+    payable = total - subDiscount;
+    discountHtml = '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '%)</span><span>−₹' + subDiscount + '</span></div>';
+  } else if (appliedCoupon && !belowMin) {
+    payable = appliedCoupon.finalTotal;
+    discountHtml = '<div class="row discount-row"><span>Promo (' + appliedCoupon.code + ')</span><span>−₹' + appliedCoupon.discountAmount + '</span></div>';
+  }
+
   summaryEl.innerHTML = rows +
     '<div class="row total"><span>Total</span><span>₹' + total + '</span></div>' +
-    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>' +
-    (belowMin ? '<div class="row min-order-note">Add ₹' + (MIN_ORDER_VALUE - total) + ' more to meet our ₹' + MIN_ORDER_VALUE + ' minimum order value for delivery.</div>' : '');
-  submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : 'Pay ₹' + total;
+    discountHtml +
+    (discountHtml ? '<div class="row total"><span>Payable</span><span>₹' + payable + '</span></div>' : '') +
+    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
+  submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
   submitBtn.disabled = belowMin;
+  document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (optional)';
+
+  // Adding a cross-sell item or swapping to the Full Range set both change
+  // the total, so any already-applied discount is now stale — clear it and
+  // let the customer re-Apply their code, rather than showing a discount
+  // amount computed against the old total.
+  function onCartChangedByPageAction() {
+    if (appliedCoupon) { appliedCoupon = null; showPromoMsg('', false); document.getElementById('ck-promo-input').value = ''; }
+    renderSummary();
+  }
+
+  var aovProgressEl = document.getElementById('checkout-aov-progress');
+  aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
+  MunchingoCart.initAovUpgrade(aovProgressEl, onCartChangedByPageAction);
+
+  var crossSellEl = document.getElementById('checkout-cross-sell');
+  crossSellEl.innerHTML = MunchingoCart.renderCrossSellHtml();
+  MunchingoCart.initCrossSell(crossSellEl, onCartChangedByPageAction);
+}
+
+function showPromoMsg(msg, isError) {
+  var el = document.getElementById('ck-promo-msg');
+  el.textContent = msg;
+  el.className = 'checkout-promo-msg ' + (isError ? 'error' : 'success');
+}
+
+async function applyPromoCode() {
+  var input = document.getElementById('ck-promo-input');
+  var applyBtn = document.getElementById('ck-promo-apply');
+  var code = input.value.trim();
+  if (!code) { showPromoMsg('Enter a promo code.', true); return; }
+
+  var cart = MunchingoCart.getCart();
+  if (!cart.length) return;
+
+  applyBtn.disabled = true;
+  applyBtn.textContent = 'Checking…';
+  try {
+    var res = await fetch(VALIDATE_COUPON_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code: code,
+        phone: document.getElementById('ck-phone').value.trim(),
+        items: cart,
+      }),
+    });
+    var data = await res.json();
+    if (!res.ok || !data.ok) {
+      appliedCoupon = null;
+      showPromoMsg(data.error || 'That code is not valid.', true);
+    } else {
+      appliedCoupon = { code: code.toUpperCase(), discountAmount: data.discountAmount, finalTotal: data.finalTotal };
+      showPromoMsg('Applied — you saved ₹' + data.discountAmount + '.', false);
+    }
+  } catch (err) {
+    appliedCoupon = null;
+    showPromoMsg('Could not check that code right now. Please try again.', true);
+  }
+  applyBtn.disabled = false;
+  applyBtn.textContent = 'Apply';
+  renderSummary();
 }
 
 function showError(msg) {
@@ -178,6 +309,24 @@ function hideError() {
 document.addEventListener('DOMContentLoaded', function () {
   renderSummary();
 
+  document.getElementById('ck-promo-apply').addEventListener('click', applyPromoCode);
+  document.getElementById('ck-promo-input').addEventListener('input', function () {
+    // Any edit to the code invalidates the last applied result — re-Apply is required.
+    if (appliedCoupon) { appliedCoupon = null; renderSummary(); }
+    document.getElementById('ck-promo-msg').textContent = '';
+  });
+
+  document.getElementById('ck-subscribe').addEventListener('change', function () {
+    // Mutually exclusive with a promo code — clear any applied one so the
+    // summary never shows a stale discount from the other mechanism.
+    if (this.checked && appliedCoupon) {
+      appliedCoupon = null;
+      showPromoMsg('', false);
+      document.getElementById('ck-promo-input').value = '';
+    }
+    renderSummary();
+  });
+
   document.getElementById('checkout-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     hideError();
@@ -189,8 +338,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var phone = document.getElementById('ck-phone').value.trim();
     var address = document.getElementById('ck-address').value.trim();
     var email = document.getElementById('ck-email').value.trim();
+    var subscribe = document.getElementById('ck-subscribe').checked;
 
     if (!name || !phone || !address) { showError('Please fill in all fields.'); return; }
+    if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
 
     var submitBtn = document.getElementById('ck-submit');
     var originalText = submitBtn.textContent;
@@ -208,6 +359,8 @@ document.addEventListener('DOMContentLoaded', function () {
           email: email,
           items: cart,
           total: MunchingoCart.cartTotal(),
+          couponCode: (!subscribe && appliedCoupon) ? appliedCoupon.code : undefined,
+          subscribe: subscribe || undefined,
         }),
       });
       var data = await res.json();

@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Cart — Munchingo</title>
-<meta name="description" content="Review your Munchingo order, then send it straight to us on WhatsApp to confirm and pay.">
+<meta name="description" content="Review your Munchingo order, then check out securely online with card, UPI, or netbanking.">
 <link rel="canonical" href="https://munchingo.com/cart.html">
 <meta property="og:title" content="Your Cart — Munchingo">
-<meta property="og:description" content="Review your Munchingo order, then send it straight to us on WhatsApp to confirm and pay.">
+<meta property="og:description" content="Review your Munchingo order, then check out securely online with card, UPI, or netbanking.">
 <meta property="og:image" content="https://munchingo.com/images/box-original.jpg">
 <meta property="og:url" content="https://munchingo.com/cart.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Your Cart — Munchingo">
-<meta name="twitter:description" content="Review your Munchingo order, then send it straight to us on WhatsApp to confirm and pay.">
+<meta name="twitter:description" content="Review your Munchingo order, then check out securely online with card, UPI, or netbanking.">
 <meta name="twitter:image" content="https://munchingo.com/images/box-original.jpg">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/style.css?v=19">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -27,13 +27,30 @@
   gtag('js', new Date());
   gtag('config', 'G-456YHSDMX6');
 </script>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '975114194987428');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
 <div class="announce">
   <div class="announce-track">
-    <span>Baked fresh in Bikaner</span><span>Pre-paid WhatsApp orders</span><span>Shipping across India</span>
-    <span aria-hidden="true">Baked fresh in Bikaner</span><span aria-hidden="true">Pre-paid WhatsApp orders</span><span aria-hidden="true">Shipping across India</span>
+    <span>Baked fresh in Bikaner</span><span>Secure online checkout</span><span>Shipping across India</span>
+    <span aria-hidden="true">Baked fresh in Bikaner</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span>
   </div>
 </div>
 
@@ -59,7 +76,6 @@
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
         <span class="bagcount" data-cart-count style="display:none">0</span>
       </a>
-      <a class="btn solid" style="padding:.5rem 1.1rem;font-size:.68rem" href="https://wa.me/919988992024?text=Hi%20Munchingo%20%F0%9F%91%8B" target="_blank" rel="noopener" aria-label="Order on WhatsApp" title="Chat with us on WhatsApp to place an order">Order Now</a>
       </div>
     </div>
   </div>
@@ -83,7 +99,7 @@
   <div class="wrap">
     <span class="eyebrow">Your Cart</span>
     <h1>Almost there.</h1>
-    <p>Review what you've picked, adjust quantities, then head to WhatsApp to complete your order — we'll confirm and share a UPI payment link.</p>
+    <p>Review what you've picked, adjust quantities, then check out securely online — we'll confirm your order and send shipping updates on WhatsApp.</p>
   </div>
 </div>
 
@@ -95,12 +111,14 @@
 
   <div id="cart-list" class="cart-list"></div>
 
+  <div id="cart-cross-sell"></div>
+
   <div id="cart-summary" class="cart-summary" style="display:none">
     <div class="total-row"><span>Total</span><span id="cart-total">₹0</span></div>
     <p class="gst-note">Price inclusive of 5% GST (GSTIN 06AIIPN5005C2ZP)</p>
-    <p class="min-order-note" id="cart-min-note" style="display:none"></p>
-    <a id="cart-checkout" class="btn solid block" href="#" target="_blank" rel="noopener">Continue on WhatsApp</a>
-    <p>You'll pick your items again in our WhatsApp catalog, then we'll confirm and share a UPI payment link. All orders are pre-paid, ships within 2 days from Bikaner.</p>
+    <div id="cart-aov-progress"></div>
+    <a id="cart-checkout" class="btn solid block" href="checkout.html">Proceed to Checkout</a>
+    <p>You'll pay securely by card, UPI, or netbanking. We'll confirm your order and send shipping updates on WhatsApp. All orders are pre-paid, ships within 2 days from Bikaner.</p>
   </div>
 </div>
 
@@ -142,13 +160,8 @@
   <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-1.9 1.4-.5.1-1.1.2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.4 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.3.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
 </a>
 
-<script src="js/cart.js?v=8"></script>
+<script src="js/cart.js?v=13"></script>
 <script>
-// Must match MIN_ORDER_VALUE in webhook-backend (routes/checkout.js and
-// messageHandler.js) — this is just an early UX nudge; the bot enforces it
-// for real when the order actually reaches WhatsApp.
-var MIN_ORDER_VALUE = 599;
-
 function renderCart() {
   var cart = MunchingoCart.getCart();
   var listEl = document.getElementById('cart-list');
@@ -193,15 +206,13 @@ function renderCart() {
 
   var total = MunchingoCart.cartTotal();
   document.getElementById('cart-total').textContent = '₹' + total;
-  document.getElementById('cart-checkout').href = MunchingoCart.whatsappCheckoutUrl();
+  var aovProgressEl = document.getElementById('cart-aov-progress');
+  aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
+  MunchingoCart.initAovUpgrade(aovProgressEl, renderCart);
 
-  var minNoteEl = document.getElementById('cart-min-note');
-  if (total < MIN_ORDER_VALUE) {
-    minNoteEl.textContent = 'Add ₹' + (MIN_ORDER_VALUE - total) + ' more to meet our ₹' + MIN_ORDER_VALUE + ' minimum order value for delivery. (Want just one box? Message us directly to arrange it.)';
-    minNoteEl.style.display = '';
-  } else {
-    minNoteEl.style.display = 'none';
-  }
+  var crossSellEl = document.getElementById('cart-cross-sell');
+  crossSellEl.innerHTML = MunchingoCart.renderCrossSellHtml();
+  MunchingoCart.initCrossSell(crossSellEl, renderCart);
 }
 document.addEventListener('DOMContentLoaded', renderCart);
 </script>
