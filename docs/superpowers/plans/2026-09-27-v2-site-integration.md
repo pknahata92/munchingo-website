@@ -302,11 +302,11 @@ munchingo-website/
     var el = document.getElementById('range-cards');
     el.innerHTML = window.MUNCHINGO_PRODUCTS.map(function (p) {
       var href = p.slug + '.html';
-      var fine = p.polyolWarning ? '<p class="fine">' + p.polyolWarning + '</p>' : '';
+      var fine = p.polyolWarning ? '<p class="v2-fine">' + p.polyolWarning + '</p>' : '';
       return '' +
         '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
           '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '"><span class="v2-save">Save ₹' + p.save + '</span></a>' +
-          '<div class="v2-body"><span class="tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
+          '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
             '<div class="v2-price"><b>₹' + p.price + '</b><s>₹' + p.mrp + '</s><span>· 250g</span></div>' +
             '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="250g">Add to bag</button></div>' +
         '</article>';
