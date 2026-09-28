@@ -671,8 +671,8 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
   .v2-nav{height:70px}
   .v2-nav ul{display:none}
   .v2-icon-btn.v2-menu-btn{display:grid}
-  .v2-header.v2-open .v2-nav ul{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--navy);padding:4px 16px 14px;gap:0;box-shadow:0 14px 24px -14px rgba(11,45,80,.9)}
-  .v2-header.v2-open .v2-nav ul a{display:block;padding:14px 0;border-top:1px solid rgba(251,244,230,.12);font-size:16px}
+  .v2-header.nav-open .v2-nav ul{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--navy);padding:4px 16px 14px;gap:0;box-shadow:0 14px 24px -14px rgba(11,45,80,.9)}
+  .v2-header.nav-open .v2-nav ul a{display:block;padding:14px 0;border-top:1px solid rgba(251,244,230,.12);font-size:16px}
   .v2-ctas .btn{flex:1 1 100%}
   .v2-hero .v2-proof{margin-top:0}
   .v2-nav{grid-template-columns:auto 1fr}

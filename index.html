@@ -20,21 +20,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20">
 <style>
-/* Compatibility shim for the v2 header ported in Task 4.
-   js/cart.js (unchanged) wires the mobile nav by toggling a "nav-open"
-   class on the <nav> element itself, and looks up plain .nav-toggle /
-   [data-search-toggle] / [data-cart-count] selectors — it knows nothing
-   about the v2-* design-system classes (which expect a "v2-open" class).
-   These rules translate the existing, working wiring onto the new
-   v2-header visuals without touching the shared css/style.css file. */
+/* Page-specific shim for the v2 header ported in Task 4.
+   The mobile-menu open/close rule now lives in shared css/style.css,
+   keyed to "nav-open" (the class js/cart.js actually toggles on <nav>).
+   What's left here is genuinely page-specific: the v2 header's icons need
+   recoloring for its navy background (the old .nav-icons styling assumed
+   a light header), and .nav-toggle's show/hide breakpoint must match the
+   v2 header's own 720px collapse instead of the old system's 820px. */
 .v2-header .nav-toggle{display:none;color:#FBF4E6}
 .v2-header .nav-icons a,
 .v2-header .nav-icons .search-toggle{color:#FBF4E6}
 .v2-header .nav-icons a:hover,
 .v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}
 @media (max-width:720px){
-  .v2-header.nav-open .v2-nav ul{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--navy);padding:4px 16px 14px;gap:0;box-shadow:0 14px 24px -14px rgba(11,45,80,.9)}
-  .v2-header.nav-open .v2-nav ul a{display:block;padding:14px 0;border-top:1px solid rgba(251,244,230,.12);font-size:16px}
   .v2-header .nav-toggle{display:flex;align-items:center;justify-content:center}
 }
 </style>
