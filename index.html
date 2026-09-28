@@ -17,8 +17,27 @@
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=19">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20">
+<style>
+/* Compatibility shim for the v2 header ported in Task 4.
+   js/cart.js (unchanged) wires the mobile nav by toggling a "nav-open"
+   class on the <nav> element itself, and looks up plain .nav-toggle /
+   [data-search-toggle] / [data-cart-count] selectors — it knows nothing
+   about the v2-* design-system classes (which expect a "v2-open" class).
+   These rules translate the existing, working wiring onto the new
+   v2-header visuals without touching the shared css/style.css file. */
+.v2-header .nav-toggle{display:none;color:#FBF4E6}
+.v2-header .nav-icons a,
+.v2-header .nav-icons .search-toggle{color:#FBF4E6}
+.v2-header .nav-icons a:hover,
+.v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}
+@media (max-width:720px){
+  .v2-header.nav-open .v2-nav ul{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--navy);padding:4px 16px 14px;gap:0;box-shadow:0 14px 24px -14px rgba(11,45,80,.9)}
+  .v2-header.nav-open .v2-nav ul a{display:block;padding:14px 0;border-top:1px solid rgba(251,244,230,.12);font-size:16px}
+  .v2-header .nav-toggle{display:flex;align-items:center;justify-content:center}
+}
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -77,30 +96,26 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </div>
 
-<nav>
-  <div class="nav-top">
-    <a class="brand" href="index.html">
-      <img class="mark" src="images/logo-gold-v2.png" alt="Munchingo">
-    </a>
-  </div>
-  <div class="navrow">
-    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
+<nav class="v2-header">
+  <div class="v2-wrap v2-nav">
     <ul>
-      <li class="hide-m"><a class="navlink" href="gifting.html">Gifting</a></li>
-      <li class="hide-m"><a class="navlink" href="about.html">About Us</a></li>
-      <li class="hide-m"><a class="navlink" href="contact.html">Contact</a></li>
+      <li><a href="#range">The range</a></li>
+      <li><a href="gifting.html#gifting">Gift sets</a></li>
+      <li><a href="about.html">Our story</a></li>
     </ul>
-    <div class="nav-right">
+    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.png" alt="Munchingo"></a>
+    <div class="v2-nav-right">
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
       <div class="nav-icons">
-      <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      </button>
-      <a href="cart.html" aria-label="Cart" style="position:relative">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span class="bagcount" data-cart-count style="display:none">0</span>
-      </a>
-      <a class="btn solid" style="padding:.5rem 1.1rem;font-size:.68rem" href="gifting.html#products">Shop Now</a>
+        <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+        </button>
+        <a href="cart.html" aria-label="Cart" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+          <span class="bagcount" data-cart-count style="display:none">0</span>
+        </a>
       </div>
+      <a class="btn solid" href="#range">Shop now</a>
     </div>
   </div>
 </nav>
@@ -116,383 +131,183 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </div>
 
+<section class="v2-hero" style="padding-bottom:10px">
+  <div class="v2-wrap">
+    <div class="v2-copy">
+      <a class="v2-pill" href="#gifts"><span class="v2-dot"></span>Diwali gift sets are here<span class="v2-go">→</span></a>
+      <h1>Tiny treats,<span class="v2-l2"><span class="script">mighty</span><span class="v2-l3">flavours.</span></span></h1>
+      <p class="v2-lede">Whole wheat atta and pure desi ghee, baked in small batches in Bikaner. Four cookies, one for every moment of your day.</p>
+      <div class="v2-ctas">
+        <a class="btn solid" href="#range">Shop the range <span class="v2-arrow">→</span></a>
+        <a class="btn outline" href="gifting.html#gifting">Build a gift set</a>
+      </div>
+    </div>
+    <div class="v2-proof">
+        <div><b>100<small>%</small></b><span>whole wheat<br>atta</span></div>
+        <div><b>0</b><span>maida,<br>ever</span></div>
+        <div><b>0</b><span>palm oil or<br>vanaspati</span></div>
+        <div><b>0<small>g</small></b><span>trans<br>fat</span></div>
+    </div>
+    <div class="v2-hero-art">
+      <div class="v2-front"><img src="images/box-original.jpg" alt="Atta Original box with cookies"></div>
+      <div class="v2-sticker" aria-hidden="true">
+        <svg viewBox="0 0 150 150"><defs><path id="circ" d="M75,21 a54,54 0 1,1 -0.01,0"/></defs><circle cx="75" cy="75" r="42" fill="none" stroke="#2A1A12" stroke-opacity=".55" stroke-width="1.2" stroke-dasharray="2 3"/><text><textPath href="#circ" textLength="339" lengthAdjust="spacing">PURE DESI GHEE ✦ BAKED IN BIKANER ✦ </textPath></text></svg>
+        <div class="v2-mid"><b>no</b><span>maida</span></div>
+      </div>
+      <a class="v2-note-chip" href="#gifts" style="text-decoration:none"><span class="v2-em">🪔</span><span><b>Gifting this Diwali?</b><br>All four flavours, one set →</span></a>
+    </div>
+  </div>
+</section>
 
-<header class="hero" id="top">
-  <div class="wrap grid">
+<section class="v2-range" id="range">
+  <div class="v2-wrap">
+    <div class="v2-head">
+      <div><span class="eyebrow">The range</span><h2>Pick your <span class="script">moment.</span></h2></div>
+      <p>Same whole wheat atta and desi ghee in every box. The difference is what we add, or leave out.</p>
+    </div>
+    <div class="v2-cards" id="range-cards"></div>
+  </div>
+</section>
+<script src="data/products.js"></script>
+<script>
+(function () {
+  var COLOR_BY_SLUG = { 'atta-original': 'ruby', 'atta-ajwain': 'slate', 'atta-kesari': 'kesari', 'atta-lite-sugar': 'mauve' };
+  var PAT_BY_SLUG = { 'atta-original': 'v2-pat-ruby', 'atta-ajwain': 'v2-pat-slate', 'atta-kesari': 'v2-pat-terra', 'atta-lite-sugar': 'v2-pat-mauve' };
+  var el = document.getElementById('range-cards');
+  el.innerHTML = window.MUNCHINGO_PRODUCTS.map(function (p) {
+    var href = p.slug + '.html';
+    var fine = p.polyolWarning ? '<p class="v2-fine">' + p.polyolWarning + '</p>' : '';
+    return '' +
+      '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
+        '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '"><span class="v2-save">Save ₹' + p.save + '</span></a>' +
+        '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
+          '<div class="v2-price"><b>₹' + p.price + '</b><s>₹' + p.mrp + '</s><span>· 250g</span></div>' +
+          '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="250g">Add to bag</button></div>' +
+      '</article>';
+  }).join('');
+})();
+</script>
+
+<section class="v2-gifts-teaser" id="gifts" style="background:var(--cream-2);padding:70px 0">
+  <div class="v2-wrap" style="display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center">
     <div>
-      <span class="eyebrow">Tiny Treats, Mighty Flavors</span>
-      <h1>Four cookies, made for different moments.</h1>
-      <p class="lead">Same whole wheat atta and pure desi ghee across all of them — the differences are in what we add, or leave out. Baked in Bikaner, where these recipes have been perfected for over a decade.</p>
-      <div class="ctas">
-        <a class="btn solid" href="gifting.html#products">
-          Shop the Range
-        </a>
-        <a class="btn outline" href="about.html">About Us</a>
-      </div>
-      <div class="facts">
-        <span>No palm oil</span><span>No maida</span><span>No vanaspati</span><span>No preservatives</span><span>No trans fat</span>
-      </div>
+      <span class="eyebrow">Diwali gift sets</span>
+      <h2 style="font-size:clamp(2.2rem,4.6vw,3.6rem);margin:14px 0 16px">Your box.<span style="color:var(--terra);display:block">Your people.</span></h2>
+      <p style="color:var(--ink-2);font-size:16.5px;max-width:32em;margin:0 0 28px">Pick a gift set, fill it with their favourites, add a note in your own words. We pack it in Bikaner and ship it across India.</p>
+      <a class="btn solid" href="gifting.html#gifting">Build a gift set <span class="v2-arrow">→</span></a>
     </div>
-    <div class="photo"><img src="images/box-original.jpg" alt="Munchingo Atta Original box with brass props in a Bikaner haveli"></div>
+    <a href="gifting.html#gifting" style="display:block;position:relative;border-radius:28px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1/1;text-decoration:none">
+      <img src="images/box-original.jpg" alt="Munchingo Diwali gift set" style="width:100%;height:100%;object-fit:cover;display:block">
+      <span style="position:absolute;top:16px;left:16px;background:var(--marigold);color:var(--ink);font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;letter-spacing:.02em">🪔 All four flavours, one set</span>
+    </a>
   </div>
-</header>
+</section>
 
-<div class="stripbar">
-  <div class="stripbar-track">
-    <span>100% Whole Wheat Atta</span><span>Pure Desi Ghee</span><span>No Palm Oil</span><span>No Preservatives</span><span>Baked in Bikaner</span>
-    <span aria-hidden="true">100% Whole Wheat Atta</span><span aria-hidden="true">Pure Desi Ghee</span><span aria-hidden="true">No Palm Oil</span><span aria-hidden="true">No Preservatives</span><span aria-hidden="true">Baked in Bikaner</span>
-  </div>
-</div>
-
-<section class="products" id="products">
-  <div class="wrap">
-    <div class="headrow">
-      <span class="eyebrow">The Range</span>
-      <h2>Pick your moment.</h2>
-      <p>Four cookies, made for different moments. Same whole wheat atta and pure desi ghee across all of them — the differences are in what we add, or leave out.</p>
+<section class="v2-compare">
+  <div class="v2-wrap">
+    <div class="v2-head"><div><span class="eyebrow">The honest comparison</span><h2>Munchingo <span class="v2-vs" aria-label="versus">VS</span> the usual biscuit</h2></div></div>
+    <div class="v2-grid">
+      <div class="v2-col v2-us"><h4>Munchingo atta cookies</h4><ul>
+        <li><span class="v2-mk">✓</span>100% whole wheat atta</li>
+        <li><span class="v2-mk">✓</span>Pure desi ghee</li>
+        <li><span class="v2-mk">✓</span>No palm oil or vanaspati</li>
+        <li><span class="v2-mk">✓</span>0g trans fat</li>
+        <li><span class="v2-mk">✓</span>No preservatives</li>
+      </ul></div>
+      <div class="v2-col v2-them"><h4>Many packaged biscuits</h4><ul>
+        <li><span class="v2-mk">✕</span>Refined flour (maida) as the main ingredient</li>
+        <li><span class="v2-mk">✕</span>Palm oil or hydrogenated vegetable fat</li>
+        <li><span class="v2-mk">✕</span>Flavour and colour additives</li>
+        <li><span class="v2-mk">✕</span>Emulsifiers and stabilisers to hold it together</li>
+        <li><span class="v2-mk">✕</span>Long, hard-to-read ingredient lists</li>
+      </ul></div>
     </div>
-    <div class="grid4">
-      <div class="sku sku-original" id="atta-original">
-        <div class="photo-carousel" data-carousel>
-          <div class="tag">Gently Sweet</div>
-          <div class="slides">
-            <div class="slide active"><img loading="lazy" src="images/box-original.jpg" alt="Atta Original box"></div>
-            <div class="slide"><img loading="lazy" src="images/ingredients-original.png" alt="Atta Original ingredients list"></div>
-            <div class="slide"><img loading="lazy" src="images/nutrition-original.png" alt="Atta Original nutrition information"></div>
-          </div>
-          <div class="dots">
-            <button class="dot active" data-slide="0" aria-label="Product photo"></button>
-            <button class="dot" data-slide="1" aria-label="Ingredients"></button>
-            <button class="dot" data-slide="2" aria-label="Nutrition information"></button>
-          </div>
-        </div>
-        <div class="body">
-          <h3>Atta Original</h3>
-          <p>Cardamom-kissed, ghee-baked. The one we started with. No pretenders.</p>
-          <div class="price">₹259 <s>₹300</s> <small>/ 250 g</small></div>
-          <button class="btn solid block" data-add-to-cart data-slug="atta-original" data-name="Atta Original" data-price="259" data-mrp="300" data-unit="250g" title="Add to your bag">Add to Bag</button>
-          <details class="nutri">
-            <summary>Ingredients</summary>
-            <div class="nutri-body">
-              <p class="ni-ingredients">Whole wheat atta (49.5%), sugar, desi cow ghee, milk solids (milk powder), glucose, raising agent (INS 503(ii)), cardamom (elaichi).</p>
-              <p class="ni-contains"><strong>Contains:</strong> Wheat (gluten), milk. Made in a facility that also processes tree nuts and other spices.</p>
-            </div>
-          </details>
-          <details class="nutri">
-            <summary>Nutrition Information</summary>
-            <div class="nutri-body">
-              <div class="ni-servesize">Per 100g &middot; Serving: 3 biscuits (15.6g) &middot; 16 servings/pack</div>
-              <div class="ni-stats">
-                <div class="ni-stat"><span class="ni-stat-val">450 kcal</span><span class="ni-stat-label">Energy · 22.5% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">26 g</span><span class="ni-stat-label">Added Sugar · 52% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">22 g</span><span class="ni-stat-label">Total Fat · 33.8% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">6.7 g</span><span class="ni-stat-label">Protein · 12.2% RDA</span></div>
-              </div>
-              <details class="ni-full">
-                <summary>See full nutrition breakdown</summary>
-                <table class="ni-table">
-                  <thead><tr><th>Nutrient</th><th>100g</th><th>Serve</th><th>%RDA</th></tr></thead>
-                  <tbody>
-                    <tr><td>Energy</td><td>450 kcal</td><td>70 kcal</td><td>22.5%</td></tr>
-                    <tr><td>Protein</td><td>6.7 g</td><td>1.05 g</td><td>12.2%</td></tr>
-                    <tr><td>Carbohydrate</td><td>59 g</td><td>9.2 g</td><td>19.7%</td></tr>
-                    <tr class="ni-sub"><td>Total Sugar</td><td>27 g</td><td>4.2 g</td><td>—</td></tr>
-                    <tr class="ni-sub"><td>Added Sugar</td><td>26 g</td><td>4.1 g</td><td>52.0%</td></tr>
-                    <tr><td>Dietary Fibre</td><td>5.6 g</td><td>0.9 g</td><td>22.4%</td></tr>
-                    <tr><td>Total Fat</td><td>22 g</td><td>3.4 g</td><td>33.8%</td></tr>
-                    <tr class="ni-sub"><td>Saturated Fat</td><td>13.5 g</td><td>2.1 g</td><td>61.4%</td></tr>
-                    <tr class="ni-sub"><td>Trans Fat</td><td>0 g</td><td>0 g</td><td>—</td></tr>
-                    <tr><td>Cholesterol</td><td>56 mg</td><td>9 mg</td><td>—</td></tr>
-                    <tr><td>Sodium</td><td>10 mg</td><td>1.6 mg</td><td>0.5%</td></tr>
-                    <tr><td>Calcium</td><td>44 mg</td><td>6.9 mg</td><td>4.4%</td></tr>
-                    <tr><td>Iron</td><td>2.08 mg</td><td>0.32 mg</td><td>11.0%</td></tr>
-                    <tr><td>Potassium</td><td>191 mg</td><td>29.8 mg</td><td>5.5%</td></tr>
-                  </tbody>
-                </table>
-                <p class="ni-rda">*RDA per ICMR 2020, 2000 kcal reference.</p>
-              </details>
-            </div>
-          </details>
-        </div>
-      </div>
-      <div class="sku sku-ajwain" id="atta-ajwain">
-        <div class="photo-carousel" data-carousel>
-          <div class="tag">Savoury &amp; Spiced</div>
-          <div class="slides">
-            <div class="slide active"><img loading="lazy" src="images/box-ajwain.jpg" alt="Atta Ajwain box"></div>
-            <div class="slide"><img loading="lazy" src="images/ingredients-ajwain.png" alt="Atta Ajwain ingredients list"></div>
-            <div class="slide"><img loading="lazy" src="images/nutrition-ajwain.png" alt="Atta Ajwain nutrition information"></div>
-          </div>
-          <div class="dots">
-            <button class="dot active" data-slide="0" aria-label="Product photo"></button>
-            <button class="dot" data-slide="1" aria-label="Ingredients"></button>
-            <button class="dot" data-slide="2" aria-label="Nutrition information"></button>
-          </div>
-        </div>
-        <div class="body">
-          <h3>Atta Ajwain</h3>
-          <p>The one that changes the room when the pack is opened.</p>
-          <div class="price">₹259 <s>₹300</s> <small>/ 250 g</small></div>
-          <button class="btn solid block" data-add-to-cart data-slug="atta-ajwain" data-name="Atta Ajwain" data-price="259" data-mrp="300" data-unit="250g" title="Add to your bag">Add to Bag</button>
-          <details class="nutri">
-            <summary>Ingredients</summary>
-            <div class="nutri-body">
-              <p class="ni-ingredients">Whole wheat atta (49.9%), desi cow ghee, sugar, milk solids (milk powder), glucose, salt, raising agent (INS 503(ii)), ajwain (carom seed).</p>
-              <p class="ni-contains"><strong>Contains:</strong> Wheat (gluten), milk. Made in a facility that also processes tree nuts and other spices.</p>
-            </div>
-          </details>
-          <details class="nutri">
-            <summary>Nutrition Information</summary>
-            <div class="nutri-body">
-              <div class="ni-servesize">Per 100g &middot; Serving: 3 biscuits (15.6g) &middot; 16 servings/pack</div>
-              <div class="ni-stats">
-                <div class="ni-stat"><span class="ni-stat-val">440 kcal</span><span class="ni-stat-label">Energy · 22.0% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">19 g</span><span class="ni-stat-label">Added Sugar · 38.0% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">24 g</span><span class="ni-stat-label">Total Fat · 36.9% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">6.8 g</span><span class="ni-stat-label">Protein · 12.4% RDA</span></div>
-              </div>
-              <details class="ni-full">
-                <summary>See full nutrition breakdown</summary>
-                <table class="ni-table">
-                  <thead><tr><th>Nutrient</th><th>100g</th><th>Serve</th><th>%RDA</th></tr></thead>
-                  <tbody>
-                    <tr><td>Energy</td><td>440 kcal</td><td>69 kcal</td><td>22.0%</td></tr>
-                    <tr><td>Protein</td><td>6.8 g</td><td>1.06 g</td><td>12.4%</td></tr>
-                    <tr><td>Carbohydrate</td><td>52 g</td><td>8.1 g</td><td>17.3%</td></tr>
-                    <tr class="ni-sub"><td>Total Sugar</td><td>20 g</td><td>3.1 g</td><td>—</td></tr>
-                    <tr class="ni-sub"><td>Added Sugar</td><td>19 g</td><td>3.0 g</td><td>38.0%</td></tr>
-                    <tr><td>Dietary Fibre</td><td>5.8 g</td><td>0.9 g</td><td>23.2%</td></tr>
-                    <tr><td>Total Fat</td><td>24 g</td><td>3.8 g</td><td>36.9%</td></tr>
-                    <tr class="ni-sub"><td>Saturated Fat</td><td>14.5 g</td><td>2.3 g</td><td>65.9%</td></tr>
-                    <tr class="ni-sub"><td>Trans Fat</td><td>0 g</td><td>0 g</td><td>—</td></tr>
-                    <tr><td>Cholesterol</td><td>60 mg</td><td>9.4 mg</td><td>—</td></tr>
-                    <tr><td>Sodium</td><td>403 mg</td><td>63 mg</td><td>20.2%</td></tr>
-                    <tr><td>Calcium</td><td>50 mg</td><td>7.8 mg</td><td>5.0%</td></tr>
-                    <tr><td>Iron</td><td>2.8 mg</td><td>0.44 mg</td><td>14.7%</td></tr>
-                    <tr><td>Potassium</td><td>196 mg</td><td>30.6 mg</td><td>5.6%</td></tr>
-                  </tbody>
-                </table>
-                <p class="ni-rda">*RDA per ICMR 2020, 2000 kcal reference.</p>
-              </details>
-            </div>
-          </details>
-        </div>
-      </div>
-      <div class="sku sku-kesari" id="atta-kesari">
-        <div class="photo-carousel" data-carousel>
-          <div class="tag">Royally Sweet</div>
-          <div class="slides">
-            <div class="slide active"><img loading="lazy" src="images/box-kesari.jpg" alt="Atta Kesari box"></div>
-            <div class="slide"><img loading="lazy" src="images/ingredients-kesari.png" alt="Atta Kesari ingredients list"></div>
-            <div class="slide"><img loading="lazy" src="images/nutrition-kesari.png" alt="Atta Kesari nutrition information"></div>
-          </div>
-          <div class="dots">
-            <button class="dot active" data-slide="0" aria-label="Product photo"></button>
-            <button class="dot" data-slide="1" aria-label="Ingredients"></button>
-            <button class="dot" data-slide="2" aria-label="Nutrition information"></button>
-          </div>
-        </div>
-        <div class="body">
-          <h3>Atta Kesari</h3>
-          <p>The occasion cookie. Real saffron, hand-mixed into every batch.</p>
-          <div class="price">₹299 <s>₹350</s> <small>/ 250 g</small></div>
-          <button class="btn solid block" data-add-to-cart data-slug="atta-kesari" data-name="Atta Kesari" data-price="299" data-mrp="350" data-unit="250g" title="Add to your bag">Add to Bag</button>
-          <details class="nutri">
-            <summary>Ingredients</summary>
-            <div class="nutri-body">
-              <p class="ni-ingredients">Whole wheat atta (49.6%), sugar, desi cow ghee, milk solids (milk powder), glucose, raising agent (INS 503(ii)), cardamom (elaichi), saffron (kesar) (0.025%).</p>
-              <p class="ni-contains"><strong>Contains:</strong> Wheat (gluten), milk. Made in a facility that also processes tree nuts and other spices.</p>
-            </div>
-          </details>
-          <details class="nutri">
-            <summary>Nutrition Information</summary>
-            <div class="nutri-body">
-              <div class="ni-servesize">Per 100g &middot; Serving: 3 biscuits (15.6g) &middot; 16 servings/pack</div>
-              <div class="ni-stats">
-                <div class="ni-stat"><span class="ni-stat-val">450 kcal</span><span class="ni-stat-label">Energy · 22.5% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">26 g</span><span class="ni-stat-label">Added Sugar · 52% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">22 g</span><span class="ni-stat-label">Total Fat · 33.8% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">6.7 g</span><span class="ni-stat-label">Protein · 12.2% RDA</span></div>
-              </div>
-              <details class="ni-full">
-                <summary>See full nutrition breakdown</summary>
-                <table class="ni-table">
-                  <thead><tr><th>Nutrient</th><th>100g</th><th>Serve</th><th>%RDA</th></tr></thead>
-                  <tbody>
-                    <tr><td>Energy</td><td>450 kcal</td><td>70 kcal</td><td>22.5%</td></tr>
-                    <tr><td>Protein</td><td>6.7 g</td><td>1.05 g</td><td>12.2%</td></tr>
-                    <tr><td>Carbohydrate</td><td>59 g</td><td>9.2 g</td><td>19.7%</td></tr>
-                    <tr class="ni-sub"><td>Total Sugar</td><td>27 g</td><td>4.2 g</td><td>—</td></tr>
-                    <tr class="ni-sub"><td>Added Sugar</td><td>26 g</td><td>4.1 g</td><td>52.0%</td></tr>
-                    <tr><td>Dietary Fibre</td><td>5.6 g</td><td>0.9 g</td><td>22.4%</td></tr>
-                    <tr><td>Total Fat</td><td>22 g</td><td>3.4 g</td><td>33.8%</td></tr>
-                    <tr class="ni-sub"><td>Saturated Fat</td><td>13.5 g</td><td>2.1 g</td><td>61.4%</td></tr>
-                    <tr class="ni-sub"><td>Trans Fat</td><td>0 g</td><td>0 g</td><td>—</td></tr>
-                    <tr><td>Cholesterol</td><td>56 mg</td><td>9 mg</td><td>—</td></tr>
-                    <tr><td>Sodium</td><td>10 mg</td><td>1.6 mg</td><td>0.5%</td></tr>
-                    <tr><td>Calcium</td><td>44 mg</td><td>6.9 mg</td><td>4.4%</td></tr>
-                    <tr><td>Iron</td><td>2.09 mg</td><td>0.33 mg</td><td>11.0%</td></tr>
-                    <tr><td>Potassium</td><td>191 mg</td><td>29.8 mg</td><td>5.5%</td></tr>
-                  </tbody>
-                </table>
-                <p class="ni-rda">*RDA per ICMR 2020, 2000 kcal reference.</p>
-              </details>
-            </div>
-          </details>
-        </div>
-      </div>
-      <div class="sku sku-lite" id="atta-lite-sugar">
-        <div class="photo-carousel" data-carousel>
-          <div class="tag">No Added Sugar</div>
-          <div class="slides">
-            <div class="slide active"><img loading="lazy" src="images/box-lite.jpg" alt="Atta Sugar-Lite box"></div>
-            <div class="slide"><img loading="lazy" src="images/ingredients-lite-sugar.png" alt="Atta Sugar-Lite ingredients list"></div>
-            <div class="slide"><img loading="lazy" src="images/nutrition-lite-sugar.png" alt="Atta Sugar-Lite nutrition information"></div>
-          </div>
-          <div class="dots">
-            <button class="dot active" data-slide="0" aria-label="Product photo"></button>
-            <button class="dot" data-slide="1" aria-label="Ingredients"></button>
-            <button class="dot" data-slide="2" aria-label="Nutrition information"></button>
-          </div>
-        </div>
-        <div class="body">
-          <h3>Atta Sugar-Lite</h3>
-          <p>95% less sugar than our Original. For the person who reads the back of the pack first.</p>
-          <div class="note">Sweetened with maltitol. Excess consumption may have a laxative effect.</div>
-          <div class="price">₹299 <s>₹350</s> <small>/ 250 g</small></div>
-          <button class="btn solid block" data-add-to-cart data-slug="atta-lite-sugar" data-name="Atta Sugar-Lite" data-price="299" data-mrp="350" data-unit="250g" title="Add to your bag">Add to Bag</button>
-          <details class="nutri">
-            <summary>Ingredients</summary>
-            <div class="nutri-body">
-              <p class="ni-ingredients">Whole wheat atta (53.1%), desi cow ghee, sweetener (maltitol, INS 965(i)) (15.9%), milk solids (milk powder), cardamom (elaichi), raising agent (INS 503(ii)).</p>
-              <p class="ni-contains"><strong>Contains:</strong> Wheat (gluten), milk. Made in a facility that also processes tree nuts and other spices.</p>
-              <p class="ni-warning">⚠ Contains polyols. Excess consumption may have a laxative effect.</p>
-            </div>
-          </details>
-          <details class="nutri">
-            <summary>Nutrition Information</summary>
-            <div class="nutri-body">
-              <div class="ni-servesize">Per 100g &middot; Serving: 3 biscuits (15.6g) &middot; 16 servings/pack</div>
-              <div class="ni-stats">
-                <div class="ni-stat"><span class="ni-stat-val">434 kcal</span><span class="ni-stat-label">Energy · 21.7% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">0 g</span><span class="ni-stat-label">Added Sugar · 0% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">26 g</span><span class="ni-stat-label">Total Fat · 40.0% RDA</span></div>
-                <div class="ni-stat"><span class="ni-stat-val">7.4 g</span><span class="ni-stat-label">Protein · 13.5% RDA</span></div>
-              </div>
-              <details class="ni-full">
-                <summary>See full nutrition breakdown</summary>
-                <table class="ni-table">
-                  <thead><tr><th>Nutrient</th><th>100g</th><th>Serve</th><th>%RDA</th></tr></thead>
-                  <tbody>
-                    <tr><td>Energy</td><td>434 kcal</td><td>68 kcal</td><td>21.7%</td></tr>
-                    <tr><td>Protein</td><td>7.4 g</td><td>1.16 g</td><td>13.5%</td></tr>
-                    <tr><td>Carbohydrate</td><td>52 g</td><td>8.1 g</td><td>17.3%</td></tr>
-                    <tr class="ni-sub"><td>Polyols (Maltitol)</td><td>16 g</td><td>2.5 g</td><td>—</td></tr>
-                    <tr class="ni-sub"><td>Total Sugar</td><td>1.2 g</td><td>0.19 g</td><td>—</td></tr>
-                    <tr class="ni-sub"><td>Added Sugar</td><td>0 g</td><td>0 g</td><td>0%</td></tr>
-                    <tr><td>Dietary Fibre</td><td>6.2 g</td><td>1.0 g</td><td>24.8%</td></tr>
-                    <tr><td>Total Fat</td><td>26 g</td><td>4.1 g</td><td>40.0%</td></tr>
-                    <tr class="ni-sub"><td>Saturated Fat</td><td>15.5 g</td><td>2.4 g</td><td>70.5%</td></tr>
-                    <tr class="ni-sub"><td>Trans Fat</td><td>0 g</td><td>0 g</td><td>—</td></tr>
-                    <tr><td>Cholesterol</td><td>65 mg</td><td>10 mg</td><td>—</td></tr>
-                    <tr><td>Sodium</td><td>13 mg</td><td>2.0 mg</td><td>0.7%</td></tr>
-                    <tr><td>Calcium</td><td>54 mg</td><td>8.4 mg</td><td>5.4%</td></tr>
-                    <tr><td>Iron</td><td>2.25 mg</td><td>0.35 mg</td><td>11.8%</td></tr>
-                    <tr><td>Potassium</td><td>220 mg</td><td>34.4 mg</td><td>6.3%</td></tr>
-                  </tbody>
-                </table>
-                <p class="ni-rda">*RDA per ICMR 2020, 2000 kcal reference.</p>
-              </details>
-            </div>
-          </details>
-        </div>
-      </div>
+    <p class="v2-src">Don't take our word for it. Turn any biscuit pack over and read the first three ingredients.</p>
+  </div>
+</section>
+
+<section class="v2-process" id="process">
+  <div class="v2-wrap">
+    <div class="v2-head"><div><span class="eyebrow">How we bake it</span><h2>Made the <span class="script">old-fashioned</span> way.</h2></div></div>
+    <div class="v2-stepper">
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-rolling.jpg" alt="Dough being rolled by hand"></div>
+        <div><span class="v2-pnum">01 / 03</span><h3>Atta comes first.</h3><p>Whole wheat atta sits at the top of our ingredient list, because it's genuinely the biggest thing in every cookie. No maida hiding behind it.</p></div></div>
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-tray.jpg" alt="Trays of cookies ready for the oven"></div>
+        <div><span class="v2-pnum">02 / 03</span><h3>Desi ghee. Never palm oil.</h3><p>Pure desi ghee gives these their short, crumbly bite. Real sugar in honest amounts, not chemistry dressed up as sweetness.</p></div></div>
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/bikaner-wide.jpg" alt="The bakery in Bikaner"></div>
+        <div><span class="v2-pnum">03 / 03</span><h3>Small batches, in Bikaner.</h3><p>Baked by Krazy Bakers, who have perfected this craft for over a decade. We simply asked them to keep doing exactly that.</p></div></div>
     </div>
   </div>
 </section>
 
-<section class="intent" id="intent">
-  <div class="wrap">
-    <div class="card">
-      <img loading="lazy" src="images/bikaner-wide.jpg" alt="Bakers at work in a heritage Bikaner haveli">
-      <div class="txt">
-        <span class="eyebrow">Made With Intent</span>
-        <h2>Baked in Bikaner, the old-fashioned way.</h2>
-        <p>Our bakery in Bikaner has been perfecting this craft for over a decade — long before Munchingo existed as a brand. We simply asked them to keep doing exactly that.</p>
-        <p>Whole wheat atta at the top of the ingredient list, because atta is actually the biggest thing in it. Desi ghee, never palm oil. Real sugar, in honest amounts — not chemistry dressed up as sweetness.</p>
-        <a href="about.html">Read Our Story →</a>
-      </div>
+<section class="v2-statement" aria-label="So good you'll forget it's whole wheat">
+  <div class="v2-wrap"><h2>So good, you'll<br>forget it's<span class="v2-rot"><span id="rotw">whole wheat.</span></span></h2></div>
+</section>
+
+<section class="v2-order" id="order">
+  <div class="v2-wrap">
+    <div class="v2-head"><div><span class="eyebrow">Simple, secure, pre-paid</span><h2>How to order</h2></div><a class="v2-link-arrow" href="https://wa.me/919988992024?text=Hi%20Munchingo%20%F0%9F%91%8B" target="_blank" rel="noopener">Or order on WhatsApp →</a></div>
+    <div class="v2-steps">
+      <div class="v2-ostep"><b>1</b><h3>Fill your bag</h3><p>Pick single boxes or a gift set. Minimum order&nbsp;₹499.</p></div>
+      <div class="v2-ostep"><b>2</b><h3>Pay securely</h3><p>UPI, card or net banking via Razorpay. Prepaid only.</p></div>
+      <div class="v2-ostep"><b>3</b><h3>Fresh to your door</h3><p>Ships within 2 days from Bikaner, across India.</p></div>
     </div>
   </div>
 </section>
 
-<section class="quote">
-  <div class="wrap">
-    <blockquote>"Nothing in this box is pretending to be something it isn't."</blockquote>
-    <div class="rule"></div>
-  </div>
-</section>
-
-<section class="gallery-strip">
-  <div class="wrap">
-    <div class="row">
-      <img loading="lazy" src="images/craft-rolling.jpg" alt="Rolling atta dough by hand">
-      <img loading="lazy" src="images/craft-tray.jpg" alt="Hand-portioned atta cookie dough on a baking tray">
-      <img loading="lazy" src="images/craft-spice.jpg" alt="Spices being folded into the dough">
-    </div>
-  </div>
-</section>
-
-<section class="order" id="order">
-  <span class="eyebrow">Simple, secure, pre-paid</span>
-  <h2>How to order</h2>
-  <p>Add what you like to your bag and check out online. Prefer to chat? You can order on WhatsApp too.</p>
-  <div class="wrap cards">
-    <div class="c"><b>1</b><h3>Fill your bag</h3><p>Pick single boxes or a gift set. Minimum order ₹499.</p></div>
-    <div class="c"><b>2</b><h3>Pay securely</h3><p>Check out with UPI, card or net banking via Razorpay. Pre-paid only.</p></div>
-    <div class="c"><b>3</b><h3>Fresh to your door</h3><p>Ships within 2 days from Bikaner, across India.</p></div>
-  </div>
-  <a class="btn solid" href="gifting.html#products">Shop the range</a>
-  <p style="margin-top:1rem;font-size:.85rem"><a href="https://wa.me/919988992024?text=Hi%20Munchingo%20%F0%9F%91%8B" target="_blank" rel="noopener">Or order on WhatsApp →</a></p>
-</section>
-
-<footer>
-  <div class="wrap top">
-    <div class="brandcol">
-      <img loading="lazy" src="images/logo-gold-v2.png" alt="Munchingo">
+<footer class="v2-footer">
+  <div class="v2-wrap v2-top">
+    <div class="v2-about">
+      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.png" alt="Munchingo" style="height:46px"></span></div>
       <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
-      <p class="legal-ids">GSTIN: 06AIIPN5005C2ZP &middot; FSSAI Lic. No. 10826003000333</p>
-      <div class="krazy-credit">
-        <span>A unit of</span>
-        <img loading="lazy" class="kb-credit-logo" src="images/krazy-bakers-logo.png" alt="Krazy Bakers">
+      <p class="v2-legal">GSTIN 06AIIPN5005C2ZP · FSSAI Lic. No. 10826003000333</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+        <span style="color:#EADCC8;opacity:.65;font-size:12.5px">A unit of</span>
+        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left">
       </div>
     </div>
-    <div>
-      <h4>Shop</h4>
-      <a href="gifting.html">The Range</a>
-      <a href="gifting.html#gifting">Gift Sets</a>
-      <a href="cart.html">Cart</a>
-    </div>
-    <div>
-      <h4>Company</h4>
-      <a href="about.html">About Us</a>
-      <a href="contact.html#faq">FAQ</a>
-      <a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-    </div>
-    <div>
-      <h4>Talk to Us</h4>
-      <a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">Instagram @munchingo.delhi</a>
-      <a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a>
-      <a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a>
-    </div>
+    <div><div class="v2-ftop-head"><h5>Shop</h5></div><ul><li><a href="#range">The range</a></li><li><a href="gifting.html#gifting">Gift sets</a></li><li><a href="cart.html">Cart</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Company</h5></div><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html#faq">FAQ</a></li><li><a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Talk to us</h5></div><ul><li><a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a></li><li><a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a></li><li><a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">@munchingo.delhi</a></li></ul></div>
   </div>
+  <p class="v2-psst">psst… <em>grab a letter and toss it around</em> <button class="v2-tidy-btn" id="tidyBtn" type="button">tidy up ↺</button></p>
+  <div class="v2-word" id="word"></div>
+  <div class="v2-wrap v2-baseline"><span>© 2026 Munchingo</span><span>Made in Bikaner with desi ghee</span></div>
 </footer>
 
 <a class="wa-float" href="https://wa.me/919988992024?text=Hi%20Munchingo" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-1.9 1.4-.5.1-1.1.2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.4 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.3.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
 </a>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// rotating statement word
+(function(){
+  const words = ['whole wheat.','made without maida.','free of palm oil.'], el = document.getElementById('rotw');
+  let i = 0; if (reduce) return;
+  setInterval(() => { el.style.transform='translateY(-110%)';
+    setTimeout(()=>{ i=(i+1)%words.length; el.textContent=words[i]; el.style.transition='none'; el.style.transform='translateY(110%)';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition=''; el.style.transform='translateY(0)'; })); }, 600);
+  }, 2600);
+})();
+
+// draggable wordmark letters
+(function(){
+  const w = document.getElementById('word');
+  'munchingo'.split('').forEach(ch => { const s=document.createElement('span'); s.textContent=ch; w.appendChild(s); });
+  const letters = [...w.querySelectorAll('span')];
+  const reset = s => { s.pos.x=0; s.pos.y=0; s.style.transition='transform .5s cubic-bezier(.2,1.4,.4,1)'; s.style.transform=''; setTimeout(()=>s.style.transition='',500); };
+  letters.forEach(s => {
+    let sx, sy; s.pos = {x:0,y:0};
+    s.addEventListener('pointerdown', e => { s.setPointerCapture(e.pointerId); s.classList.add('v2-drag'); sx=e.clientX-s.pos.x; sy=e.clientY-s.pos.y; });
+    s.addEventListener('pointermove', e => { if(!s.classList.contains('v2-drag')) return; s.pos.x=e.clientX-sx; s.pos.y=e.clientY-sy; s.style.transform=`translate(${s.pos.x}px,${s.pos.y}px) rotate(${s.pos.x/12}deg)`; });
+    s.addEventListener('pointerup', () => s.classList.remove('v2-drag'));
+    s.addEventListener('dblclick', () => reset(s));
+  });
+  document.getElementById('tidyBtn').addEventListener('click', () => letters.forEach(reset));
+})();
+</script>
 
 <script src="js/cart.js?v=14" defer></script>
 
