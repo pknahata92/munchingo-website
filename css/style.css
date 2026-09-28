@@ -717,3 +717,108 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 
 .v2-word{padding-bottom:18px}
 .v2-baseline{margin-top:0}
+
+/* ===================================================================
+   v2 PRODUCT DETAIL PAGE (PDP) — component CSS for atta-*.html (Task 5).
+   Ported from drafts/atta-kesari.html's per-page <style> block (all 4
+   drafts share this CSS near-verbatim; per-SKU color is a `--c` custom
+   property set on <body>, e.g. style="--c:var(--ruby)", not a hardcoded
+   value per file) and v2- prefixed, per the Task 2 convention. Note for
+   future readers: this CSS did NOT already exist from Task 2 — Task 2's
+   own report flagged that `.v2-band`/`.v2-pdp` aren't in drafts/assets/
+   v2.css and would be "introduced by the tasks that build the pages
+   needing them" — this is that task.
+   The draft's own `.stage`/`.thumbs` gallery markup is NOT ported: Task 5
+   replaces it with the real, already-wired `.photo-carousel`/[data-carousel]
+   component (see PHOTO CAROUSEL, above) shared with gifting.html, so
+   `.v2-gallery` here only supplies the sticky column + rounded/shadowed
+   frame around that shared component.
+   =================================================================== */
+.v2-pdp{padding:28px 0 80px}
+.v2-crumbs{font-size:13px;color:var(--ink-3);margin-bottom:22px}
+.v2-crumbs a{text-decoration:none;padding:6px 0;display:inline-block;color:inherit}
+.v2-crumbs a:hover{color:var(--terra)}
+.v2-crumbs span{margin:0 8px;opacity:.5}
+.v2-pdp .v2-wrap>.v2-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:start}
+.v2-gallery{position:sticky;top:110px}
+.v2-gallery .photo-carousel{border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+.v2-buy .v2-tag{display:inline-block;background:var(--c,var(--terra));color:#FFF6EA;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+.v2-buy h1{font-size:clamp(3rem,6vw,5rem);margin:16px 0 6px}
+.v2-buy .v2-sub{font-size:18px;color:var(--ink-2);margin:0 0 20px}
+.v2-notes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.v2-notes span{border:1px solid rgba(42,26,18,.14);border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:500;background:var(--paper)}
+.v2-pricebox{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:20px 0;border-top:1px dashed rgba(42,26,18,.2);border-bottom:1px dashed rgba(42,26,18,.2)}
+.v2-pricebox b{font-family:var(--f-body);font-size:40px;font-weight:700;line-height:1;letter-spacing:-.01em;text-transform:none}
+.v2-pricebox s{color:var(--ink-3);font-size:18px}
+.v2-pricebox .v2-save{position:static;font-size:13px}
+.v2-pricebox small{width:100%;color:var(--ink-3);font-size:13.5px}
+.v2-qtyrow{display:flex;gap:12px;margin:22px 0 12px}
+.v2-qty{display:flex;align-items:center;border:1.5px solid rgba(42,26,18,.18);border-radius:999px;background:var(--paper)}
+.v2-qty button{width:48px;height:52px;border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink)}
+.v2-qty output{width:28px;text-align:center;font-weight:700}
+.v2-qtyrow .btn{flex:1;padding:17px}
+.v2-mov{display:flex;gap:12px;align-items:center;background:var(--marigold-soft);border-radius:16px;padding:12px 14px;font-size:14px;margin-bottom:22px}
+.v2-mov .v2-pair{margin-left:auto;white-space:nowrap;background:var(--ink);color:var(--cream);border:0;border-radius:999px;padding:10px 14px;font:600 13px var(--f-body);cursor:pointer}
+.v2-mov.v2-done{background:#DDEFD9}
+.v2-trust{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.v2-trust div{text-wrap:pretty;background:var(--paper);border:1px solid rgba(42,26,18,.08);border-radius:16px;padding:14px;font-size:12.5px;color:var(--ink-2);line-height:1.35}
+.v2-trust b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+.v2-giftlink{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:16px 18px;border-radius:18px;background:var(--cream-2);text-decoration:none;font-size:14.5px;color:inherit}
+.v2-giftlink b{color:var(--terra-deep)}
+.v2-giftlink>span:last-child{white-space:nowrap}
+/* flavour band */
+.v2-band{background:var(--c,var(--terra));color:#FFF6EA;padding:90px 0;position:relative;overflow:hidden}
+.v2-band .v2-wrap.v2-band-single{display:block;max-width:640px}
+.v2-band h2{font-size:clamp(2.4rem,5vw,4rem)}
+.v2-band h2 .script{color:var(--marigold-soft);display:block;font-size:1em}
+.v2-band p{font-size:17px;opacity:.95;max-width:30em;margin:0 0 28px}
+.v2-band-eyebrow{color:#FFF6EA}
+.v2-band-eyebrow::before{background:var(--marigold);box-shadow:0 0 0 4px rgba(227,167,47,.25)}
+.v2-band-deco{position:absolute;top:0;right:0;width:280px;height:280px;pointer-events:none}
+.v2-ingr{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.v2-ingr li{border-top:2px solid rgba(255,246,234,.4);padding-top:12px}
+.v2-ingr b{display:block;font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.1}
+.v2-ingr span{font-size:13.5px;opacity:.85}
+/* details */
+.v2-details .v2-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.v2-panel{background:var(--paper);border:1px solid rgba(42,26,18,.08);border-radius:26px;padding:32px}
+.v2-panel h3{font-family:var(--f-body);font-weight:700;font-size:20px;margin-bottom:14px}
+.v2-panel p{color:var(--ink-2);margin:0 0 12px}
+.v2-allergen{background:var(--cream-2);border-radius:14px;padding:12px 14px;font-size:13.5px}
+.v2-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.v2-tile{background:var(--cream);border-radius:16px;padding:14px 10px;text-align:center}
+.v2-tile b{font-family:var(--f-display);font-weight:400;font-size:26px;display:block;line-height:1.1}
+.v2-tile span{font-size:11.5px;color:var(--ink-3);line-height:1.35;display:block;margin-top:4px}
+.v2-panel table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.v2-panel th,.v2-panel td{padding:8px 6px;border-bottom:1px solid rgba(42,26,18,.08);text-align:right}
+.v2-panel th:first-child,.v2-panel td:first-child{text-align:left}
+.v2-panel th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.v2-panel td.v2-sub{padding-left:18px;color:var(--ink-2)}
+.v2-more summary{cursor:pointer;font-weight:600;color:var(--terra);padding:8px 0;list-style:none}
+.v2-more summary::-webkit-details-marker{display:none}
+.v2-faq details{background:var(--paper);border:1px solid rgba(42,26,18,.08);border-radius:18px;padding:0 22px;margin-bottom:10px}
+.v2-faq summary{cursor:pointer;font-weight:600;font-size:16.5px;padding:20px 30px 20px 0;list-style:none;position:relative}
+.v2-faq summary::after{content:"+";position:absolute;right:0;top:16px;font-size:24px;color:var(--terra)}
+.v2-faq details[open] summary::after{content:"–"}
+.v2-faq details p{margin:0 0 20px;color:var(--ink-2)}
+.v2-faq .v2-wrap{max-width:860px}
+.v2-sticky-buy{display:none}
+@media (max-width:1020px){
+  .v2-pdp .v2-wrap>.v2-grid,.v2-details .v2-wrap{grid-template-columns:1fr}
+  .v2-band-deco{width:180px;height:180px;opacity:.7}
+  .v2-gallery{position:relative;top:0}
+}
+@media (max-width:720px){
+  .v2-trust{grid-template-columns:1fr}
+  .v2-ingr{grid-template-columns:1fr}
+  .v2-tiles{grid-template-columns:repeat(2,1fr)}
+  .v2-mov{flex-wrap:wrap}
+  .v2-mov .v2-pair{margin-left:0}
+  .v2-mov-ico{display:none}
+  .v2-giftlink{flex-wrap:wrap;gap:6px}
+  .v2-sticky-buy{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--paper);border-top:1px solid rgba(42,26,18,.1);padding:10px 16px calc(10px + env(safe-area-inset-bottom));gap:12px;align-items:center;transform:translateY(110%);transition:transform .3s}
+  .v2-sticky-buy.v2-show{transform:none}
+  .v2-pdp~.v2-footer{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  .v2-sticky-buy b{font-size:18px}
+  .v2-sticky-buy .btn{flex:1;padding:14px}
+}
