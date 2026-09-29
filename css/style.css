@@ -594,6 +594,34 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .v2-builder .v2-cta[disabled]{background:rgba(246,234,218,.1);color:rgba(246,234,218,.78);box-shadow:none;cursor:not-allowed;transform:none}
 .v2-builder .v2-fine{text-align:center;margin-top:14px;opacity:.55}
 
+/* Task 6 — gifting.html's REAL gift-builder cards (#trio-gift-set,
+   #full-range-set). This is deliberately separate from .v2-builder/.v2-fl
+   above (the draft home-v2.html's mock slot-based builder that never talks
+   to the backend — see task-6-brief.md). gifting.html's checkbox-driven
+   flavour picker and slugify()/update() logic are untouched; these classes
+   are added ALONGSIDE the existing gift-card/light/dark/flavour-chip/
+   gift-price classes the inline script and old styling already use
+   (closest('.gift-card'), closest('.flavour-chip'), chip-checked/
+   chip-disabled toggles) — nothing here renames or removes those, and this
+   block is placed after them in the cascade so it wins on equal specificity. */
+.pagehead.v2-pagehead h1{font-size:clamp(2.2rem,4.6vw,3.4rem)}
+.v2-crumbs{font-size:13px;color:var(--ink-3);margin-bottom:0}
+.gift-card.v2-giftcard{background:var(--ink);border:0;box-shadow:0 30px 60px -30px rgba(42,26,18,.8)}
+.gift-card.v2-giftcard .eyebrow{color:var(--marigold-soft)}
+.gift-card.v2-giftcard h3{color:#FFF6EA}
+.gift-card.v2-giftcard p{color:#D9C7B4}
+.gift-card.v2-giftcard.v2-giftcard-feat{box-shadow:0 0 0 1.5px var(--marigold),0 30px 60px -30px rgba(42,26,18,.8)}
+.flavour-chip.v2-chip{border:1.5px solid rgba(246,234,218,.28);background:rgba(246,234,218,.07);color:#F6EADA}
+.flavour-chip.v2-chip input{accent-color:var(--marigold)}
+.flavour-chip.v2-chip.chip-checked{border-color:var(--marigold);background:rgba(227,167,47,.16)}
+.flavour-chip.v2-chip.chip-disabled{opacity:.4}
+.flavour-note.v2-note{color:#C7B7A4}
+.flavour-note.v2-note.ok{color:var(--marigold-soft)}
+.gift-price.v2-price{color:#FFF6EA}
+.gift-price.v2-price span{color:#C7B7A4}
+.btn.gold.v2-marigold{background:var(--marigold);color:var(--ink);box-shadow:none}
+.btn.gold.v2-marigold:hover{background:var(--marigold-soft)}
+
 /* comparison */
 .v2-compare .v2-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1040px;margin:0 auto}
 .v2-compare .v2-head{justify-content:center;text-align:center}
