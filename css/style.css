@@ -769,7 +769,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 /* flavour band */
 .v2-band{background:var(--c,var(--terra));color:#FFF6EA;padding:90px 0;position:relative;overflow:hidden}
 .v2-band .v2-wrap.v2-band-single{display:block;max-width:640px}
-.v2-band h2{font-size:clamp(2.4rem,5vw,4rem)}
+.v2-band h2{font-size:clamp(2.4rem,5vw,4rem);color:#FFF6EA}
 .v2-band h2 .script{color:var(--marigold-soft);display:block;font-size:1em}
 .v2-band p{font-size:17px;opacity:.95;max-width:30em;margin:0 0 28px}
 .v2-band-eyebrow{color:#FFF6EA}
