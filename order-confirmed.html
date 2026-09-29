@@ -158,9 +158,24 @@ function showSection(id) {
 function renderOrder(order) {
   document.getElementById('confirm-greeting').textContent = 'Thank you, ' + (order.customerName || 'there') + '!';
   document.getElementById('confirm-order-id').textContent = 'Order #' + order.orderId;
-  document.getElementById('confirm-items').innerHTML = order.items.map(function (item) {
-    return '<div class="confirm-item-row"><span>' + item.name + ' × ' + item.quantity + '</span><span>₹' + (item.price * item.quantity) + '</span></div>';
-  }).join('');
+  // Built via DOM APIs (textContent), not innerHTML string-concatenation —
+  // item.name is the order's stored product name, and building HTML by
+  // concatenation would let an unexpected value inject markup/script into
+  // this page. See utils/catalog.js's nameForSlug() on the backend, which
+  // is what makes item.name trustworthy in the first place for new orders.
+  var itemsEl = document.getElementById('confirm-items');
+  itemsEl.textContent = '';
+  order.items.forEach(function (item) {
+    var row = document.createElement('div');
+    row.className = 'confirm-item-row';
+    var left = document.createElement('span');
+    left.textContent = item.name + ' × ' + item.quantity;
+    var right = document.createElement('span');
+    right.textContent = '₹' + (item.price * item.quantity);
+    row.appendChild(left);
+    row.appendChild(right);
+    itemsEl.appendChild(row);
+  });
   document.getElementById('confirm-total').textContent = '₹' + order.total;
 
   // Cart and gift note belong to the order that was just placed — clear
