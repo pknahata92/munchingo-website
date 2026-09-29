@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=19">
+<link rel="stylesheet" href="css/style.css?v=23">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -19,42 +19,54 @@
   gtag('config', 'G-456YHSDMX6');
 </script>
 <style>
+/* Page-specific shim for the v2 header, same as index.html's / gifting.html's /
+   cart.html's (Task 4 / Task 6 / Task 7) — duplicated here rather than
+   touching those files, which are out of this task's file list. See
+   index.html for the full rationale. */
+.v2-header .nav-toggle{display:none;color:#FBF4E6}
+.v2-header .nav-icons a,
+.v2-header .nav-icons .search-toggle{color:#FBF4E6}
+.v2-header .nav-icons a:hover,
+.v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}
+@media (max-width:720px){
+  .v2-header .nav-toggle{display:flex;align-items:center;justify-content:center}
+}
 .checkout-wrap{max-width:640px;margin:0 auto;padding:2.5rem 24px 4rem}
-.checkout-summary{background:var(--cream);border:1px solid rgba(14,31,63,.14);border-radius:8px;padding:1.4rem 1.6rem;margin-bottom:2rem}
-.checkout-summary .row{display:flex;justify-content:space-between;font-size:14px;padding:.4rem 0;color:var(--fg-2)}
-.checkout-summary .row.total{border-top:1px solid rgba(14,31,63,.14);margin-top:.6rem;padding-top:.8rem;font-weight:600;color:var(--navy);font-size:16px}
-.checkout-summary .row.gst-note{font-size:11.5px;color:var(--fg-3);padding-top:.2rem}
+.checkout-summary{background:var(--paper);border-radius:var(--r);box-shadow:var(--shadow);padding:1.4rem 1.6rem;margin-bottom:2rem}
+.checkout-summary .row{display:flex;justify-content:space-between;font-size:14px;padding:.4rem 0;color:var(--ink-3)}
+.checkout-summary .row.total{border-top:1px solid rgba(42,26,18,.14);margin-top:.6rem;padding-top:.8rem;font-weight:600;color:var(--ink);font-size:16px}
+.checkout-summary .row.gst-note{font-size:11.5px;color:var(--ink-3);padding-top:.2rem}
 .checkout-form .field{margin-bottom:1.2rem}
-.checkout-form label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:.4rem;letter-spacing:.03em}
-.checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--navy);background:#fff}
+.checkout-form label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:.4rem;letter-spacing:.03em}
+.checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(42,26,18,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--ink);background:var(--paper)}
 .checkout-form input:focus,.checkout-form textarea:focus{outline:none;border-color:var(--terra)}
 .checkout-form textarea{resize:vertical;min-height:80px}
 .checkout-form .addr-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin-bottom:1.2rem}
 .checkout-form .addr-row .field{margin-bottom:0}
 .checkout-form .addr-row .field.full{grid-column:1/-1}
-.checkout-form .addr-hint{font-size:11.5px;color:var(--fg-3);margin:-.9rem 0 1.2rem}
-.checkout-note{font-size:12.5px;color:var(--fg-3);margin-top:1rem;line-height:1.6}
+.checkout-form .addr-hint{font-size:11.5px;color:var(--ink-3);margin:-.9rem 0 1.2rem}
+.checkout-note{font-size:12.5px;color:var(--ink-3);margin-top:1rem;line-height:1.6}
 .checkout-error{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.8rem 1rem;font-size:13px;margin-bottom:1.2rem;display:none}
 .checkout-summary .row.discount-row{color:#2f6b4f}
-.checkout-promo-featured{display:flex;align-items:center;justify-content:space-between;gap:.8rem;background:#FDF6E8;border:1px dashed var(--gold, #CEAD5E);border-radius:6px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:13px;color:var(--navy)}
-.checkout-promo-featured button{white-space:nowrap;padding:.5rem .9rem;border-radius:4px;border:1px solid var(--terra);background:#fff;color:var(--terra);font-size:12px;font-weight:700;cursor:pointer}
+.checkout-promo-featured{display:flex;align-items:center;justify-content:space-between;gap:.8rem;background:#FDF6E8;border:1px dashed var(--gold, #CEAD5E);border-radius:6px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:13px;color:var(--ink)}
+.checkout-promo-featured button{white-space:nowrap;padding:.5rem .9rem;border-radius:4px;border:1px solid var(--terra);background:var(--paper);color:var(--terra);font-size:12px;font-weight:700;cursor:pointer}
 .checkout-promo-featured button:disabled{opacity:.5;cursor:default}
 .checkout-promo{display:flex;gap:.6rem;margin-bottom:1.4rem}
-.checkout-promo input{flex:1;padding:.7rem .9rem;border:1px solid rgba(14,31,63,.2);border-radius:4px;font-family:var(--f-body);font-size:13.5px;color:var(--navy);background:#fff;text-transform:uppercase}
+.checkout-promo input{flex:1;padding:.7rem .9rem;border:1px solid rgba(42,26,18,.2);border-radius:4px;font-family:var(--f-body);font-size:13.5px;color:var(--ink);background:var(--paper);text-transform:uppercase}
 .checkout-promo input:focus{outline:none;border-color:var(--terra)}
-.checkout-promo button{white-space:nowrap;padding:.7rem 1.1rem;border-radius:4px;border:1px solid var(--navy);background:#fff;color:var(--navy);font-size:13px;font-weight:600;cursor:pointer}
+.checkout-promo button{white-space:nowrap;padding:.7rem 1.1rem;border-radius:4px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer}
 .checkout-promo button:disabled{opacity:.5;cursor:default}
 .checkout-promo-msg{font-size:12.5px;margin:-.9rem 0 1.2rem;min-height:1em}
 .checkout-promo-msg.success{color:#2f6b4f}
 .checkout-promo-msg.error{color:var(--terra-deep)}
 #checkout-aov-progress{margin-bottom:1.6rem}
-.subscribe-toggle{display:flex;align-items:flex-start;gap:.7rem;background:#FDF6E8;border:1px solid var(--gold, #CEAD5E);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:1rem;cursor:pointer;font-size:13px;color:var(--navy);line-height:1.5}
+.subscribe-toggle{display:flex;align-items:flex-start;gap:.7rem;background:#FDF6E8;border:1px solid var(--gold, #CEAD5E);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:1rem;cursor:pointer;font-size:13px;color:var(--ink);line-height:1.5}
 .subscribe-toggle input{margin-top:.2rem;flex-shrink:0}
-.subscribe-toggle span strong{color:var(--navy)}
-.trust-row{display:flex;justify-content:space-between;gap:.6rem;margin:1.4rem 0 1.2rem;padding:.9rem .4rem;border-top:1px solid rgba(14,31,63,.1);border-bottom:1px solid rgba(14,31,63,.1)}
+.subscribe-toggle span strong{color:var(--ink)}
+.trust-row{display:flex;justify-content:space-between;gap:.6rem;margin:1.4rem 0 1.2rem;padding:.9rem .4rem;border-top:1px solid rgba(42,26,18,.1);border-bottom:1px solid rgba(42,26,18,.1)}
 .trust-item{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1;text-align:center}
 .trust-item svg{width:20px;height:20px;stroke:var(--terra);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.trust-item span{font-size:10.5px;font-weight:600;color:var(--fg-2);letter-spacing:.01em;line-height:1.3}
+.trust-item span{font-size:10.5px;font-weight:600;color:var(--ink-3);letter-spacing:.01em;line-height:1.3}
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -76,33 +88,44 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </head>
 <body>
 
-<nav>
-  <div class="nav-top">
-    <a class="brand" href="index.html">
-      <img class="mark" src="images/logo-gold-v2.png" alt="Munchingo">
-    </a>
-  </div>
-  <div class="navrow">
-    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
+<nav class="v2-header">
+  <div class="v2-wrap v2-nav">
     <ul>
-      <li class="hide-m"><a class="navlink" href="gifting.html">Gifting</a></li>
-      <li class="hide-m"><a class="navlink" href="about.html">About Us</a></li>
-      <li class="hide-m"><a class="navlink" href="contact.html">Contact</a></li>
+      <li><a href="index.html#range">The range</a></li>
+      <li><a href="gifting.html#gifting">Gift sets</a></li>
+      <li><a href="about.html">Our story</a></li>
     </ul>
-    <div class="nav-right">
+    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.png" alt="Munchingo"></a>
+    <div class="v2-nav-right">
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
       <div class="nav-icons">
-      <a href="cart.html" aria-label="Cart" style="position:relative">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span class="bagcount" data-cart-count style="display:none">0</span>
-      </a>
+        <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+        </button>
+        <a href="cart.html" aria-label="Cart" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+          <span class="bagcount" data-cart-count style="display:none">0</span>
+        </a>
       </div>
+      <a class="btn solid" href="index.html#range">Shop now</a>
     </div>
   </div>
 </nav>
 
+<div class="search-panel" data-search-panel>
+  <div class="search-panel-inner">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search flavours, gift sets, FAQs..." data-search-input autocomplete="off">
+      <button class="search-close" aria-label="Close search" data-search-close>&times;</button>
+    </div>
+    <div class="search-results" data-search-results></div>
+  </div>
+</div>
+
 <div class="checkout-wrap">
   <h1 style="margin:0 0 .3rem">Checkout</h1>
-  <p style="color:var(--fg-2);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. We'll confirm your order on WhatsApp once payment goes through.</p>
+  <p style="color:var(--ink-3);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. We'll confirm your order on WhatsApp once payment goes through.</p>
 
   <div id="checkout-empty" style="display:none">
     <p>Your cart is empty. <a href="gifting.html">Browse the range →</a></p>
@@ -185,38 +208,43 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </div>
 
-<footer>
-  <div class="wrap top">
-    <div class="brandcol">
-      <img src="images/logo-gold-v2.png" alt="Munchingo">
+<footer class="v2-footer">
+  <div class="v2-wrap v2-top">
+    <div class="v2-about">
+      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.png" alt="Munchingo" style="height:46px"></span></div>
       <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
-      <p class="legal-ids">GSTIN: 06AIIPN5005C2ZP &middot; FSSAI Lic. No. 10826003000333</p>
-      <div class="krazy-credit">
-        <span>A unit of</span>
-        <img loading="lazy" class="kb-credit-logo" src="images/krazy-bakers-logo.png" alt="Krazy Bakers">
+      <p class="v2-legal">GSTIN 06AIIPN5005C2ZP · FSSAI Lic. No. 10826003000333</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+        <span style="color:#EADCC8;opacity:.65;font-size:12.5px">A unit of</span>
+        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left">
       </div>
     </div>
-    <div>
-      <h4>Shop</h4>
-      <a href="gifting.html">The Range</a>
-      <a href="gifting.html#gifting">Gift Sets</a>
-      <a href="cart.html">Cart</a>
-    </div>
-    <div>
-      <h4>Company</h4>
-      <a href="about.html">About Us</a>
-      <a href="contact.html#faq">FAQ</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-    </div>
-    <div>
-      <h4>Talk to Us</h4>
-      <a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">Instagram @munchingo.delhi</a>
-      <a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a>
-      <a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a>
-    </div>
+    <div><div class="v2-ftop-head"><h5>Shop</h5></div><ul><li><a href="index.html#range">The range</a></li><li><a href="gifting.html#gifting">Gift sets</a></li><li><a href="cart.html">Cart</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Company</h5></div><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html#faq">FAQ</a></li><li><a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Talk to us</h5></div><ul><li><a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a></li><li><a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a></li><li><a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">@munchingo.delhi</a></li></ul></div>
   </div>
+  <p class="v2-psst">psst… <em>grab a letter and toss it around</em> <button class="v2-tidy-btn" id="tidyBtn" type="button">tidy up ↺</button></p>
+  <div class="v2-word" id="word"></div>
+  <div class="v2-wrap v2-baseline"><span>© 2026 Munchingo</span><span>Made in Bikaner with desi ghee</span></div>
 </footer>
+
+<script>
+// draggable wordmark letters (same behaviour as index.html's / gifting.html's / cart.html's footer)
+(function(){
+  const w = document.getElementById('word');
+  'munchingo'.split('').forEach(ch => { const s=document.createElement('span'); s.textContent=ch; w.appendChild(s); });
+  const letters = [...w.querySelectorAll('span')];
+  const reset = s => { s.pos.x=0; s.pos.y=0; s.style.transition='transform .5s cubic-bezier(.2,1.4,.4,1)'; s.style.transform=''; setTimeout(()=>s.style.transition='',500); };
+  letters.forEach(s => {
+    let sx, sy; s.pos = {x:0,y:0};
+    s.addEventListener('pointerdown', e => { s.setPointerCapture(e.pointerId); s.classList.add('v2-drag'); sx=e.clientX-s.pos.x; sy=e.clientY-s.pos.y; });
+    s.addEventListener('pointermove', e => { if(!s.classList.contains('v2-drag')) return; s.pos.x=e.clientX-sx; s.pos.y=e.clientY-sy; s.style.transform=`translate(${s.pos.x}px,${s.pos.y}px) rotate(${s.pos.x/12}deg)`; });
+    s.addEventListener('pointerup', () => s.classList.remove('v2-drag'));
+    s.addEventListener('dblclick', () => reset(s));
+  });
+  document.getElementById('tidyBtn').addEventListener('click', () => letters.forEach(reset));
+})();
+</script>
 
 <script src="js/cart.js?v=14"></script>
 <script>
