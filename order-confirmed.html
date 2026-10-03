@@ -44,6 +44,30 @@
 .confirm-fallback{padding:3rem 0}
 .confirm-cross-sell{text-align:left;margin-bottom:1rem}
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-456YHSDMX6');
+</script>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '975114194987428');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
+/></noscript>
 </head>
 <body>
 
@@ -230,7 +254,30 @@ function renderOrder(order) {
     MunchingoCart.initCrossSell(stripEl, function () {}); // adds silently; they'll see it next time they open the cart
   }
 
+  trackPurchase(order);
   showSection('confirm-success');
+}
+
+// Fire the GA4 + Meta purchase events once per order. The order is only
+// rendered after the backend confirms status "paid", so this never fires for
+// an unpaid/abandoned order; the localStorage key stops a page refresh from
+// double-counting the same order.
+function trackPurchase(order) {
+  try {
+    var key = 'munchingo_purchase_tracked_' + order.orderId;
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, '1');
+    var items = (order.items || []).map(function (i) {
+      return { item_name: String(i.name), quantity: i.quantity, price: i.price };
+    });
+    var count = items.reduce(function (n, i) { return n + (Number(i.quantity) || 0); }, 0);
+    if (typeof gtag === 'function') {
+      gtag('event', 'purchase', { transaction_id: order.orderId, value: Number(order.total), currency: 'INR', items: items });
+    }
+    if (typeof fbq === 'function') {
+      fbq('track', 'Purchase', { value: Number(order.total), currency: 'INR', content_type: 'product', num_items: count });
+    }
+  } catch (e) { /* tracking must never break the confirmation page */ }
 }
 
 function getOrderIdFromUrl() {
