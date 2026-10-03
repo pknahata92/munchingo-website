@@ -250,6 +250,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
+var CHECKOUT_UNREACHABLE_MSG = 'We couldn\'t reach our checkout just now. It can take up to a minute to wake up, so please wait a few seconds and try again — or order on WhatsApp: +91 99889 92024.';
 var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/validate-coupon';
 // Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js — this is
 // just the UX pre-check; the backend enforces it for real. Orders below this
@@ -309,6 +310,10 @@ function renderSummary() {
     payable = appliedCoupon.finalTotal;
     discountHtml = '<div class="row discount-row"><span>Promo (' + appliedCoupon.code + ')</span><span>−₹' + appliedCoupon.discountAmount + '</span></div>';
   }
+
+  // GST is inclusive, so the breakup must follow what is actually payable
+  // (after any subscription or coupon discount), not the pre-discount total.
+  gstAmount = Math.round(payable - (payable / 1.05));
 
   summaryEl.innerHTML = rows +
     '<div class="row total"><span>Total</span><span>₹' + total + '</span></div>' +
@@ -438,6 +443,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!name || !phone || !addrLine1 || !addrArea || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
     if (!/^[0-9]{6}$/.test(addrPincode)) { showError('Pincode should be exactly 6 digits.'); return; }
+    var phoneDigits = phone.replace(/\D/g, '');
+    var phoneOk = /^[6-9][0-9]{9}$/.test(phoneDigits) || /^91[6-9][0-9]{9}$/.test(phoneDigits) || /^0[6-9][0-9]{9}$/.test(phoneDigits);
+    phoneOk = phoneOk && /^[+0-9\s\-().]+$/.test(phone);
+    if (!phoneOk) { showError('Please enter a valid 10-digit mobile number (WhatsApp number preferred, we send order updates there).'); return; }
     if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
 
     // Backend still stores address as a single string — the structured
@@ -466,10 +475,15 @@ document.addEventListener('DOMContentLoaded', function () {
           giftNote: MunchingoCart.getGiftNote() || undefined,
         }),
       });
-      var data = await res.json();
+      var data = null;
+      try { data = await res.json(); } catch (parseErr) { data = null; }
 
+      if (!data || typeof data !== 'object') {
+        // Non-JSON body (e.g. a 502/HTML page while the free-tier backend wakes up).
+        throw new Error(CHECKOUT_UNREACHABLE_MSG);
+      }
       if (!res.ok || !data.ok) {
-        throw new Error(data.error || 'Something went wrong. Please try again.');
+        throw new Error((typeof data.error === 'string' && data.error) || 'Something went wrong. Please try again.');
       }
 
       // Success — clear the gift note so it doesn't carry over to a future
@@ -477,7 +491,11 @@ document.addEventListener('DOMContentLoaded', function () {
       MunchingoCart.setGiftNote('');
       window.location.href = data.paymentUrl;
     } catch (err) {
-      showError(err.message || 'Could not start checkout. Please try again or message us on WhatsApp.');
+      // Network failures ("Failed to fetch") and anything unexpected get the
+      // friendly message; only our own thrown messages and server-supplied
+      // error strings are shown as-is.
+      var known = err && err.message && !/failed to fetch|networkerror|load failed|failed to execute|unexpected token/i.test(err.message);
+      showError(known ? err.message : CHECKOUT_UNREACHABLE_MSG);
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
     }
