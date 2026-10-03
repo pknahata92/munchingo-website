@@ -892,3 +892,21 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
   .v2-gt-copy .btn{display:flex;width:100%;white-space:nowrap}
   .v2-gt-copy p{margin-bottom:22px!important}
 }
+
+/* ---- section rhythm: the approved drafts relied on a global `section{padding:96px 0}`
+   that was not ported. Give the content sections that sit between coloured bands an
+   explicit top/bottom rhythm so they don't run into each other. ---- */
+.v2-details,.v2-faq,.v2-compare,.v2-process,.v2-order{padding-top:88px;padding-bottom:0}
+.v2-process,.v2-order{padding-bottom:88px}
+.v2-range{padding-bottom:80px}
+.v2-faq{padding-bottom:48px}
+@media (max-width:720px){
+  .v2-details,.v2-faq,.v2-compare,.v2-process,.v2-order{padding-top:60px}
+  .v2-process,.v2-order{padding-bottom:60px}
+  .v2-range{padding-bottom:56px}
+  .v2-faq{padding-bottom:32px}
+}
+/* Monthoers "T" has a left-hand swash that overhangs its box; keep it inside the gutter */
+.v2-hero h1{text-indent:.3em}
+.v2-hero h1 .v2-l2{text-indent:0}
+.has-swash{text-indent:.28em}
