@@ -26,7 +26,8 @@
 .confirm-wrap{max-width:640px;margin:0 auto;padding:3rem 24px 4rem;text-align:center}
 .confirm-check{width:56px;height:56px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem}
 .confirm-check svg{width:28px;height:28px;stroke:#FFF6E8;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.confirm-wrap h1{margin:0 0 .5rem}
+.confirm-wrap h1,.confirm-wrap h2{margin:0 0 .5rem}
+.confirm-wrap h2{font-size:2em}
 .confirm-sub{color:var(--ink-3);margin:0 0 2rem}
 .confirm-card{background:var(--paper);border-radius:var(--r);box-shadow:var(--shadow);padding:1.6rem 1.8rem;margin-bottom:1.6rem;text-align:left}
 .confirm-card .oid{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:.9rem}
@@ -82,6 +83,7 @@
 </div>
 
 <div class="confirm-wrap">
+  <h1 class="sr-only">Your Munchingo order</h1>
 
   <div id="confirm-loading" class="confirm-loading">
     <div class="confirm-spinner"></div>
@@ -92,7 +94,7 @@
     <div class="confirm-check">
       <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
     </div>
-    <h1>Order confirmed!</h1>
+    <h2>Order confirmed!</h2>
     <p class="confirm-sub" id="confirm-greeting">Thank you for ordering from Munchingo.</p>
 
     <div class="confirm-card">
@@ -121,7 +123,7 @@
   </div>
 
   <div id="confirm-fallback" class="confirm-fallback" style="display:none">
-    <h1>Payment received!</h1>
+    <h2>Payment received!</h2>
     <p class="confirm-sub">We're still finishing up your order confirmation on our end — you'll get a WhatsApp message with your order details within a few minutes. If anything looks off, just message us.</p>
     <div class="confirm-ctas">
       <a class="btn outline block" href="gifting.html">Continue Shopping</a>
@@ -130,7 +132,7 @@
   </div>
 
   <div id="confirm-notfound" style="display:none">
-    <h1>We couldn't find that order</h1>
+    <h2>We couldn't find that order</h2>
     <p class="confirm-sub">If you just completed a payment, it's likely still processing — you'll get a WhatsApp confirmation shortly. If you're not sure what happened, message us and we'll sort it out.</p>
     <div class="confirm-ctas">
       <a class="btn outline block" href="gifting.html">Continue Shopping</a>
