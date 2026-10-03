@@ -447,6 +447,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var phoneOk = /^[6-9][0-9]{9}$/.test(phoneDigits) || /^91[6-9][0-9]{9}$/.test(phoneDigits) || /^0[6-9][0-9]{9}$/.test(phoneDigits);
     phoneOk = phoneOk && /^[+0-9\s\-().]+$/.test(phone);
     if (!phoneOk) { showError('Please enter a valid 10-digit mobile number (WhatsApp number preferred, we send order updates there).'); return; }
+    // Backend only adds +91 for exactly 10 digits, so send the bare 10-digit mobile.
+    var phoneToSend = phoneDigits.replace(/^(91|0)(?=[6-9]\d{9}$)/, '');
     if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
 
     // Backend still stores address as a single string — the structured
@@ -465,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name,
-          phone: phone,
+          phone: phoneToSend,
           address: address,
           email: email,
           items: cart,
@@ -483,7 +485,9 @@ document.addEventListener('DOMContentLoaded', function () {
         throw new Error(CHECKOUT_UNREACHABLE_MSG);
       }
       if (!res.ok || !data.ok) {
-        throw new Error((typeof data.error === 'string' && data.error) || 'Something went wrong. Please try again.');
+        var serverErr = new Error((typeof data.error === 'string' && data.error) || 'Something went wrong. Please try again.');
+        serverErr.userFacing = true;
+        throw serverErr;
       }
 
       // Success — clear the gift note so it doesn't carry over to a future
@@ -494,8 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Network failures ("Failed to fetch") and anything unexpected get the
       // friendly message; only our own thrown messages and server-supplied
       // error strings are shown as-is.
-      var known = err && err.message && !/failed to fetch|networkerror|load failed|failed to execute|unexpected token/i.test(err.message);
-      showError(known ? err.message : CHECKOUT_UNREACHABLE_MSG);
+      showError(err && err.userFacing ? err.message : CHECKOUT_UNREACHABLE_MSG);
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
     }
