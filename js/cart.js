@@ -438,12 +438,12 @@
     // ---- Site search ----
     var SEARCH_INDEX = [
       { title: 'Atta Original', desc: 'Cardamom, whole wheat atta, pure desi ghee. ₹259 / 250g.', type: 'Product', url: 'atta-original.html' },
-      { title: 'Atta Kesari', desc: 'Real saffron, hand-mixed into every batch. ₹299 / 250g.', type: 'Product', url: 'atta-kesari.html' },
+      { title: 'Atta Kesari', desc: 'Real saffron, mixed into every batch. ₹299 / 250g.', type: 'Product', url: 'atta-kesari.html' },
       { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. ₹299 / 250g.', type: 'Product', url: 'atta-lite-sugar.html' },
-      { title: 'Atta Ajwain', desc: 'Savoury, spiced with ajwain. ₹259 / 250g.', type: 'Product', url: 'atta-ajwain.html' },
+      { title: 'Atta Ajwain', desc: 'Spiced with ajwain, less sweet than the others. ₹259 / 250g.', type: 'Product', url: 'atta-ajwain.html' },
       { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed. ₹739.', type: 'Gift Set', url: 'gifting.html#trio-gift-set' },
       { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes. ₹999.', type: 'Gift Set', url: 'gifting.html#full-range-set' },
-      { title: 'About Us', desc: 'Our story — baked in Bikaner for over a decade.', type: 'Page', url: 'about.html' },
+      { title: 'About Us', desc: 'Our story — baked in Bikaner by Krazy Bakers.', type: 'Page', url: 'about.html' },
       { title: 'Contact', desc: 'WhatsApp, email, Instagram, corporate gifting.', type: 'Page', url: 'contact.html' },
       { title: 'Your Cart', desc: 'Review your bag and check out on WhatsApp.', type: 'Page', url: 'cart.html' },
       { title: 'Is Atta Sugar-Lite safe for diabetics?', desc: 'Sweetened with maltitol, no added sugar. Contains polyols; may have a laxative effect.', type: 'FAQ', url: 'contact.html#faq-diabetic' },
