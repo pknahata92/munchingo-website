@@ -18,7 +18,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=19">
+<link rel="stylesheet" href="css/style.css?v=31">
+<style>
+/* v2 header shim — same as cart.html / checkout.html (Task 10) */
+.v2-header .nav-toggle{display:none;color:#FBF4E6}
+.v2-header .nav-icons a,
+.v2-header .nav-icons .search-toggle{color:#FBF4E6}
+.v2-header .nav-icons a:hover,
+.v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}
+@media (max-width:720px){
+  .v2-header .nav-toggle{display:flex;align-items:center;justify-content:center}
+}
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -102,30 +113,26 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </div>
 
-<nav>
-  <div class="nav-top">
-    <a class="brand" href="index.html">
-      <img class="mark" src="images/logo-gold-v2.png" alt="Munchingo">
-    </a>
-  </div>
-  <div class="navrow">
-    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
+<nav class="v2-header">
+  <div class="v2-wrap v2-nav">
     <ul>
-      <li class="hide-m"><a class="navlink" href="gifting.html">Gifting</a></li>
-      <li class="hide-m"><a class="navlink" href="about.html">About Us</a></li>
-      <li class="hide-m"><a class="navlink" href="contact.html" style="color:var(--terra)">Contact</a></li>
+      <li><a href="index.html#range">The range</a></li>
+      <li><a href="gifting.html#gifting">Gift sets</a></li>
+      <li><a href="about.html">Our story</a></li>
     </ul>
-    <div class="nav-right">
+    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.png" alt="Munchingo"></a>
+    <div class="v2-nav-right">
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
       <div class="nav-icons">
-      <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      </button>
-      <a href="cart.html" aria-label="Cart" style="position:relative">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span class="bagcount" data-cart-count style="display:none">0</span>
-      </a>
-      <a class="btn solid" style="padding:.5rem 1.1rem;font-size:.68rem" href="gifting.html#products">Shop Now</a>
+        <button class="search-toggle" aria-label="Search" aria-expanded="false" data-search-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+        </button>
+        <a href="cart.html" aria-label="Cart" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l.7 3M6.7 7h13.3l-2 8H8.5L6.7 7Zm1.8 8-1 3h12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+          <span class="bagcount" data-cart-count style="display:none">0</span>
+        </a>
       </div>
+      <a class="btn solid" href="index.html#range">Shop now</a>
     </div>
   </div>
 </nav>
@@ -142,7 +149,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </div>
 
 
-<div class="wrap crumb"><a href="index.html">Home</a> / Contact</div>
+<div class="wrap"><nav class="v2-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span>Contact</nav></div>
 
 <div class="pagehead" style="padding-bottom:1rem;text-align:left">
   <div class="wrap" style="margin:0">
@@ -226,38 +233,24 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </section>
 
-<footer>
-  <div class="wrap top">
-    <div class="brandcol">
-      <img src="images/logo-gold-v2.png" alt="Munchingo">
+<footer class="v2-footer">
+  <div class="v2-wrap v2-top">
+    <div class="v2-about">
+      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.png" alt="Munchingo" style="height:46px"></span></div>
       <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
-      <p class="legal-ids">GSTIN: 06AIIPN5005C2ZP &middot; FSSAI Lic. No. 10826003000333</p>
-      <div class="krazy-credit">
-        <span>A unit of</span>
-        <img loading="lazy" class="kb-credit-logo" src="images/krazy-bakers-logo.png" alt="Krazy Bakers">
+      <p class="v2-legal">GSTIN 06AIIPN5005C2ZP · FSSAI Lic. No. 10826003000333</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+        <span style="color:#EADCC8;opacity:.65;font-size:12.5px">A unit of</span>
+        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left">
       </div>
     </div>
-    <div>
-      <h4>Shop</h4>
-      <a href="gifting.html">The Range</a>
-      <a href="gifting.html#gifting">Gift Sets</a>
-      <a href="cart.html">Cart</a>
-    </div>
-    <div>
-      <h4>Company</h4>
-      <a href="about.html">About Us</a>
-      <a href="contact.html#faq">FAQ</a>
-      <a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-    </div>
-    <div>
-      <h4>Talk to Us</h4>
-      <a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">Instagram @munchingo.delhi</a>
-      <a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a>
-      <a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a>
-    </div>
+    <div><div class="v2-ftop-head"><h5>Shop</h5></div><ul><li><a href="index.html#range">The range</a></li><li><a href="gifting.html#gifting">Gift sets</a></li><li><a href="cart.html">Cart</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Company</h5></div><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html#faq">FAQ</a></li><li><a href="https://wa.me/919988992024?text=Hi%20Munchingo%2C%20I%27m%20interested%20in%20corporate%20gifting.">Corporate Gifting</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div><div class="v2-ftop-head"><h5>Talk to us</h5></div><ul><li><a href="https://wa.me/919988992024" target="_blank" rel="noopener">WhatsApp +91 99889 92024</a></li><li><a href="mailto:info.munchingo@gmail.com">info.munchingo@gmail.com</a></li><li><a href="https://instagram.com/munchingo.delhi" target="_blank" rel="noopener">@munchingo.delhi</a></li></ul></div>
   </div>
+  <p class="v2-psst">psst… <em>grab a letter and toss it around</em> <button class="v2-tidy-btn" id="tidyBtn" type="button">tidy up ↺</button></p>
+  <div class="v2-word" id="word"></div>
+  <div class="v2-wrap v2-baseline"><span>© 2026 Munchingo</span><span>Made in Bikaner with desi ghee</span></div>
 </footer>
 
 <a class="wa-float" href="https://wa.me/919988992024?text=Hi%20Munchingo" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
@@ -305,7 +298,25 @@ document.getElementById('contactForm').addEventListener('submit', async function
   }
 });
 </script>
-<script src="js/cart.js?v=14" defer></script>
+<script>
+// draggable wordmark letters (same behaviour as index.html's / gifting.html's footer)
+(function(){
+  const w = document.getElementById('word');
+  'munchingo'.split('').forEach(ch => { const s=document.createElement('span'); s.textContent=ch; w.appendChild(s); });
+  const letters = [...w.querySelectorAll('span')];
+  const reset = s => { s.pos.x=0; s.pos.y=0; s.style.transition='transform .5s cubic-bezier(.2,1.4,.4,1)'; s.style.transform=''; setTimeout(()=>s.style.transition='',500); };
+  letters.forEach(s => {
+    let sx, sy; s.pos = {x:0,y:0};
+    s.addEventListener('pointerdown', e => { s.setPointerCapture(e.pointerId); s.classList.add('v2-drag'); sx=e.clientX-s.pos.x; sy=e.clientY-s.pos.y; });
+    s.addEventListener('pointermove', e => { if(!s.classList.contains('v2-drag')) return; s.pos.x=e.clientX-sx; s.pos.y=e.clientY-sy; s.style.transform=`translate(${s.pos.x}px,${s.pos.y}px) rotate(${s.pos.x/12}deg)`; });
+    s.addEventListener('pointerup', () => s.classList.remove('v2-drag'));
+    s.addEventListener('dblclick', () => reset(s));
+  });
+  document.getElementById('tidyBtn').addEventListener('click', () => letters.forEach(reset));
+})();
+</script>
+
+<script src="js/cart.js?v=15" defer></script>
 
 </body>
 </html>
