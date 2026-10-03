@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /checkout.html
+Disallow: /checkout
 
 Sitemap: https://munchingo.com/sitemap.xml
