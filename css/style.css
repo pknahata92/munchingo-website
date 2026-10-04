@@ -911,7 +911,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .v2-hero h1 .v2-l2{text-indent:0}
 .has-swash{text-indent:.28em}
 
-/* ── Gift-set builder (homepage #gifts + diwali-gifts.html) — js/gift-builder.js ── */
+/* ── Gift-set builder (homepage #gifts) — js/gift-builder.js ── */
 .gb{background:var(--cream-2);position:relative;overflow:hidden;padding:70px 0}
 .gb-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start;max-width:1280px;margin:0 auto;padding:0 24px}
 .gb h2{font-size:clamp(2.8rem,6vw,5rem);margin:16px 0 18px}
@@ -979,7 +979,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
   .gb-count{font-size:44px}
 }
 
-/* ── Content pages: diwali-gifts, corporate-gifting, maida-free guide ── */
+/* ── Content pages: corporate-gifting, maida-free guide ── */
 .pg-section{padding:4rem 0}
 .pg-section.alt{background:var(--cream-2)}
 .pg-head{max-width:46rem;margin:0 auto 2rem;text-align:center}

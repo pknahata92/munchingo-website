@@ -1,4 +1,4 @@
-// Munchingo gift-set builder — shared by index.html (#gifts) and diwali-gifts.html.
+// Munchingo gift-set builder — used on index.html (#gifts).
 // Pages supply the headline copy plus two empty mount points:
 //   <div data-gb-left></div>   (step 1 set choice + step 2 flavour tiles)
 //   <div data-gb-right></div>  (the dark "your gift set" panel)
