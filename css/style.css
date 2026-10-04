@@ -910,3 +910,111 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .v2-hero h1{text-indent:.3em}
 .v2-hero h1 .v2-l2{text-indent:0}
 .has-swash{text-indent:.28em}
+
+/* ── Gift-set builder (homepage #gifts + diwali-gifts.html) — js/gift-builder.js ── */
+.gb{background:var(--cream-2);position:relative;overflow:hidden;padding:70px 0}
+.gb-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start;max-width:1280px;margin:0 auto;padding:0 24px}
+.gb h2{font-size:clamp(2.8rem,6vw,5rem);margin:16px 0 18px}
+.gb h2 .gb-l2{color:var(--terra);display:block}
+.gb-lede{color:var(--ink-2);font-size:17px;max-width:30em;margin:0 0 34px}
+.gb-step{display:flex;align-items:center;gap:12px;font-family:var(--f-body);font-weight:700;font-size:20px;margin:0 0 16px;color:var(--ink)}
+.gb-step i{font-style:normal;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:14px}
+.gb-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:rgba(42,26,18,.06);padding:8px;border-radius:20px;margin-bottom:34px}
+.gb-opt{position:relative;display:flex;gap:14px;align-items:center;background:transparent;border:0;border-radius:15px;padding:16px;text-align:left;cursor:pointer;font-family:var(--f-body);color:var(--ink);transition:background .2s,box-shadow .2s}
+.gb-opt.on{background:var(--paper);box-shadow:0 8px 20px -12px rgba(42,26,18,.5)}
+.gb-opt .n{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font:400 30px var(--f-display);background:var(--cream-2);flex:none;text-transform:lowercase}
+.gb-opt.on .n{background:var(--terra);color:#fff}
+.gb-opt b{display:block;font-size:16px}
+.gb-opt small{color:var(--ink-2);font-size:12.5px}
+.gb-flag{position:absolute;top:-10px;right:12px;background:var(--marigold);color:var(--ink);font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:999px}
+.gb-flavours{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gb-fl{border:0;border-radius:16px;overflow:hidden;cursor:pointer;background:var(--c);color:#FFF6EA;padding:0;text-align:left;font-family:var(--f-body);transition:transform .15s ease;position:relative}
+.gb-fl:hover{transform:translateY(-3px)}
+.gb-fl:active{transform:scale(.97)}
+.gb-fl img{aspect-ratio:1/1;width:100%;object-fit:cover}
+.gb-fl>span:last-child{display:block;padding:10px 12px 12px;font-weight:600;font-size:13px}
+.gb-plus{position:absolute;top:8px;right:8px;min-width:30px;height:30px;padding:0 8px;border-radius:999px;background:#FFF6EA;color:var(--c);display:grid!important;place-items:center;font-weight:800;font-size:13px;line-height:30px}
+.gb-fl[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.gb-fl.picked{box-shadow:0 0 0 3px var(--marigold)}
+.gb-panel{position:sticky;top:110px;background:#231510;color:#F6EADA;border-radius:28px;padding:30px;box-shadow:0 30px 60px -30px rgba(42,26,18,.8)}
+.gb-k{font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+.gb-count{font-family:var(--f-display);font-size:54px;line-height:1;margin:6px 0 20px;text-transform:lowercase}
+.gb-count small{font-family:var(--f-body);font-size:18px;opacity:.7}
+.gb-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;border:1px solid rgba(246,234,218,.14);border-radius:18px}
+.gb-slot{aspect-ratio:1/1;border-radius:12px;border:1.5px dashed rgba(246,234,218,.25);display:grid;place-items:center;position:relative;overflow:hidden;transition:background .25s}
+.gb-slot::after{content:"";width:10px;height:10px;border-radius:50%;background:rgba(246,234,218,.2)}
+.gb-slot.full{border:0;background:var(--c)}
+.gb-slot.full::after{display:none}
+.gb-slot img{width:100%;height:100%;object-fit:cover;animation:gb-pop .35s cubic-bezier(.2,1.6,.4,1)}
+.gb-slot .x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:0;font-size:13px;cursor:pointer;line-height:22px;padding:0}
+@keyframes gb-pop{from{transform:scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.gb-slot img{animation:none}.gb-fl,.gb-opt{transition:none}}
+.gb-bar{height:6px;border-radius:9px;background:rgba(246,234,218,.12);margin:18px 0;overflow:hidden}
+.gb-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--terra),var(--marigold));transition:width .35s ease}
+.gb-btn-dark{width:100%;background:rgba(246,234,218,.08);color:#F6EADA;border:1px solid rgba(246,234,218,.14);border-radius:4px;padding:14px;font:600 13px var(--f-body);letter-spacing:.10em;text-transform:uppercase;cursor:pointer}
+.gb-btn-dark:hover{background:rgba(246,234,218,.14)}
+.gb-great{margin:0;padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--marigold-soft);background:rgba(227,167,47,.1);border:1px solid rgba(227,167,47,.28);border-radius:14px}
+.gb [hidden]{display:none!important}
+.gb-note{margin:14px 0 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;opacity:.95}
+.gb-note a{color:#F6EADA;text-decoration:underline;display:inline-block;padding:10px 0}
+.gb-note textarea{display:none;width:100%;margin-top:2px;background:rgba(246,234,218,.06);border:1px solid rgba(246,234,218,.18);border-radius:12px;color:#F6EADA;padding:10px 12px;font:14px var(--f-body);resize:none}
+.gb-note.open textarea{display:block}
+.gb-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;opacity:.85}
+.gb-save b{color:var(--marigold)}
+.gb-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(246,234,218,.14);margin-top:10px;padding-top:14px}
+.gb-total b{font-family:var(--f-body);font-size:34px;font-weight:700;letter-spacing:-.01em}
+.gb-cta{width:100%;margin-top:18px;padding:17px}
+.gb-cta[disabled]{background:rgba(246,234,218,.1);color:rgba(246,234,218,.78);box-shadow:none;cursor:not-allowed;transform:none}
+.gb-viewbag{display:block;text-align:center;margin-top:12px;color:var(--marigold-soft);font-weight:600;font-size:14px}
+.gb-fine{font-size:11px;text-align:center;margin:14px 0 0;opacity:.6}
+@media (max-width:900px){
+  .gb{padding:54px 0}
+  .gb-grid{grid-template-columns:1fr;gap:34px}
+  .gb-panel{position:relative;top:0}
+}
+@media (max-width:560px){
+  .gb-opts{grid-template-columns:1fr}
+  .gb-flavours{grid-template-columns:repeat(2,1fr)}
+  .gb-panel{padding:22px;border-radius:22px}
+  .gb-count{font-size:44px}
+}
+
+/* ── Content pages: diwali-gifts, corporate-gifting, maida-free guide ── */
+.pg-section{padding:4rem 0}
+.pg-section.alt{background:var(--cream-2)}
+.pg-head{max-width:46rem;margin:0 auto 2rem;text-align:center}
+.pg-head h2{font-size:clamp(1.7rem,3.2vw,2.5rem);margin:.5rem 0 .8rem}
+.pg-head p{color:var(--ink-2)}
+.pg-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pg-card{background:var(--paper);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.pg-card h3{font-family:var(--f-body);font-weight:700;font-size:1.1rem;color:var(--ink);margin:0 0 .5rem;text-transform:none}
+.pg-card p{color:var(--ink-2);font-size:.95rem;margin:0}
+.pg-card a{color:var(--terra-deep);font-weight:600}
+.pg-list{max-width:46rem;margin:0 auto;padding:0;list-style:none}
+.pg-list li{padding:.85rem 0 .85rem 2rem;position:relative;border-bottom:1px solid rgba(42,26,18,.1);color:var(--ink-2)}
+.pg-list li::before{content:"✓";position:absolute;left:0;color:var(--terra);font-weight:700}
+.pg-list b{color:var(--ink)}
+.pg-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
+.pg-steps .pg-card{position:relative;padding-top:48px}
+.pg-steps .pg-card::before{counter-increment:s;content:counter(s);position:absolute;top:18px;left:26px;width:26px;height:26px;border-radius:50%;background:var(--terra);color:#fff;font:700 13px/26px var(--f-body);text-align:center}
+.pg-cta{background:#231510;color:#F6EADA;border-radius:28px;padding:44px 32px;text-align:center;max-width:56rem;margin:0 auto}
+.pg-cta h2{color:#FFF6EA;font-size:clamp(1.6rem,3vw,2.3rem);margin:0 0 .6rem}
+.pg-cta p{color:#D9C7B4;max-width:34rem;margin:0 auto 1.4rem}
+.pg-cta .btn{margin:.3rem}
+.pg-cta .btn.ghost{background:transparent;color:#F6EADA;border-color:rgba(246,234,218,.4)}
+.pg-article{max-width:44rem;margin:0 auto;padding:1rem 24px 4rem}
+.pg-article h2{font-size:1.5rem;margin:2.4rem 0 .7rem}
+.pg-article p,.pg-article li{color:var(--ink-2);font-size:1.02rem}
+.pg-article p{margin:0 0 1rem}
+.pg-article ul{margin:0 0 1rem 1.2rem}
+.pg-article .meta{font-size:.82rem;color:var(--ink-3);margin-bottom:1.4rem}
+.pg-table{width:100%;border-collapse:collapse;margin:1rem 0 1.4rem;font-size:.92rem}
+.pg-table th,.pg-table td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid rgba(42,26,18,.12);vertical-align:top}
+.pg-table th{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-deep)}
+.pg-note{background:var(--cream-2);border-left:4px solid var(--marigold);padding:1rem 1.2rem;border-radius:0 12px 12px 0;color:var(--ink-2);font-size:.95rem;margin:1.2rem 0}
+@media (max-width:760px){
+  .pg-cards,.pg-steps{grid-template-columns:1fr}
+  .pg-section{padding:2.8rem 0}
+  .pg-cta{padding:34px 22px;border-radius:22px}
+  .pg-table{display:block;overflow-x:auto}
+}
