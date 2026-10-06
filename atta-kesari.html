@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=38">
+<link rel="stylesheet" href="css/style.css?v=42">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's (Task 4) —
    duplicated here rather than touching index.html, which is out of this
@@ -77,12 +77,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 </head>
-<body style="--c:var(--kesari)">
+<body class="v2" style="--c:var(--kesari)">
 
 <div class="announce">
   <div class="announce-track">
-    <span>Baked fresh in Bikaner</span><span>Secure online checkout</span><span>Shipping across India</span>
-    <span aria-hidden="true">Baked fresh in Bikaner</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span>
+    <span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Shipping across India</span><span>Baked fresh in Bikaner</span>
+    <span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
   </div>
 </div>
 
@@ -296,7 +296,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="data/products.js"></script>
+<script src="data/products.js?v=2"></script>
 <script>
 (function () {
   // Cross-sell "Pair it with another" cards — generated from data/products.js
