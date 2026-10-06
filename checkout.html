@@ -8,8 +8,8 @@
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=37">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=38">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -44,6 +44,13 @@
 .checkout-form .addr-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin-bottom:1.2rem}
 .checkout-form .addr-row .field{margin-bottom:0}
 .checkout-form .addr-row .field.full{grid-column:1/-1}
+.checkout-form .ck-pin-status{display:block;margin-top:5px;font-size:12.5px;color:var(--ink-3);min-height:1.2em}
+.checkout-form .ck-pin-status.ok{color:#2F6B3A}
+.checkout-form .ck-more{display:flex;gap:20px;flex-wrap:wrap;margin:-.4rem 0 1rem}
+.checkout-form .ck-link{background:none;border:0;padding:8px 0;color:var(--terra-deep);font:600 13.5px var(--f-body);text-decoration:underline;cursor:pointer}
+.checkout-form .ck-remember{display:flex;gap:9px;align-items:center;font-size:13px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin:.2rem 0 1.1rem}
+.checkout-form .ck-remember input{width:auto;margin:0}
+.checkout-form [hidden]{display:none!important}
 .checkout-form .addr-hint{font-size:11.5px;color:var(--ink-3);margin:-.9rem 0 1.2rem}
 .checkout-note{font-size:12.5px;color:var(--ink-3);margin-top:1rem;line-height:1.6}
 .checkout-error{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.8rem 1rem;font-size:13px;margin-bottom:1.2rem;display:none}
@@ -95,7 +102,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       <li><a href="index.html#gifts">Gift sets</a></li>
       <li><a href="about.html">Our story</a></li>
     </ul>
-    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.png" alt="Munchingo"></a>
+    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.webp" alt="Munchingo"></a>
     <div class="v2-nav-right">
       <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
       <div class="nav-icons">
@@ -156,38 +163,44 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <form class="checkout-form" id="checkout-form">
       <div class="field">
         <label for="ck-name">Full name</label>
-        <input type="text" id="ck-name" placeholder="Your name" required>
+        <input type="text" id="ck-name" placeholder="Your name" autocomplete="name" required>
       </div>
       <div class="field">
         <label for="ck-phone">WhatsApp number</label>
-        <input type="tel" id="ck-phone" placeholder="10-digit mobile number" required>
+        <input type="tel" id="ck-phone" placeholder="10-digit mobile number" inputmode="tel" autocomplete="tel-national" required>
       </div>
       <div class="field">
-        <label for="ck-addr-line1">Flat / house no., street</label>
-        <input type="text" id="ck-addr-line1" placeholder="e.g. B-42, Sector 14" required>
-      </div>
-      <div class="field">
-        <label for="ck-addr-area">Area / locality</label>
-        <input type="text" id="ck-addr-area" placeholder="e.g. Near City Park" required>
+        <label for="ck-addr-pincode">Pincode</label>
+        <input type="text" inputmode="numeric" maxlength="6" id="ck-addr-pincode" placeholder="6-digit pincode" autocomplete="postal-code" required>
+        <small class="ck-pin-status" id="ck-pin-status" aria-live="polite"></small>
       </div>
       <div class="addr-row">
         <div class="field">
           <label for="ck-addr-city">City</label>
-          <input type="text" id="ck-addr-city" placeholder="City" required>
+          <input type="text" id="ck-addr-city" placeholder="City" autocomplete="address-level2" required>
         </div>
         <div class="field">
           <label for="ck-addr-state">State</label>
-          <input type="text" id="ck-addr-state" placeholder="State" required>
-        </div>
-        <div class="field full">
-          <label for="ck-addr-pincode">Pincode</label>
-          <input type="text" inputmode="numeric" maxlength="6" id="ck-addr-pincode" placeholder="6-digit pincode" required>
+          <input type="text" id="ck-addr-state" placeholder="State" autocomplete="address-level1" required>
         </div>
       </div>
       <div class="field">
-        <label for="ck-email" id="ck-email-label">Email (optional)</label>
-        <input type="email" id="ck-email" placeholder="For an order confirmation email">
+        <label for="ck-addr-line1">Address</label>
+        <textarea id="ck-addr-line1" rows="2" placeholder="House / flat no., street, area" autocomplete="street-address" required></textarea>
       </div>
+      <div class="ck-more">
+        <button type="button" class="ck-link" id="ck-email-toggle">+ Add email for a receipt</button>
+        <button type="button" class="ck-link" id="ck-gift-toggle">🎁 Add a gift note</button>
+      </div>
+      <div class="field" id="ck-email-field" hidden>
+        <label for="ck-email" id="ck-email-label">Email (optional)</label>
+        <input type="email" id="ck-email" placeholder="For an order confirmation email" autocomplete="email">
+      </div>
+      <div class="field" id="ck-gift-field" hidden>
+        <label for="ck-gift-note">Gift note</label>
+        <textarea id="ck-gift-note" rows="2" maxlength="200" placeholder="e.g. Happy Diwali, love Priya"></textarea>
+      </div>
+      <label class="ck-remember"><input type="checkbox" id="ck-remember" checked> Remember my details on this phone</label>
       <div class="trust-row">
         <div class="trust-item">
           <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
@@ -211,12 +224,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <footer class="v2-footer">
   <div class="v2-wrap v2-top">
     <div class="v2-about">
-      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.png" alt="Munchingo" style="height:46px"></span></div>
+      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.webp" alt="Munchingo" style="height:46px"></span></div>
       <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
       <p class="v2-legal">GSTIN 06AIIPN5005C2ZP · FSSAI Lic. No. 10826003000333</p>
       <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
         <span style="color:#EADCC8;opacity:.65;font-size:12.5px">From the house of</span>
-        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left">
+        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left" loading="lazy" decoding="async">
       </div>
     </div>
     <div><div class="v2-ftop-head"><h5>Shop</h5></div><ul><li><a href="index.html#range">The range</a></li><li><a href="index.html#gifts">Gift sets</a></li><li><a href="cart.html">Cart</a></li></ul></div>
@@ -246,7 +259,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=19"></script>
+<script src="js/cart.js?v=20"></script>
+<script src="js/cart-bar.js?v=1" defer></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
@@ -323,6 +337,7 @@ function renderSummary() {
   submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
   submitBtn.disabled = belowMin;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (optional)';
+  if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
 
   // Adding a cross-sell item or swapping to the Full Range set both change
   // the total, so any already-applied discount is now stale — clear it and
@@ -434,14 +449,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var name = document.getElementById('ck-name').value.trim();
     var phone = document.getElementById('ck-phone').value.trim();
     var addrLine1 = document.getElementById('ck-addr-line1').value.trim();
-    var addrArea = document.getElementById('ck-addr-area').value.trim();
     var addrCity = document.getElementById('ck-addr-city').value.trim();
     var addrState = document.getElementById('ck-addr-state').value.trim();
     var addrPincode = document.getElementById('ck-addr-pincode').value.trim();
     var email = document.getElementById('ck-email').value.trim();
     var subscribe = document.getElementById('ck-subscribe').checked;
 
-    if (!name || !phone || !addrLine1 || !addrArea || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
+    if (!name || !phone || !addrLine1 || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
     if (!/^[0-9]{6}$/.test(addrPincode)) { showError('Pincode should be exactly 6 digits.'); return; }
     var phoneDigits = phone.replace(/\D/g, '');
     var phoneOk = /^[6-9][0-9]{9}$/.test(phoneDigits) || /^91[6-9][0-9]{9}$/.test(phoneDigits) || /^0[6-9][0-9]{9}$/.test(phoneDigits);
@@ -454,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Backend still stores address as a single string — the structured
     // fields are a frontend UX improvement (real validation, no illegible
     // one-line addresses), not a backend/schema change.
-    var address = addrLine1 + ', ' + addrArea + ', ' + addrCity + ', ' + addrState + ' - ' + addrPincode;
+    var address = addrLine1.replace(/\s*\n\s*/g, ', ') + ', ' + addrCity + ', ' + addrState + ' - ' + addrPincode;
 
     var submitBtn = document.getElementById('ck-submit');
     var originalText = submitBtn.textContent;
@@ -492,6 +506,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Success — clear the gift note so it doesn't carry over to a future
       // order, then hand off to Razorpay's hosted payment page.
+      try { window.munchingoSaveCustomer && window.munchingoSaveCustomer(); } catch (e) {}
       MunchingoCart.setGiftNote('');
       window.location.href = data.paymentUrl;
     } catch (err) {
@@ -503,6 +518,65 @@ document.addEventListener('DOMContentLoaded', function () {
       submitBtn.textContent = originalText;
     }
   });
+});
+</script>
+
+<script>
+// Faster checkout on phones: remembered details, pincode -> city/state, collapsed extras.
+document.addEventListener('DOMContentLoaded', function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'munchingo_customer';
+
+  // 1. Prefill returning customers (stored only on this phone).
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+  if (saved) {
+    [['ck-name','name'],['ck-phone','phone'],['ck-addr-line1','address'],['ck-addr-pincode','pincode'],['ck-addr-city','city'],['ck-addr-state','state'],['ck-email','email']]
+      .forEach(function (m) { if (saved[m[1]] && $(m[0]) && !$(m[0]).value) $(m[0]).value = saved[m[1]]; });
+    if (saved.email) $('ck-email-field').hidden = false;
+  }
+  window.munchingoSaveCustomer = function () {
+    try {
+      if (!$('ck-remember').checked) { localStorage.removeItem(KEY); return; }
+      localStorage.setItem(KEY, JSON.stringify({
+        name: $('ck-name').value.trim(), phone: $('ck-phone').value.trim(), address: $('ck-addr-line1').value.trim(),
+        pincode: $('ck-addr-pincode').value.trim(), city: $('ck-addr-city').value.trim(), state: $('ck-addr-state').value.trim(), email: $('ck-email').value.trim()
+      }));
+    } catch (e) { /* storage blocked: ignore */ }
+  };
+
+  // 2. Pincode -> city + state (India Post public lookup; only the 6-digit pincode is sent).
+  var pin = $('ck-addr-pincode'), status = $('ck-pin-status'), lastLooked = '', autoCity = '', autoState = '';
+  function lookup() {
+    var v = pin.value.replace(/\D/g, '');
+    if (v.length !== 6 || v === lastLooked) return;
+    lastLooked = v; status.className = 'ck-pin-status'; status.textContent = 'Finding your city…';
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 4000);
+    fetch('https://api.postalpincode.in/pincode/' + v, ctl ? { signal: ctl.signal } : {})
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        clearTimeout(timer);
+        var po = d && d[0] && d[0].Status === 'Success' && d[0].PostOffice && d[0].PostOffice[0];
+        if (!po) { status.textContent = 'Please type your city and state.'; return; }
+        var city = $('ck-addr-city'), state = $('ck-addr-state');
+        if (!city.value || city.value === autoCity) { city.value = po.District || po.Block || ''; autoCity = city.value; }
+        if (!state.value || state.value === autoState) { state.value = po.State || ''; autoState = state.value; }
+        status.className = 'ck-pin-status ok'; status.textContent = '✓ ' + city.value + ', ' + state.value;
+      })
+      .catch(function () { clearTimeout(timer); status.className = 'ck-pin-status'; status.textContent = 'Please type your city and state.'; });
+  }
+  pin.addEventListener('input', lookup);
+  if (pin.value.replace(/\D/g, '').length === 6) lookup();
+
+  // 3. Collapsed extras.
+  $('ck-email-toggle').addEventListener('click', function () { $('ck-email-field').hidden = false; this.hidden = true; $('ck-email').focus(); });
+  var gn = $('ck-gift-note');
+  $('ck-gift-toggle').addEventListener('click', function () { $('ck-gift-field').hidden = false; this.hidden = true; gn.focus(); });
+  var existing = MunchingoCart.getGiftNote();
+  if (existing) { gn.value = existing; $('ck-gift-field').hidden = false; $('ck-gift-toggle').hidden = true; }
+  if (!$('ck-email-field').hidden) $('ck-email-toggle').hidden = true;
+  gn.addEventListener('input', function () { MunchingoCart.setGiftNote(gn.value); });
 });
 </script>
 

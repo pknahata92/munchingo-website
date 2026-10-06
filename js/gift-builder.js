@@ -16,10 +16,10 @@
   // Canonical order (matches gifting.html's checkbox order) so the cart line is
   // identical whichever order the customer taps the tiles.
   var FLAVOURS = [
-    { value: 'Original',   label: 'Original',   title: 'Atta Original',   img: 'images/box-original.jpg', color: 'var(--ruby)' },
-    { value: 'Kesari',     label: 'Kesari',     title: 'Atta Kesari',     img: 'images/box-kesari.jpg',   color: 'var(--kesari)' },
-    { value: 'Lite-sugar', label: 'Sugar-Lite', title: 'Atta Sugar-Lite', img: 'images/box-lite.jpg',     color: 'var(--mauve)' },
-    { value: 'Ajwain',     label: 'Ajwain',     title: 'Atta Ajwain',     img: 'images/box-ajwain.jpg',   color: 'var(--slate)' }
+    { value: 'Original',   label: 'Original',   title: 'Atta Original',   img: 'images/box-original.webp', color: 'var(--ruby)' },
+    { value: 'Kesari',     label: 'Kesari',     title: 'Atta Kesari',     img: 'images/box-kesari.webp',   color: 'var(--kesari)' },
+    { value: 'Lite-sugar', label: 'Sugar-Lite', title: 'Atta Sugar-Lite', img: 'images/box-lite.webp',     color: 'var(--mauve)' },
+    { value: 'Ajwain',     label: 'Ajwain',     title: 'Atta Ajwain',     img: 'images/box-ajwain.webp',   color: 'var(--slate)' }
   ];
   // Selling prices (what the customer would actually pay per box). Taken from
   // data/products.js when that file is on the page, else these mirror it.

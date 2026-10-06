@@ -37,6 +37,8 @@
   function saveCart(cart) {
     localStorage.setItem(KEY, JSON.stringify(cart));
     renderBadge();
+    // Lets other scripts (the sticky bag bar) react to any cart change.
+    try { document.dispatchEvent(new CustomEvent('munchingo:cart')); } catch (e) { /* old browsers: bar refreshes on next page */ }
   }
 
   // Optional gift note — set on cart.html, read (and cleared after a
@@ -197,10 +199,10 @@
   // those are dark patterns, not persuasion, and don't fit how Munchingo
   // talks to people.
   var CROSS_SELL_PRODUCTS = [
-    { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.jpg' },
-    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.jpg' },
-    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.jpg' },
-    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.jpg' }
+    { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
+    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
+    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
   ];
 
   function renderCrossSellHtml() {

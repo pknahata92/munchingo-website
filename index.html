@@ -17,8 +17,8 @@
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=37">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=38">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -101,7 +101,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       <li><a href="#gifts">Gift sets</a></li>
       <li><a href="about.html">Our story</a></li>
     </ul>
-    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.png" alt="Munchingo"></a>
+    <a class="v2-logo-badge" href="index.html" aria-label="Munchingo home"><img src="images/logo-gold-v2.webp" alt="Munchingo"></a>
     <div class="v2-nav-right">
       <button class="nav-toggle" aria-label="Menu" aria-expanded="false"></button>
       <div class="nav-icons">
@@ -147,7 +147,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <div><b>90</b><span>days<br>best before</span></div>
     </div>
     <div class="v2-hero-art">
-      <div class="v2-front"><img src="images/box-original.jpg" alt="Atta Original box with cookies"></div>
+      <div class="v2-front"><img src="images/box-original.webp" alt="Atta Original box with cookies" fetchpriority="high" decoding="async"></div>
       <div class="v2-sticker" aria-hidden="true">
         <svg viewBox="0 0 150 150"><defs><path id="circ" d="M75,21 a54,54 0 1,1 -0.01,0"/></defs><circle cx="75" cy="75" r="42" fill="none" stroke="#2A1A12" stroke-opacity=".55" stroke-width="1.2" stroke-dasharray="2 3"/><text><textPath href="#circ" textLength="339" lengthAdjust="spacing">PURE DESI GHEE ✦ BAKED IN BIKANER ✦ </textPath></text></svg>
         <div class="v2-mid"><b>no</b><span>maida</span></div>
@@ -177,7 +177,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     var fine = p.polyolWarning ? '<p class="v2-fine">' + p.polyolWarning + '</p>' : '';
     return '' +
       '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
-        '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '"><span class="v2-save">Save ₹' + p.save + '</span></a>' +
+        '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800"><span class="v2-save">Save ₹' + p.save + '</span></a>' +
         '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
           '<div class="v2-price"><b>₹' + p.price + '</b><s>₹' + p.mrp + '</s><span>· 250g</span></div>' +
           '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="250g">Add to bag</button></div>' +
@@ -226,11 +226,11 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="v2-wrap">
     <div class="v2-head"><div><span class="eyebrow">How we bake it</span><h2>Made the <span class="script">old-fashioned</span> way.</h2></div></div>
     <div class="v2-stepper">
-      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-rolling.jpg" alt="Dough being rolled by hand"></div>
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-rolling.webp" alt="Dough being rolled by hand" loading="lazy" decoding="async"></div>
         <div><span class="v2-pnum">01 / 03</span><h3>Atta comes first.</h3><p>Whole wheat atta sits at the top of our ingredient list, because it's genuinely the biggest thing in every cookie. No maida hiding behind it.</p></div></div>
-      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-tray.jpg" alt="Trays of cookies ready for the oven"></div>
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/craft-tray.webp" alt="Trays of cookies ready for the oven" loading="lazy" decoding="async"></div>
         <div><span class="v2-pnum">02 / 03</span><h3>Desi ghee. Never palm oil.</h3><p>Pure desi ghee gives these their short, crumbly bite. Real sugar in honest amounts, not chemistry dressed up as sweetness.</p></div></div>
-      <div class="v2-pstep"><div class="v2-pimg"><img src="images/bikaner-wide.jpg" alt="The bakery in Bikaner"></div>
+      <div class="v2-pstep"><div class="v2-pimg"><img src="images/bikaner-wide.webp" alt="The bakery in Bikaner" loading="lazy" decoding="async"></div>
         <div><span class="v2-pnum">03 / 03</span><h3>Small batches, in Bikaner.</h3><p>Baked by Krazy Bakers, our baking partner in Bikaner, in small batches.</p></div></div>
     </div>
   </div>
@@ -254,12 +254,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <footer class="v2-footer">
   <div class="v2-wrap v2-top">
     <div class="v2-about">
-      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.png" alt="Munchingo" style="height:46px"></span></div>
+      <div class="v2-ftop-head"><span class="v2-logo-badge" style="display:inline-block"><img src="images/logo-gold-v2.webp" alt="Munchingo" style="height:46px"></span></div>
       <p>Small-batch, whole wheat atta cookies made in Bikaner. Made in India. Vegetarian.</p>
       <p class="v2-legal">GSTIN 06AIIPN5005C2ZP · FSSAI Lic. No. 10826003000333</p>
       <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
         <span style="color:#EADCC8;opacity:.65;font-size:12.5px">From the house of</span>
-        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left">
+        <img src="images/krazy-bakers-logo.png" alt="Krazy Bakers" style="height:28px;width:auto;object-position:left" loading="lazy" decoding="async">
       </div>
     </div>
     <div><div class="v2-ftop-head"><h5>Shop</h5></div><ul><li><a href="#range">The range</a></li><li><a href="#gifts">Gift sets</a></li><li><a href="cart.html">Cart</a></li></ul></div>
@@ -305,7 +305,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=19" defer></script>
+<script src="js/cart.js?v=20" defer></script>
+<script src="js/cart-bar.js?v=1" defer></script>
 <script src="js/gift-builder.js?v=1" defer></script>
 
 </body>
