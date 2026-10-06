@@ -1137,3 +1137,8 @@ body.v2 .v2-footer .v2-top{grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
   .v2-founder .fo-photo{aspect-ratio:1/1;border-radius:22px}
   .v2-founder p{font-size:15px;margin-bottom:18px}
 }
+
+/* Range cards: keep the cream "Add to bag" button in each card's own colour (the global pill style must not recolour it) */
+body.v2 .v2-range .v2-card .v2-add{background:#FFF6EA;color:var(--c);box-shadow:none}
+body.v2 .v2-range .v2-card .v2-add:hover{background:#fff}
+body.v2 .v2-range .v2-card .v2-add.v2-added{background:var(--marigold);color:var(--ink)}
