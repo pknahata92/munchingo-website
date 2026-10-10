@@ -18,7 +18,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=43">
+<link rel="preload" as="image" href="images/hero-banner.webp" media="(max-width:720px)" fetchpriority="high">
+<link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
+<link rel="stylesheet" href="css/style.css?v=46">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -331,7 +333,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=20" defer></script>
+<script src="js/cart.js?v=21" defer></script>
 <script src="js/cart-bar.js?v=1" defer></script>
 <script src="js/gift-builder.js?v=2" defer></script>
 

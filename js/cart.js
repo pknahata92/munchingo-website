@@ -52,12 +52,25 @@
     try { localStorage.setItem(GIFT_NOTE_KEY, note || ''); }
     catch (e) { /* ignore — private-browsing / storage blocked */ }
   }
+  // Funnel analytics (GA4 + Meta Pixel). Fires only on the real domain, so previews and tests never pollute the data.
+  function track(event, meta, params) {
+    try {
+      if (!/(^|\.)munchingo\.com$/.test(location.hostname)) return;
+      if (typeof window.gtag === 'function') window.gtag('event', event, params);
+      if (typeof window.fbq === 'function' && meta) window.fbq('track', meta, {
+        value: params.value, currency: 'INR', content_type: 'product',
+        content_ids: (params.items || []).map(function (i) { return i.item_id; }), num_items: (params.items || []).length
+      });
+    } catch (e) { /* tracking must never break the cart */ }
+  }
+
   function addToCart(item) {
     var cart = getCart();
     var existing = cart.find(function (c) { return c.slug === item.slug; });
     if (existing) { existing.qty += 1; }
     else { cart.push({ slug: item.slug, name: item.name, price: item.price, mrp: item.mrp, unit: item.unit, qty: 1 }); }
     saveCart(cart);
+    track('add_to_cart', 'AddToCart', { currency: 'INR', value: item.price, items: [{ item_id: item.slug, item_name: item.name, price: item.price, quantity: 1 }] });
     return cart;
   }
   function removeFromCart(slug) {
@@ -266,6 +279,7 @@
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,
     isFlavourSoldOut: isFlavourSoldOut,
+    track: track,
     renderAovProgressHtml: renderAovProgressHtml,
     initAovUpgrade: initAovUpgrade,
     renderCrossSellHtml: renderCrossSellHtml,
