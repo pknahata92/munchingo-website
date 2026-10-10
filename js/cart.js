@@ -21,8 +21,15 @@
     fetch(STOCK_API).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !Array.isArray(j.soldOut)) return;
       var fresh = j.soldOut.slice().sort().join(','), had = SOLD_OUT_SLUGS.slice().sort().join(',');
-      try { localStorage.setItem(STOCK_KEY, JSON.stringify(j.soldOut)); } catch (e) { /* storage blocked: fine */ }
-      if (fresh !== had) location.reload();
+      if (fresh === had) return;
+      // Only reload if the new list could be remembered; with storage blocked (private mode) the next load would
+      // see the same difference and reload forever. One reload per tab session at most.
+      try {
+        localStorage.setItem(STOCK_KEY, JSON.stringify(j.soldOut));
+        if (sessionStorage.getItem('munchingo_stock_reload') === fresh) return;
+        sessionStorage.setItem('munchingo_stock_reload', fresh);
+        location.reload();
+      } catch (e) { SOLD_OUT_SLUGS = j.soldOut; }
     }).catch(function () { /* backend asleep or offline: keep what we have; checkout still enforces it */ });
   }
 

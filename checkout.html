@@ -352,7 +352,7 @@ function renderSummary() {
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
   submitBtn.textContent = closed ? 'Orders not open yet' : belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ₹' : 'Pay ₹') + payable);
   submitBtn.disabled = belowMin || closed;
-  document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (for your GST invoice)';
+  document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : (MunchingoCart.isPreorder() ? 'Email (required for your pre-order confirmation)' : 'Email (for your GST invoice)');
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
 
   // Adding a cross-sell item or swapping to the Full Range set both change
@@ -483,6 +483,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
     if (!phoneOk) { showError('Please enter a valid 10-digit mobile number (WhatsApp number preferred, we send order updates there).'); return; }
     // Backend only adds +91 for exactly 10 digits, so send the bare 10-digit mobile.
     var phoneToSend = phoneDigits.replace(/^(91|0)(?=[6-9]\d{9}$)/, '');
+    if (MunchingoCart.isPreorder() && !email) { showError('Please add your email address. Pre-orders are confirmed, and tracking is sent, by email.'); return; }
     if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
 
     // Backend still stores address as a single string — the structured
