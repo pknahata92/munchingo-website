@@ -1244,3 +1244,13 @@ body.v2 .v2-countdown h2{color:#FFF9EC}
 body.v2 .v2-band h2,body.v2 .v2-band p,body.v2 .v2-band .eyebrow,body.v2 .v2-band .v2-band-eyebrow{color:#FFF6EA}
 body.v2 .v2-band h2 .script{color:var(--marigold-soft)}
 body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
+
+/* Footer contact links: icon + text */
+.v2-footer .v2-ico-link{display:inline-flex;align-items:center;gap:10px}
+.v2-footer .v2-ico-link svg{width:18px;height:18px;flex:none;opacity:.9}
+
+/* iPhone hero: breathing room under the header, and a legible script word on the bright photo */
+@media (max-width:720px){
+  .v2-hero{padding-top:28px!important}
+  body.v2 .v2-hero h1 .script{text-shadow:0 2px 16px rgba(20,10,4,.55),0 0 2px rgba(20,10,4,.35)}
+}
