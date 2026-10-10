@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=60">
+<link rel="stylesheet" href="css/style.css?v=61">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -133,6 +133,11 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <div class="checkout-wrap">
   <h1 style="margin:0 0 .3rem">Checkout</h1>
   <p style="color:var(--ink-3);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. We'll confirm your order on WhatsApp once payment goes through.</p>
+    <div class="checkout-closed" id="ck-closed" hidden role="status">
+      <b>Orders open on 15 October at 1:00 PM IST.</b>
+      <span>Fill your bag now. We&rsquo;ll be ready for you at launch.</span>
+    </div>
+
 
   <div id="checkout-empty" style="display:none">
     <p>Your cart is empty. <a href="gifting.html">Browse the range →</a></p>
@@ -259,7 +264,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=23"></script>
+<script src="js/cart.js?v=24"></script>
 <script src="js/cart-bar.js?v=2" defer></script>
 <script>
 // Point this at your Render backend.
@@ -301,6 +306,8 @@ function renderSummary() {
   var total = MunchingoCart.cartTotal();
   var gstAmount = Math.round(total - (total / 1.05));
   var belowMin = MunchingoCart.cartBoxes() < MIN_BOXES;
+  var closed = !MunchingoCart.ordersOpen();
+  document.getElementById('ck-closed').hidden = !closed;
 
   var subscribeChecked = document.getElementById('ck-subscribe').checked;
   // Mutually exclusive with a promo code — matches the backend, which
@@ -334,8 +341,8 @@ function renderSummary() {
     discountHtml +
     (discountHtml ? '<div class="row total"><span>Payable</span><span>₹' + payable + '</span></div>' : '') +
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
-  submitBtn.textContent = belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
-  submitBtn.disabled = belowMin;
+  submitBtn.textContent = closed ? 'Orders open 15 Oct, 1 PM IST' : belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
+  submitBtn.disabled = belowMin || closed;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (for your GST invoice)';
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
 
@@ -439,7 +446,11 @@ document.addEventListener('DOMContentLoaded', function () {
     renderSummary();
   });
 
-  document.getElementById('checkout-form').addEventListener('submit', async function (e) {
+  if (!MunchingoCart.ordersOpen()) {
+  setTimeout(function () { location.reload(); }, Math.max(1000, MunchingoCart.LAUNCH_AT - Date.now() + 1500));
+}
+
+document.getElementById('checkout-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     hideError();
 
@@ -489,6 +500,7 @@ document.addEventListener('DOMContentLoaded', function () {
           couponCode: (!subscribe && appliedCoupon) ? appliedCoupon.code : undefined,
           subscribe: subscribe || undefined,
           giftNote: MunchingoCart.getGiftNote() || undefined,
+          previewKey: MunchingoCart.previewKey() || undefined,
           addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
         }),
       });

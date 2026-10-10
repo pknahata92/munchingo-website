@@ -1259,3 +1259,8 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 @media (max-width:720px){
   .v2-hero h1,body.v2 .v2-hero h1{text-indent:0}
 }
+
+/* Checkout: pre-launch closed notice */
+.checkout-closed{display:flex;flex-direction:column;gap:2px;margin:0 0 16px;padding:14px 16px;border-radius:14px;background:#25544A;color:#FBF4E6;font-size:14px;line-height:1.5}
+.checkout-closed b{color:var(--marigold);font-size:15px}
+.checkout-closed[hidden]{display:none}

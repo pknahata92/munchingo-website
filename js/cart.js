@@ -108,6 +108,19 @@
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hi Munchingo 👋');
   }
 
+  // ---- Orders open at launch (15 Oct 2026, 1:00 PM IST) ----
+  // The backend enforces this too (utils/launch.js); this just shows the closed state nicely.
+  // The owner can test earlier by opening checkout.html?preview=<ORDER_PREVIEW_KEY>.
+  var LAUNCH_AT = Date.parse('2026-10-15T13:00:00+05:30');
+  function previewKey() {
+    try {
+      var m = location.search.match(/[?&]preview=([^&]+)/);
+      if (m) sessionStorage.setItem('mngPreview', decodeURIComponent(m[1]));
+      return sessionStorage.getItem('mngPreview') || '';
+    } catch (e) { return ''; }
+  }
+  function ordersOpen() { return Date.now() >= LAUNCH_AT || !!previewKey(); }
+
   // ---- Minimum order: 3 boxes (replaces the old Rs 499 value minimum) ----
   // A Trio gift set is 3 boxes and the Full Range set is 4; every other item is one box.
   // Must match MIN_BOXES in webhook-backend/routes/checkout.js.
@@ -290,6 +303,9 @@
     cartCount: cartCount,
     cartTotal: cartTotal,
     cartBoxes: cartBoxes,
+    ordersOpen: ordersOpen,
+    previewKey: previewKey,
+    LAUNCH_AT: LAUNCH_AT,
     MIN_BOXES: MIN_BOXES,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
