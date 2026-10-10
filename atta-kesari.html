@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=46">
+<link rel="stylesheet" href="css/style.css?v=54">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's (Task 4) —
    duplicated here rather than touching index.html, which is out of this
@@ -129,13 +129,17 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <div class="photo-carousel" data-carousel>
           <div class="slides">
             <div class="slide active"><img src="images/box-kesari.webp" alt="Atta Kesari box with saffron and cookies"></div>
+            <div class="slide"><img loading="lazy" src="images/pack-kesari.webp" alt="Atta Kesari box, front" width="800" height="800"></div>
+            <div class="slide"><img loading="lazy" src="images/tray-kesari.webp" alt="Atta Kesari cookies, packed fresh in the tray" width="900" height="900"></div>
             <div class="slide"><img loading="lazy" src="images/ingredients-kesari.png" alt="Atta Kesari ingredients list"></div>
             <div class="slide"><img loading="lazy" src="images/nutrition-kesari.png" alt="Atta Kesari nutrition information"></div>
           </div>
           <div class="dots">
             <button class="dot active" data-slide="0" aria-label="Product photo"></button>
-            <button class="dot" data-slide="1" aria-label="Ingredients"></button>
-            <button class="dot" data-slide="2" aria-label="Nutrition information"></button>
+            <button class="dot" data-slide="1" aria-label="The box"></button>
+            <button class="dot" data-slide="2" aria-label="Packed fresh"></button>
+            <button class="dot" data-slide="3" aria-label="Ingredients"></button>
+            <button class="dot" data-slide="4" aria-label="Nutrition information"></button>
           </div>
         </div>
       </div>
@@ -296,7 +300,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="data/products.js?v=2"></script>
+<script src="data/products.js?v=3"></script>
 <script>
 (function () {
   // Cross-sell "Pair it with another" cards — generated from data/products.js
@@ -320,7 +324,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=21" defer></script>
+<script src="js/cart.js?v=22" defer></script>
 <script src="js/cart-bar.js?v=1" defer></script>
 <script>
 // Buy box: quantity stepper, real "add N to cart" (via window.MunchingoCart,
