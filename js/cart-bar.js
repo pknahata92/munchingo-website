@@ -4,7 +4,6 @@
 // Not shown on cart / checkout / order-confirmed.
 (function () {
   'use strict';
-  var MIN_ORDER = 499; // keep equal to MIN_ORDER_VALUE in checkout.html
   if (/(^|\/)(cart|checkout|order-confirmed)(\.html)?\/?$/.test(location.pathname)) return;
 
   function inr(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
@@ -22,13 +21,14 @@
     var c = window.MunchingoCart; if (!c) return;
     var n = c.cartCount(), total = c.cartTotal();
     if (!n) { bar.classList.remove('on'); document.body.classList.remove('has-mcb'); return; }
-    var short = Math.max(0, MIN_ORDER - total);
+    var boxes = c.cartBoxes(), min = c.MIN_BOXES, short = Math.max(0, min - boxes);
     q('count').textContent = n + (n === 1 ? ' item' : ' items');
     q('total').textContent = inr(total);
-    q('fill').style.width = Math.min(100, Math.round(total / MIN_ORDER * 100)) + '%';
-    q('hint').textContent = short ? 'Add ' + inr(short) + ' more to order' : 'Ready to order';
+    q('fill').style.width = Math.min(100, Math.round(boxes / min * 100)) + '%';
+    var more = short + (short === 1 ? ' more box' : ' more boxes');
+    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : 'Ready to order';
     var cta = q('cta');
-    if (short) { cta.textContent = 'Add ' + inr(short) + ' more'; cta.setAttribute('href', 'index.html#range'); }
+    if (short) { cta.textContent = 'Add ' + more; cta.setAttribute('href', 'index.html#range'); }
     else { cta.textContent = 'Checkout →'; cta.setAttribute('href', 'checkout.html'); }
     bar.classList.add('on'); document.body.classList.add('has-mcb');
   }

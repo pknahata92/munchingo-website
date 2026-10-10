@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=57">
+<link rel="stylesheet" href="css/style.css?v=58">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -259,17 +259,17 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=22"></script>
-<script src="js/cart-bar.js?v=1" defer></script>
+<script src="js/cart.js?v=23"></script>
+<script src="js/cart-bar.js?v=2" defer></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
 var CHECKOUT_UNREACHABLE_MSG = 'We couldn\'t reach our checkout just now. It can take up to a minute to wake up, so please wait a few seconds and try again — or order on WhatsApp: +91 99889 92024.';
 var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/validate-coupon';
-// Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js — this is
+// Must match MIN_BOXES in webhook-backend/routes/checkout.js — this is
 // just the UX pre-check; the backend enforces it for real. Orders below this
 // are only fulfilled hyperlocally/manually, not through this checkout.
-var MIN_ORDER_VALUE = 499;
+var MIN_BOXES = MunchingoCart.MIN_BOXES; // 3 boxes (gift sets count as 3 / 4)
 // Must match SUBSCRIPTION_DISCOUNT_PCT in webhook-backend/routes/checkout.js.
 var SUBSCRIPTION_DISCOUNT_PCT = 8;
 // The coupon proactively advertised at checkout instead of a blank promo
@@ -300,7 +300,7 @@ function renderSummary() {
 
   var total = MunchingoCart.cartTotal();
   var gstAmount = Math.round(total - (total / 1.05));
-  var belowMin = total < MIN_ORDER_VALUE;
+  var belowMin = MunchingoCart.cartBoxes() < MIN_BOXES;
 
   var subscribeChecked = document.getElementById('ck-subscribe').checked;
   // Mutually exclusive with a promo code — matches the backend, which
@@ -334,7 +334,7 @@ function renderSummary() {
     discountHtml +
     (discountHtml ? '<div class="row total"><span>Payable</span><span>₹' + payable + '</span></div>' : '') +
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
-  submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
+  submitBtn.textContent = belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
   submitBtn.disabled = belowMin;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (for your GST invoice)';
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;

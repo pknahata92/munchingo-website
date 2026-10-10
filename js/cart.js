@@ -108,16 +108,28 @@
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hi Munchingo 👋');
   }
 
+  // ---- Minimum order: 3 boxes (replaces the old Rs 499 value minimum) ----
+  // A Trio gift set is 3 boxes and the Full Range set is 4; every other item is one box.
+  // Must match MIN_BOXES in webhook-backend/routes/checkout.js.
+  var MIN_BOXES = 3;
+  function boxesFor(slug) {
+    if (slug === 'full-range-set') return 4;
+    if (typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0) return 3;
+    return 1;
+  }
+  function cartBoxes() {
+    return getCart().reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
+  }
+
   // ---- AOV progress bar (cart.html + checkout.html) ----
-  // A visual goal-gradient bar toward two thresholds: the ₹499 minimum
-  // order value, then the ₹999 Full Range Gift Set price. People push
+  // A visual goal-gradient bar toward two thresholds: the 3-box minimum
+  // order, then the ₹999 Full Range Gift Set price. People push
   // harder to finish a visibly-nearly-complete bar than they respond to
   // the same information as plain text — this is the single mechanism
   // Blinkit's own cart leans on hardest for AOV (a live progress bar
   // toward "unlock free delivery", not a static line of copy). Shared
   // here so cart.html and checkout.html render an identical bar instead
   // of two hand-maintained copies.
-  var AOV_MIN_ORDER = 499;
   var AOV_FULL_RANGE_PRICE = 999;
   var AOV_FULL_RANGE_SAVING = 117;
 
@@ -150,16 +162,19 @@
   // drift out of sync with what's actually in the cart.
   function renderAovProgressHtml(cart) {
     var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
-    var fillPct = Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
-    var movMarkerPct = Math.round((AOV_MIN_ORDER / AOV_FULL_RANGE_PRICE) * 100);
+    var boxes = cart.reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
+    var pendingMin = boxes < MIN_BOXES;
+    // Until the 3-box minimum is met the bar fills by boxes; after that it fills toward the Full Range set.
+    var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
 
     var hasSet = cart.some(function (c) { return c.slug === 'full-range-set'; });
     var canUpgrade = !hasSet && hasFullRangeUpgrade(cart);
 
     var msgClass, msgHtml, upgradeBtnHtml = '';
-    if (total < AOV_MIN_ORDER) {
+    if (pendingMin) {
       msgClass = 'pending';
-      msgHtml = 'Add <b>₹' + (AOV_MIN_ORDER - total) + '</b> more to unlock delivery (₹' + AOV_MIN_ORDER + ' minimum)';
+      var need = MIN_BOXES - boxes;
+      msgHtml = 'Add <b>' + need + '</b> more box' + (need === 1 ? '' : 'es') + ' to unlock delivery (' + MIN_BOXES + '-box minimum)';
     } else if (hasSet) {
       // Genuinely holds the discounted set — this claim is real.
       msgClass = 'unlocked';
@@ -185,7 +200,6 @@
       '<div class="aov-progress">' +
         '<div class="aov-progress-track">' +
           '<div class="aov-progress-fill" style="width:' + fillPct + '%"></div>' +
-          '<div class="aov-progress-marker" style="left:' + movMarkerPct + '%"><span class="aov-marker-dot"></span><span class="aov-marker-label">₹' + AOV_MIN_ORDER + '</span></div>' +
         '</div>' +
         '<p class="aov-progress-msg ' + msgClass + '">' + msgHtml + '</p>' +
         upgradeBtnHtml +
@@ -275,6 +289,8 @@
     setQty: setQty,
     cartCount: cartCount,
     cartTotal: cartTotal,
+    cartBoxes: cartBoxes,
+    MIN_BOXES: MIN_BOXES,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,

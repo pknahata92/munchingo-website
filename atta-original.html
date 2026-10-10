@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=57">
+<link rel="stylesheet" href="css/style.css?v=58">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's (Task 4) —
    duplicated here rather than touching index.html, which is out of this
@@ -157,11 +157,11 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
           <div class="v2-qty" aria-label="Quantity"><button id="minus" aria-label="Decrease">−</button><output id="q">1</output><button id="plus" aria-label="Increase">+</button></div>
           <button class="btn solid" id="add">Add to bag · ₹259</button>
         </div>
-        <div class="v2-mov" id="mov"><span class="v2-mov-ico" aria-hidden="true">🛵</span><span id="movText">Orders ship from ₹499. Add one more box to check out.</span><button class="v2-pair" id="pair" data-add-to-cart data-slug="atta-kesari" data-name="Atta Kesari" data-price="299" data-mrp="350" data-unit="250g">+ Atta Kesari ₹299</button></div>
+        <div class="v2-mov" id="mov"><span class="v2-mov-ico" aria-hidden="true">🛵</span><span id="movText">Orders ship from 3 boxes. Mix and match any flavours.</span><button class="v2-pair" id="pair" data-add-to-cart data-slug="atta-kesari" data-name="Atta Kesari" data-price="299" data-mrp="350" data-unit="250g">+ Atta Kesari ₹299</button></div>
         <div class="v2-trust">
           <div><b>No maida</b>100% whole wheat flour</div>
           <div><b>FSSAI licensed</b>Lic. 10826003000333</div>
-          <div><b>Free shipping</b>Across India, from Bikaner</div>
+          <div><b>Free shipping</b>Across India, from Faridabad</div>
         </div>
         <a class="v2-giftlink" href="gifting.html#gifting"><span>🪔 Gifting? Original is in every <b>Full Range Gift Set</b></span><span>₹999 →</span></a>
       </div>
@@ -233,7 +233,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <details open><summary>Is Original the same recipe you started with?</summary><p>Yes. Whole wheat atta, pure desi ghee and cardamom, the same recipe Munchingo launched with. Every other flavour builds on this one.</p></details>
     <details><summary>How long do they stay fresh?</summary><p>Best before 90 days from packing. Keep the box closed in a cool, dry place once opened.</p></details>
     <details><summary>Are they vegetarian? Do they contain egg?</summary><p>100% vegetarian. No egg. They contain milk and wheat (gluten).</p></details>
-    <details><summary>Can I order just one box?</summary><p>Orders ship from ₹499, so pair Original with any other flavour, or pick a gift set. Need a single box nearby? Message us on WhatsApp.</p></details>
+    <details><summary>Can I order just one box?</summary><p>Online orders start at 3 boxes, so pair Original with two more, or pick a gift set (the Trio is 3 boxes). Need a single box nearby? Message us on WhatsApp.</p></details>
   </div>
 </section>
 
@@ -314,11 +314,11 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=22" defer></script>
-<script src="js/cart-bar.js?v=1" defer></script>
+<script src="js/cart.js?v=23" defer></script>
+<script src="js/cart-bar.js?v=2" defer></script>
 <script>
 // Buy box: quantity stepper, real "add N to cart" (via window.MunchingoCart,
-// so it's the same cart cart.html/checkout.html read), the ₹499 minimum-order
+// so it's the same cart cart.html/checkout.html read), the 3-box minimum-order
 // nudge (driven off the real cart total, not a page-local counter like the
 // draft's), and the sticky mobile buy bar.
 document.addEventListener('DOMContentLoaded', function () {
@@ -334,17 +334,17 @@ document.addEventListener('DOMContentLoaded', function () {
   $('plus').onclick = function () { q = Math.min(20, q + 1); sync(); };
 
   function updateMov() {
-    var total = window.MunchingoCart.cartTotal();
+    var boxes = window.MunchingoCart.cartBoxes(), need = window.MunchingoCart.MIN_BOXES - boxes;
     var mov = $('mov'), movText = $('movText'), pairBtn = $('pair');
-    if (total >= 499) {
+    if (need <= 0) {
       mov.classList.add('v2-done');
       movText.textContent = 'You can check out now. Shipping is free.';
       if (pairBtn) pairBtn.style.display = 'none';
     } else {
       mov.classList.remove('v2-done');
-      movText.textContent = total > 0
-        ? 'Orders ship from ₹499. Add ₹' + (499 - total) + ' more to check out.'
-        : 'Orders ship from ₹499. Add one more box to check out.';
+      movText.textContent = boxes === 0
+        ? 'Orders ship from 3 boxes. Mix and match any flavours.'
+        : 'Orders ship from 3 boxes. Add ' + need + ' more box' + (need === 1 ? '' : 'es') + ' to check out.';
       if (pairBtn) pairBtn.style.display = '';
     }
   }
