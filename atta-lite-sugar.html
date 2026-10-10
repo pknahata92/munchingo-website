@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=56">
+<link rel="stylesheet" href="css/style.css?v=57">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's (Task 4) —
    duplicated here rather than touching index.html, which is out of this
@@ -81,8 +81,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <div class="announce">
   <div class="announce-track">
-    <span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Shipping across India</span><span>Baked fresh in Bikaner</span>
-    <span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
+    <span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Free shipping across India</span><span>Baked fresh in Bikaner</span>
+    <span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Free shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
   </div>
 </div>
 
@@ -161,7 +161,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <div class="v2-trust">
           <div><b>No maida</b>100% whole wheat flour</div>
           <div><b>FSSAI licensed</b>Lic. 10826003000333</div>
-          <div><b>Ships from Bikaner</b>Across India</div>
+          <div><b>Free shipping</b>Across India, from Bikaner</div>
         </div>
         <a class="v2-giftlink" href="gifting.html#gifting"><span>🪔 Gifting? Sugar-Lite is in every <b>Full Range Gift Set</b></span><span>₹999 →</span></a>
       </div>
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var mov = $('mov'), movText = $('movText'), pairBtn = $('pair');
     if (total >= 499) {
       mov.classList.add('v2-done');
-      movText.textContent = 'You can check out now. Ships across India from Bikaner.';
+      movText.textContent = 'You can check out now. Shipping is free.';
       if (pairBtn) pairBtn.style.display = 'none';
     } else {
       mov.classList.remove('v2-done');

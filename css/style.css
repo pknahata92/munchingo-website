@@ -1239,3 +1239,8 @@ body.v2 .v2-countdown h2{color:#FFF9EC}
   .btn{min-height:44px}
   .v2-pill{min-height:40px}
 }
+
+/* Product-page colour band: light text on the flavour colour (the global dark heading/eyebrow colours were winning) */
+body.v2 .v2-band h2,body.v2 .v2-band p,body.v2 .v2-band .eyebrow,body.v2 .v2-band .v2-band-eyebrow{color:#FFF6EA}
+body.v2 .v2-band h2 .script{color:var(--marigold-soft)}
+body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
