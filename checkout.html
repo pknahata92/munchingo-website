@@ -134,8 +134,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <h1 style="margin:0 0 .3rem">Checkout</h1>
   <p style="color:var(--ink-3);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. We'll confirm your order on WhatsApp once payment goes through.</p>
     <div class="checkout-closed" id="ck-closed" hidden role="status">
-      <b>Orders open on 15 October at 1:00 PM IST.</b>
-      <span>Fill your bag now. We&rsquo;ll be ready for you at launch.</span>
+      <b>Orders are not open just yet.</b>
+      <span>Fill your bag now. We&rsquo;ll be ready for you soon.</span>
     </div>
 
 
@@ -154,7 +154,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     </label>
 
     <div class="checkout-promo-featured" id="ck-promo-featured">
-      <span>🎁 First order? Use <strong id="ck-promo-featured-code">FOUNDING10</strong> for 10% off (up to ₹100)</span>
+      <span>🎁 First order? Use <strong id="ck-promo-featured-code">FOUNDING10</strong> for 10% off (up to ₹100)<span id="ck-founding-left" style="display:block;font-size:12px;color:var(--terra);font-weight:700;margin-top:2px"></span></span>
       <button type="button" id="ck-promo-featured-apply">Apply</button>
     </div>
     <div class="checkout-promo" id="ck-promo-row">
@@ -217,7 +217,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         </div>
         <div class="trust-item">
           <svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-          <span>Free shipping · dispatched in 48 hrs</span>
+          <span data-dispatch-note data-pre="Free shipping · pre-order dispatches 16 Oct" data-post="Free shipping · dispatched in 48 hrs">Free shipping · dispatched in 48 hrs</span>
         </div>
       </div>
       <button type="submit" class="btn solid block" id="ck-submit">Pay ₹0</button>
@@ -264,7 +264,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=24"></script>
+<script src="js/cart.js?v=25"></script>
 <script src="js/cart-bar.js?v=2" defer></script>
 <script>
 // Point this at your Render backend.
@@ -281,6 +281,15 @@ var SUBSCRIPTION_DISCOUNT_PCT = 8;
 // field. Update (or blank out to hide the banner) when this code changes —
 // see coupons_migration_v2.sql for what's actually live in Supabase.
 var FEATURED_COUPON_CODE = 'FOUNDING10';
+// "Founding 100: N left" - read-only count from the backend. If all places are
+// taken the banner is retired; if the backend is asleep or errors, nothing changes.
+var foundingGone = false;
+fetch('https://munchingo-whatsapp-webhook.onrender.com/api/promo/founding').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+  if (!j || typeof j.remaining !== 'number') return;
+  var el = document.getElementById('ck-founding-left');
+  if (j.remaining <= 0) { foundingGone = true; document.getElementById('ck-promo-featured').style.display = 'none'; return; }
+  el.textContent = 'Founding 100: ' + j.remaining + ' left';
+}).catch(function () {});
 
 // Set once a promo code is successfully applied; cleared if the code is
 // removed or fails re-validation. The backend re-validates this at final
@@ -319,7 +328,7 @@ function renderSummary() {
   // any coupon), once a coupon is already applied (no need to advertise
   // one anymore), or if FEATURED_COUPON_CODE has been blanked out to retire it.
   document.getElementById('ck-promo-featured').style.display =
-    (subscribeChecked || appliedCoupon || !FEATURED_COUPON_CODE) ? 'none' : '';
+    (subscribeChecked || appliedCoupon || !FEATURED_COUPON_CODE || foundingGone) ? 'none' : '';
 
   var payable = total;
   var discountHtml = '';
@@ -341,7 +350,7 @@ function renderSummary() {
     discountHtml +
     (discountHtml ? '<div class="row total"><span>Payable</span><span>₹' + payable + '</span></div>' : '') +
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
-  submitBtn.textContent = closed ? 'Orders open 15 Oct, 1 PM IST' : belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
+  submitBtn.textContent = closed ? 'Orders not open yet' : belowMin ? MIN_BOXES + '-box minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ₹' : 'Pay ₹') + payable);
   submitBtn.disabled = belowMin || closed;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (for your GST invoice)';
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;

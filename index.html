@@ -90,20 +90,28 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </head>
 <body class="v2">
 
-<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T13:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
+<section class="v2-countdown" id="countdown" data-countdown="2026-10-16T00:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
   <span class="cd-arc cd-arc-a" aria-hidden="true"></span><span class="cd-arc cd-arc-b" aria-hidden="true"></span>
   <div class="v2-wrap cd-inner">
-    <span class="cd-eyebrow">Circle the date</span>
-    <h2 id="cd-title"><span data-cd-title>Your next happy little ritual starts soon.</span></h2>
-    <p class="cd-sub" data-cd-sub>The Munchingo e-launch is on October 15 at 1 PM IST. We saved you a spot for the first hello.</p>
+    <span class="cd-eyebrow">Pre-orders are open</span>
+    <h2 id="cd-title"><span data-cd-title>Pre-order now. We dispatch on 16 October.</span></h2>
+    <p class="cd-sub" data-cd-sub>Desi ghee atta cookies, baked in Bikaner and delivered to your doorstep. Order today and yours is in the very first batch out.</p>
     <div class="cd-tiles" data-cd-tiles role="timer" aria-live="off">
       <div class="cd-tile"><b data-cd="d">--</b><span>Days</span></div>
       <div class="cd-tile"><b data-cd="h">--</b><span>Hours</span></div>
       <div class="cd-tile"><b data-cd="m">--</b><span>Minutes</span></div>
       <div class="cd-tile"><b data-cd="s">--</b><span>Seconds</span></div>
     </div>
-    <span class="cd-date">October 15, 2026 &middot; 1 PM IST</span>
-    <button type="button" class="cd-cta" data-cd-enter>Peek at the lineup <span class="v2-arrow">↗</span></button>
+    <span class="cd-date">Dispatches &middot; 16 October 2026</span>
+    <div class="cd-scratch" data-cd-scratch hidden>
+      <div class="cd-scratch-head"><b>Today&rsquo;s little clue</b><span data-cd-scratch-day></span></div>
+      <div class="cd-scratch-card">
+        <div class="cd-scratch-reveal"><small data-cd-kicker></small><strong data-cd-clue-title></strong><span data-cd-clue-text></span></div>
+        <canvas class="cd-scratch-foil" data-cd-foil aria-label="Scratch to reveal today's clue"></canvas>
+      </div>
+      <p class="cd-scratch-note" data-cd-scratch-note>Scratch with your finger. A new clue unlocks every day.</p>
+    </div>
+    <button type="button" class="cd-cta" data-cd-enter>Pre-order from the lineup <span class="v2-arrow">↗</span></button>
   </div>
 </section>
 <script>
@@ -140,6 +148,45 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   }
   if(!tick()) return;
   if(seen()){ sec.style.display='none'; return; }
+  // Daily scratch-card clue (11-15 Oct, IST). Scratched state stays on this device.
+  var CLUES={
+    '2026-10-11':['INGREDIENT HINT','Maida? Not invited.','Good cookies, the Munchingo way. No maida.'],
+    '2026-10-12':['A LITTLE GOLDEN CLUE','Desi ghee, the real deal.','Pure desi ghee. Bas, smell says the rest.'],
+    '2026-10-13':['A NOSTALGIC ONE','Tiffin box, unlocked.','That last homemade bite? Somehow always the best.'],
+    '2026-10-14':['WHERE IT BEGAN','A little Bikaner magic.','One week at a cousin\u2019s bakery sparked it all.'],
+    '2026-10-15':['THE BIG REVEAL','Meet Munchingo.','A little taste of home, baked for today.']
+  };
+  function istDay(){ return new Date(Date.now()+19800000).toISOString().slice(0,10); }
+  function scratchInit(){
+    var box=sec.querySelector('[data-cd-scratch]'), day=istDay(), clue=CLUES[day]; if(!box||!clue) return;
+    box.hidden=false;
+    box.querySelector('[data-cd-kicker]').textContent=clue[0];
+    box.querySelector('[data-cd-clue-title]').textContent=clue[1];
+    box.querySelector('[data-cd-clue-text]').textContent=clue[2];
+    box.querySelector('[data-cd-scratch-day]').textContent=new Date(day+'T12:00:00+05:30').toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short'});
+    var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v1', done;
+    try{ done=(JSON.parse(localStorage.getItem(KEY)||'{}'))[day]; }catch(e){ done=false; }
+    function save(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); o[day]=true; localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent='Revealed. Come back tomorrow for the next clue.'; save(); }
+    if(done){ cv.style.display='none'; note.textContent='Revealed. Come back tomorrow for the next clue.'; return; }
+    var ctx=cv.getContext('2d',{willReadFrequently:true}), last=null, drawing=false, over=false;
+    function paint(){
+      var r=cv.getBoundingClientRect(); if(!r.width||over) return;
+      var dpr=Math.min(window.devicePixelRatio||1,2); cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
+      var g=ctx.createLinearGradient(0,0,r.width,r.height); g.addColorStop(0,'#ead8ae'); g.addColorStop(.25,'#c9ad70'); g.addColorStop(.5,'#f0e3c1'); g.addColorStop(.75,'#c8a967'); g.addColorStop(1,'#eddfbd');
+      ctx.globalCompositeOperation='source-over'; ctx.fillStyle=g; ctx.fillRect(0,0,r.width,r.height);
+      ctx.fillStyle='rgba(61,53,39,.78)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='700 11px sans-serif'; ctx.fillText('SCRATCH TO REVEAL',r.width/2,r.height/2+10); ctx.font='18px Georgia,serif'; ctx.fillText('\u2733',r.width/2,r.height/2-14);
+    }
+    function pt(e){ var r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
+    function progress(){ var d=ctx.getImageData(0,0,cv.width,cv.height).data, c=0, n=0; for(var i=3;i<d.length;i+=48){ n++; if(d[i]<60) c++; } return c/n; }
+    function stroke(p){ ctx.globalCompositeOperation='destination-out'; ctx.lineCap='round'; ctx.lineWidth=38; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }
+    cv.addEventListener('pointerdown',function(e){ e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); stroke({x:last.x+.1,y:last.y+.1}); });
+    cv.addEventListener('pointermove',function(e){ if(!drawing||over) return; e.preventDefault(); stroke(pt(e)); });
+    function up(){ if(!drawing) return; drawing=false; last=null; if(!over&&progress()>.3){ over=true; finish(); } }
+    cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',function(){ drawing=false; last=null; });
+    if(window.ResizeObserver) new ResizeObserver(paint).observe(cv); paint();
+  }
+  scratchInit();
   root.classList.add('cd-lock');
   timer=setInterval(tick,1000);
   var btn=sec.querySelector('[data-cd-enter]');
@@ -150,8 +197,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <div class="announce">
   <div class="announce-track">
-    <span data-pre-launch>Our first hello is October 15</span><span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Free shipping across India</span><span>Baked fresh in Bikaner</span>
-    <span aria-hidden="true" data-pre-launch>Our first hello is October 15</span><span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Free shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
+    <span data-pre-launch>Pre-order now · dispatches 16 Oct</span><span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Free shipping across India</span><span>Baked fresh in Bikaner</span>
+    <span aria-hidden="true" data-pre-launch>Pre-order now · dispatches 16 Oct</span><span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Free shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
   </div>
 </div>
 
@@ -194,7 +241,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <picture class="hb" aria-hidden="true"><source media="(max-width:720px)" srcset="images/hero-banner.webp"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="" width="900" height="1600" decoding="async"></picture>
   <div class="v2-wrap">
     <div class="v2-copy">
-      <a class="v2-pill" href="#gifts" data-launch-pill><span class="v2-dot"></span><span data-launch-pill-text>Our first hello is October 15</span><span class="v2-go">↗</span></a>
+      <a class="v2-pill" href="#gifts" data-launch-pill><span class="v2-dot"></span><span data-launch-pill-text>Pre-order now · dispatches 16 Oct</span><span class="v2-go">↗</span></a>
       <h1>Tiny treats,<span class="v2-l2"><span class="script">mighty</span><span class="v2-l3">flavours.</span></span></h1>
       <p class="v2-lede">Whole wheat atta and pure desi ghee, baked in small batches in Bikaner. Four cookies, one for every moment of your day.</p>
       <div class="v2-ctas">
@@ -391,9 +438,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=24" defer></script>
+<script src="js/cart.js?v=25" defer></script>
 <script src="js/cart-bar.js?v=2" defer></script>
-<script src="js/gift-builder.js?v=3" defer></script>
+<script src="js/gift-builder.js?v=4" defer></script>
 
 </body>
 </html>

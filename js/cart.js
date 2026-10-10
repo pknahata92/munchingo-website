@@ -4,13 +4,27 @@
   var GIFT_NOTE_KEY = 'munchingo_gift_note';
   var WA_NUMBER = '919988992024';
 
-  // Manual stock control for the website only (WhatsApp ordering reflects
-  // stock set separately in Meta Commerce Manager). List a base flavour slug
-  // here to mark it sold out on the site; remove it to restock. Must match
-  // utils/catalog.js's SOLD_OUT_SLUGS on the backend, which is the check
-  // that actually blocks a sold-out item at checkout — this file only
-  // controls what the UI shows before that.
+  // Sold-out flavours for the website only (WhatsApp ordering reflects stock
+  // set separately in Meta Commerce Manager). The owner toggles flavours in the
+  // admin; the backend serves the live list at /api/stock and is also what
+  // actually blocks a sold-out item at checkout — this file only controls what
+  // the UI shows before that. The last list seen is cached so every page paints
+  // the right state at once; if the live list differs, the page reloads once.
+  var STOCK_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/stock';
+  var STOCK_KEY = 'munchingo_soldout';
   var SOLD_OUT_SLUGS = [];
+  try { SOLD_OUT_SLUGS = JSON.parse(localStorage.getItem(STOCK_KEY)) || []; } catch (e) { SOLD_OUT_SLUGS = []; }
+  if (!Array.isArray(SOLD_OUT_SLUGS)) SOLD_OUT_SLUGS = [];
+
+  function syncStock() {
+    if (typeof fetch !== 'function' || !/(^|\.)munchingo\.com$/.test(location.hostname)) return;
+    fetch(STOCK_API).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !Array.isArray(j.soldOut)) return;
+      var fresh = j.soldOut.slice().sort().join(','), had = SOLD_OUT_SLUGS.slice().sort().join(',');
+      try { localStorage.setItem(STOCK_KEY, JSON.stringify(j.soldOut)); } catch (e) { /* storage blocked: fine */ }
+      if (fresh !== had) location.reload();
+    }).catch(function () { /* backend asleep or offline: keep what we have; checkout still enforces it */ });
+  }
 
   function isSlugSoldOut(slug) {
     if (!slug) return false;
@@ -108,10 +122,19 @@
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hi Munchingo 👋');
   }
 
-  // ---- Orders open at launch (15 Oct 2026, 1:00 PM IST) ----
-  // The backend enforces this too (utils/launch.js); this just shows the closed state nicely.
+  // ---- Pre-orders open 11 Oct 2026; orders placed before 16 Oct ship from 16 Oct (IST) ----
+  // The backend enforces the open moment too (utils/launch.js); this just shows the closed state nicely.
+  // Keep DISPATCH_FROM in step with DISPATCH_FROM in the backend (it decides the email wording).
   // The owner can test earlier by opening checkout.html?preview=<ORDER_PREVIEW_KEY>.
-  var LAUNCH_AT = Date.parse('2026-10-15T13:00:00+05:30');
+  var LAUNCH_AT = Date.parse('2026-10-11T00:00:00+05:30');
+  var DISPATCH_FROM = Date.parse('2026-10-16T00:00:00+05:30');
+  function isPreorder() { return Date.now() < DISPATCH_FROM; }
+  // Swaps the wording of any element that carries data-pre / data-post attributes.
+  function applyDispatchCopy(root) {
+    (root || document).querySelectorAll('[data-dispatch-note]').forEach(function (el) {
+      el.textContent = isPreorder() ? el.getAttribute('data-pre') : el.getAttribute('data-post');
+    });
+  }
   function previewKey() {
     try {
       var m = location.search.match(/[?&]preview=([^&]+)/);
@@ -121,7 +144,7 @@
   }
   function ordersOpen() { return Date.now() >= LAUNCH_AT || !!previewKey(); }
 
-  // ---- Minimum order: 3 boxes (replaces the old Rs 499 value minimum) ----
+  // ---- Minimum order: 3 boxes (replaced the old value-based minimum) ----
   // A Trio gift set is 3 boxes and the Full Range set is 4; every other item is one box.
   // Must match MIN_BOXES in webhook-backend/routes/checkout.js.
   var MIN_BOXES = 3;
@@ -306,6 +329,9 @@
     ordersOpen: ordersOpen,
     previewKey: previewKey,
     LAUNCH_AT: LAUNCH_AT,
+    DISPATCH_FROM: DISPATCH_FROM,
+    isPreorder: isPreorder,
+    applyDispatchCopy: applyDispatchCopy,
     MIN_BOXES: MIN_BOXES,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
@@ -426,6 +452,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderBadge();
+    applyDispatchCopy();
+    syncStock();
     initCarousels();
     initLightbox();
     document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {

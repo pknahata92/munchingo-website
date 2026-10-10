@@ -78,7 +78,7 @@
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavours to start</button>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
-        '<p class="gb-fine">Pure desi ghee · No maida · Packed and dispatched within 48 hours</p>' +
+        '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
       '</aside>';
 
     function $(name) { return right.querySelector('[data-gb="' + name + '"]'); }
