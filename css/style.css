@@ -1254,3 +1254,8 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
   .v2-hero{padding-top:28px!important}
   body.v2 .v2-hero h1 .script{text-shadow:0 2px 16px rgba(20,10,4,.55),0 0 2px rgba(20,10,4,.35)}
 }
+
+/* Phone: the headline's first line sat slightly right of "mighty / flavours" because of a text-indent; line them up */
+@media (max-width:720px){
+  .v2-hero h1,body.v2 .v2-hero h1{text-indent:0}
+}
