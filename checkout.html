@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=46">
+<link rel="stylesheet" href="css/style.css?v=54">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -189,12 +189,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <textarea id="ck-addr-line1" rows="2" placeholder="House / flat no., street, area" autocomplete="street-address" required></textarea>
       </div>
       <div class="ck-more">
-        <button type="button" class="ck-link" id="ck-email-toggle">+ Add email for a receipt</button>
+        <button type="button" class="ck-link" id="ck-email-toggle" hidden>+ Add email for a receipt</button>
         <button type="button" class="ck-link" id="ck-gift-toggle">🎁 Add a gift note</button>
       </div>
-      <div class="field" id="ck-email-field" hidden>
-        <label for="ck-email" id="ck-email-label">Email (optional)</label>
-        <input type="email" id="ck-email" placeholder="For an order confirmation email" autocomplete="email">
+      <div class="field" id="ck-email-field">
+        <label for="ck-email" id="ck-email-label">Email (for your GST invoice)</label>
+        <input type="email" id="ck-email" placeholder="We'll email your order confirmation and GST invoice" autocomplete="email">
       </div>
       <div class="field" id="ck-gift-field" hidden>
         <label for="ck-gift-note">Gift note</label>
@@ -259,7 +259,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=21"></script>
+<script src="js/cart.js?v=22"></script>
 <script src="js/cart-bar.js?v=1" defer></script>
 <script>
 // Point this at your Render backend.
@@ -336,7 +336,7 @@ function renderSummary() {
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>';
   submitBtn.textContent = belowMin ? '₹' + MIN_ORDER_VALUE + ' minimum required' : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : 'Pay ₹' + payable);
   submitBtn.disabled = belowMin;
-  document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (optional)';
+  document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : 'Email (for your GST invoice)';
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
 
   // Adding a cross-sell item or swapping to the Full Range set both change
@@ -489,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
           couponCode: (!subscribe && appliedCoupon) ? appliedCoupon.code : undefined,
           subscribe: subscribe || undefined,
           giftNote: MunchingoCart.getGiftNote() || undefined,
+          addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
         }),
       });
       var data = null;

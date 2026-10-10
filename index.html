@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=46">
+<link rel="stylesheet" href="css/style.css?v=54">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -86,13 +86,72 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+<noscript><style>.v2-countdown{display:none!important}</style></noscript>
 </head>
 <body class="v2">
 
+<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T00:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
+  <span class="cd-arc cd-arc-a" aria-hidden="true"></span><span class="cd-arc cd-arc-b" aria-hidden="true"></span>
+  <div class="v2-wrap cd-inner">
+    <span class="cd-eyebrow">Circle the date</span>
+    <h2 id="cd-title"><span data-cd-title>Your next happy little ritual starts soon.</span></h2>
+    <p class="cd-sub" data-cd-sub>The Munchingo e-launch is on October 15. We saved you a spot for the first hello.</p>
+    <div class="cd-tiles" data-cd-tiles role="timer" aria-live="off">
+      <div class="cd-tile"><b data-cd="d">--</b><span>Days</span></div>
+      <div class="cd-tile"><b data-cd="h">--</b><span>Hours</span></div>
+      <div class="cd-tile"><b data-cd="m">--</b><span>Minutes</span></div>
+      <div class="cd-tile"><b data-cd="s">--</b><span>Seconds</span></div>
+    </div>
+    <span class="cd-date">October 15, 2026</span>
+    <button type="button" class="cd-cta" data-cd-enter>Peek at the lineup <span class="v2-arrow">↗</span></button>
+  </div>
+</section>
+<script>
+// Countdown popup. Shows once per visit (sessionStorage) and holds the page until the
+// visitor taps "Peek at the lineup". After launch it removes itself and the pre-launch
+// copy (hero pill, announce bar line) reverts to the regular wording.
+(function(){
+  var sec=document.getElementById('countdown'); if(!sec) return;
+  var target=new Date(sec.getAttribute('data-countdown')).getTime();
+  var els={}; ['d','h','m','s'].forEach(function(k){els[k]=sec.querySelector('[data-cd="'+k+'"]');});
+  var root=document.documentElement, timer;
+  function pad(n){return n<10?'0'+n:''+n;}
+  function seen(){ try{return sessionStorage.getItem('mngCdSeen')==='1';}catch(e){return false;} }
+  function markSeen(){ try{sessionStorage.setItem('mngCdSeen','1');}catch(e){} }
+  function unlock(){ root.classList.remove('cd-lock'); }
+  function launched(){
+    clearInterval(timer); unlock();
+    if(sec.parentNode) sec.parentNode.removeChild(sec);
+    document.querySelectorAll('[data-pre-launch]').forEach(function(n){n.parentNode.removeChild(n);});
+    var t=document.querySelector('[data-launch-pill-text]'); if(t) t.textContent='Diwali gift sets are here';
+  }
+  function tick(){
+    var left=target-Date.now();
+    if(left<=0){ launched(); return false; }
+    var s=Math.floor(left/1000);
+    els.d.textContent=pad(Math.floor(s/86400)); els.h.textContent=pad(Math.floor(s%86400/3600));
+    els.m.textContent=pad(Math.floor(s%3600/60)); els.s.textContent=pad(s%60);
+    return true;
+  }
+  function enter(){
+    markSeen(); sec.classList.add('cd-hidden'); unlock(); clearInterval(timer);
+    setTimeout(function(){ sec.style.display='none'; },450);
+    window.scrollTo(0,0);
+  }
+  if(!tick()) return;
+  if(seen()){ sec.style.display='none'; return; }
+  root.classList.add('cd-lock');
+  timer=setInterval(tick,1000);
+  var btn=sec.querySelector('[data-cd-enter]');
+  btn.addEventListener('click',enter);
+  btn.focus({preventScroll:true});
+})();
+</script>
+
 <div class="announce">
   <div class="announce-track">
-    <span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Shipping across India</span><span>Baked fresh in Bikaner</span>
-    <span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
+    <span data-pre-launch>Our first hello is October 15</span><span>Diwali gift sets are here</span><span>Secure online checkout</span><span>Shipping across India</span><span>Baked fresh in Bikaner</span>
+    <span aria-hidden="true" data-pre-launch>Our first hello is October 15</span><span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Shipping across India</span><span aria-hidden="true">Baked fresh in Bikaner</span>
   </div>
 </div>
 
@@ -115,7 +174,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
           <span class="bagcount" data-cart-count style="display:none">0</span>
         </a>
       </div>
-      <a class="btn solid" href="#range">Shop now</a>
+      <a class="btn solid" href="#range">Shop now <span class="v2-arrow">↗</span></a>
     </div>
   </div>
 </nav>
@@ -131,16 +190,16 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </div>
 
-<section class="v2-hero" style="padding-bottom:10px">
+<section class="v2-hero">
   <picture class="hb" aria-hidden="true"><source media="(max-width:720px)" srcset="images/hero-banner.webp"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="" width="900" height="1600" decoding="async"></picture>
   <div class="v2-wrap">
     <div class="v2-copy">
-      <a class="v2-pill" href="#gifts"><span class="v2-dot"></span>Diwali gift sets are here<span class="v2-go">→</span></a>
+      <a class="v2-pill" href="#gifts" data-launch-pill><span class="v2-dot"></span><span data-launch-pill-text>Our first hello is October 15</span><span class="v2-go">↗</span></a>
       <h1>Tiny treats,<span class="v2-l2"><span class="script">mighty</span><span class="v2-l3">flavours.</span></span></h1>
       <p class="v2-lede">Whole wheat atta and pure desi ghee, baked in small batches in Bikaner. Four cookies, one for every moment of your day.</p>
       <div class="v2-ctas">
-        <a class="btn solid" href="#range">Shop the range <span class="v2-arrow">→</span></a>
-        <a class="btn outline" href="#gifts">Build a gift set</a>
+        <a class="btn solid" href="#range">Shop the range <span class="v2-arrow">↗</span></a>
+        <a class="btn outline" href="#gifts">Build a gift set <span class="v2-arrow">↗</span></a>
       </div>
     </div>
     <div class="v2-proof">
@@ -150,12 +209,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <div><b>90</b><span>days<br>best before</span></div>
     </div>
     <div class="v2-hero-art">
-      <div class="v2-front"><picture><source media="(min-width:721px)" srcset="images/box-original.webp"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="Atta Original box with cookies" width="800" height="800" decoding="async"></picture></div>
+      <div class="v2-front"><picture><source media="(min-width:721px)" srcset="images/box-original.webp"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="Atta Original box with cookies" width="800" height="800" decoding="async"></picture><img class="v2-rot" src="images/box-kesari.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="v2-rot" src="images/box-ajwain.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="v2-rot" src="images/box-lite.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <div class="v2-sticker" aria-hidden="true">
         <svg viewBox="0 0 150 150"><defs><path id="circ" d="M75,21 a54,54 0 1,1 -0.01,0"/></defs><circle cx="75" cy="75" r="42" fill="none" stroke="#2A1A12" stroke-opacity=".55" stroke-width="1.2" stroke-dasharray="2 3"/><text><textPath href="#circ" textLength="339" lengthAdjust="spacing">PURE DESI GHEE ✦ BAKED IN BIKANER ✦ </textPath></text></svg>
         <div class="v2-mid"><b>no</b><span>maida</span></div>
       </div>
-      <a class="v2-note-chip" href="#gifts" style="text-decoration:none"><span class="v2-em">🪔</span><span><b>Gifting this Diwali?</b><br>All four flavours, one set →</span></a>
+      <a class="v2-note-chip" href="#gifts" style="text-decoration:none"><span class="v2-em">🪔</span><span><b>Gifting this Diwali?</b><br>All four flavours, one set ↗</span></a>
     </div>
   </div>
 </section>
@@ -184,7 +243,6 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-
 <section class="v2-range" id="range">
   <div class="v2-wrap">
     <div class="v2-head">
@@ -194,7 +252,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div class="v2-cards" id="range-cards"></div>
   </div>
 </section>
-<script src="data/products.js?v=2"></script>
+<script src="data/products.js?v=3"></script>
 <script>
 (function () {
   var COLOR_BY_SLUG = { 'atta-original': 'ruby', 'atta-ajwain': 'slate', 'atta-kesari': 'kesari', 'atta-lite-sugar': 'mauve' };
@@ -270,7 +328,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <section class="v2-order" id="order">
   <div class="v2-wrap">
-    <div class="v2-head"><div><span class="eyebrow">Simple, secure, pre-paid</span><h2>How to order</h2></div><a class="v2-link-arrow" href="https://wa.me/919988992024?text=Hi%20Munchingo%20%F0%9F%91%8B" target="_blank" rel="noopener">Or order on WhatsApp →</a></div>
+    <div class="v2-head"><div><span class="eyebrow">Simple, secure, pre-paid</span><h2>How to order</h2></div><a class="v2-link-arrow" href="https://wa.me/919988992024?text=Hi%20Munchingo%20%F0%9F%91%8B" target="_blank" rel="noopener">Or order on WhatsApp ↗</a></div>
     <div class="v2-steps">
       <div class="v2-ostep"><b>1</b><h3>Fill your bag</h3><p>Pick single boxes or a gift set. Minimum order&nbsp;₹499.</p></div>
       <div class="v2-ostep"><b>2</b><h3>Pay securely</h3><p>UPI, card or net banking via Razorpay. Prepaid only.</p></div>
@@ -333,9 +391,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=21" defer></script>
+<script src="js/cart.js?v=22" defer></script>
 <script src="js/cart-bar.js?v=1" defer></script>
-<script src="js/gift-builder.js?v=2" defer></script>
+<script src="js/gift-builder.js?v=3" defer></script>
 
 </body>
 </html>

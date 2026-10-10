@@ -1166,3 +1166,65 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[role=button]:focus-v
   .contact-cards a{display:inline-block;padding:9px 0}
 }
 @media (max-width:820px){ body.v2 details>summary{min-height:44px;display:flex;align-items:center} }
+
+/* ── Pre-launch pass (Oct 2026) ───────────────────────────────────────── */
+/* Ribbon blends into both neighbours: its box overlaps the bottom of the hero (which has
+   matching padding underneath) and fades into the countdown green, so there is no plain
+   cream band above or below it, on phone or desktop. */
+.v2-hero{padding-bottom:110px}
+.v2-ribbon{margin-top:-100px;position:relative;z-index:2}
+@media (max-width:720px){
+  .v2-hero{padding-bottom:96px!important}
+  .v2-ribbon{margin-top:-96px}
+  /* Fade the photo's bottom edge into the page so the ribbon never meets a hard edge */
+  .v2-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:110px;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(250,246,235,0) 0%,rgba(250,246,235,.55) 55%,#FAF6EB 100%)}
+}
+
+/* Arrows: slightly bolder diagonal arrow, nudges up-right on hover */
+.v2-arrow{display:inline-block;font-weight:500;transition:transform .2s ease}
+.btn:hover .v2-arrow,.v2-link-arrow:hover .v2-arrow{transform:translate(2px,-2px)}
+
+/* Countdown banner */
+:root{--cd-green:#25544A;--cd-green-2:#2E6358}
+.v2-countdown{position:fixed;inset:0;z-index:1000;overflow:auto;display:flex;align-items:center;justify-content:center;background:var(--cd-green);color:#FBF4E6;text-align:center;padding:48px 0;transition:opacity .4s ease,visibility .4s ease}
+.v2-countdown.cd-hidden{opacity:0;visibility:hidden}
+html.cd-lock,html.cd-lock body{overflow:hidden}
+.v2-countdown .cd-arc{position:absolute;border-radius:50%;border:34px solid rgba(251,244,230,.06);pointer-events:none}
+.v2-countdown .cd-arc-a{width:340px;height:340px;top:-210px;left:-120px}
+.v2-countdown .cd-arc-b{width:340px;height:340px;bottom:-230px;right:-110px}
+.v2-countdown .cd-inner{position:relative;margin:auto}
+.cd-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--marigold)}
+.cd-eyebrow::before{content:"";width:36px;height:2px;background:var(--marigold)}
+.v2-countdown h2{color:#FFF9EC;font-size:clamp(2.3rem,5.6vw,4.4rem);max-width:15em;margin:18px auto 14px}
+.cd-sub{color:rgba(251,244,230,.78);max-width:34em;margin:0 auto 34px;font-size:16px}
+.cd-tiles{display:flex;justify-content:center;gap:14px}
+.cd-tile{width:112px;padding:20px 0 14px;border:1px solid rgba(251,244,230,.28);border-radius:14px;background:var(--cd-green-2)}
+.cd-tile b{display:block;font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1;color:var(--marigold);font-variant-numeric:tabular-nums}
+.cd-tile span{display:block;margin-top:10px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(251,244,230,.8)}
+.cd-date{display:inline-block;margin-top:30px;background:var(--marigold);color:var(--ink);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:11px 24px;border-radius:999px}
+.cd-cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:26px;background:transparent;color:#FFF9EC;border:1.5px solid rgba(251,244,230,.7);border-radius:999px;padding:15px 30px;font:600 14px var(--f-body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,transform .08s}
+.cd-cta:hover{background:#FFF9EC;color:var(--cd-green)}.cd-cta:hover .v2-arrow{transform:translate(2px,-2px)}.cd-cta:active{transform:scale(.98)}
+.cd-cta:focus-visible{outline:2px solid var(--marigold);outline-offset:3px}
+@media (max-width:720px){
+  .v2-countdown{padding:32px 0}
+  .cd-tiles{gap:8px}
+  .cd-tile{width:calc(25% - 6px);padding:16px 0 10px}
+  .cd-tile b{font-size:32px}
+  .cd-tile span{font-size:9.5px;letter-spacing:.1em}
+  .cd-sub{font-size:15px;margin-bottom:26px}
+}
+body.v2 .v2-countdown h2{color:#FFF9EC}
+
+/* Hero art (desktop): cycle the four lifestyle photos */
+.v2-front .v2-rot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:v2-xfade 20s infinite}
+.v2-front .v2-rot:nth-of-type(2){animation-delay:5s}.v2-front .v2-rot:nth-of-type(3){animation-delay:10s}.v2-front .v2-rot:nth-of-type(4){animation-delay:15s}
+.v2-front picture{display:block;height:100%}
+.v2-front picture img{animation:v2-xfade-first 20s infinite}
+@keyframes v2-xfade{0%{opacity:0}5%,25%{opacity:1}30%,100%{opacity:0}}
+@keyframes v2-xfade-first{0%,25%{opacity:1}30%,95%{opacity:0}100%{opacity:1}}
+@media (max-width:720px){.v2-front .v2-rot{display:none}}
+@media (prefers-reduced-motion:reduce){.v2-front .v2-rot{display:none}.v2-front picture img{animation:none!important;opacity:1}}
+
+/* Range cards: price + button sit at the bottom of every card, so the Sugar-Lite note doesn't push them out of line */
+.v2-range .v2-card .v2-body .v2-price{margin-top:auto;padding-top:10px}
+.v2-range .v2-card .v2-body .v2-add{margin-top:6px}
