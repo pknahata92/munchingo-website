@@ -87,6 +87,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <noscript><style>.v2-countdown{display:none!important}</style></noscript>
+<script src="js/prices.js?v=3"></script>
 </head>
 <body class="v2">
 
@@ -115,7 +116,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </section>
 <script>
-// Countdown popup. Shows once per visit (sessionStorage) and holds the page until the
+// Countdown popup. Shows every time the homepage opens and holds the page until the
 // visitor taps "Peek at the lineup". After launch it removes itself and the pre-launch
 // copy (hero pill, announce bar line) reverts to the regular wording.
 (function(){
@@ -147,7 +148,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     window.scrollTo(0,0);
   }
   if(!tick()) return;
-  if(seen()){ sec.style.display='none'; return; }
+  // Shown on EVERY homepage load until dispatch day (the daily scratch-card clue is the reason to come back).
   // Daily scratch-card clue (11-15 Oct, IST). Scratched state stays on this device.
   var CLUES={
     '2026-10-11':['INGREDIENT HINT','Maida? Not invited.','Good cookies, the Munchingo way. No maida.'],
@@ -299,7 +300,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div class="v2-cards" id="range-cards"></div>
   </div>
 </section>
-<script src="data/products.js?v=3"></script>
+<script src="data/products.js?v=4"></script>
 <script>
 (function () {
   var COLOR_BY_SLUG = { 'atta-original': 'ruby', 'atta-ajwain': 'slate', 'atta-kesari': 'kesari', 'atta-lite-sugar': 'mauve' };
@@ -310,10 +311,10 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     var fine = p.polyolWarning ? '<p class="v2-fine">' + p.polyolWarning + '</p>' : '';
     return '' +
       '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
-        '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800"><span class="v2-save">Save ₹' + p.save + '</span></a>' +
+        '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800">' + (p.save > 0 ? '<span class="v2-save">Save ₹' + p.save + '</span>' : '') + '</a>' +
         '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
-          '<div class="v2-price"><b>₹' + p.price + '</b><s>₹' + p.mrp + '</s><span>· 250g</span></div>' +
-          '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="250g">Add to bag</button></div>' +
+          '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span>· 250g</span></div>' +
+          '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + (p.mrp > p.price ? p.mrp : '') + '" data-unit="250g">Add to bag</button></div>' +
       '</article>';
   }).join('');
 })();
@@ -438,9 +439,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=25" defer></script>
+<script src="js/cart.js?v=26" defer></script>
 <script src="js/cart-bar.js?v=2" defer></script>
-<script src="js/gift-builder.js?v=4" defer></script>
+<script src="js/gift-builder.js?v=5" defer></script>
 
 </body>
 </html>

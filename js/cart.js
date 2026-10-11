@@ -51,9 +51,18 @@
     return SOLD_OUT_SLUGS.indexOf('atta-' + token) !== -1;
   }
 
+  // Items in a saved bag are re-priced from the live price list every time the bag is read, so a customer who added a
+  // box at yesterday's price sees (and is charged) today's. The server prices the order itself at checkout regardless.
   function getCart() {
-    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    var cart;
+    try { cart = JSON.parse(localStorage.getItem(KEY)) || []; }
     catch (e) { return []; }
+    var P = window.MunchingoPrices;
+    if (P && P.ready) cart.forEach(function (c) {
+      var b = P.get(c.slug); if (!b) return;
+      c.price = b.price; var m = P.mrp(c.slug, null); if (m) c.mrp = m; else delete c.mrp;
+    });
+    return cart;
   }
   function saveCart(cart) {
     localStorage.setItem(KEY, JSON.stringify(cart));
@@ -173,8 +182,11 @@
   // toward "unlock free delivery", not a static line of copy). Shared
   // here so cart.html and checkout.html render an identical bar instead
   // of two hand-maintained copies.
-  var AOV_FULL_RANGE_PRICE = 999;
-  var AOV_FULL_RANGE_SAVING = 117;
+  var LIVE = window.MunchingoPrices;
+  var livePrice = function (slug, fallback) { return LIVE ? LIVE.price(slug, fallback) : fallback; };
+  var AOV_FULL_RANGE_PRICE = livePrice('full-range-set', 999);
+  // What buying the four boxes one by one would cost, minus the set price (never negative).
+  var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 300) + livePrice('atta-ajwain', 300) + livePrice('atta-kesari', 350) + livePrice('atta-lite-sugar', 350) - AOV_FULL_RANGE_PRICE);
 
   var BASE_SLUGS_FOR_UPGRADE = ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'];
 
@@ -269,11 +281,12 @@
   // those are dark patterns, not persuasion, and don't fit how Munchingo
   // talks to people.
   var CROSS_SELL_PRODUCTS = [
-    { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
-    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
-    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
-    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
+    { slug: 'atta-original',   name: 'Atta Original',    price: 300, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
+    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 350, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
+    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 300, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 350, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
   ];
+  CROSS_SELL_PRODUCTS.forEach(function (p) { p.price = livePrice(p.slug, p.price); var m = LIVE ? LIVE.mrp(p.slug, null) : null; p.mrp = m || p.price; });
 
   function renderCrossSellHtml() {
     var cart = getCart();
@@ -291,7 +304,7 @@
             '<div class="cross-sell-name">' + p.name + '</div>' +
             '<div class="cross-sell-price">₹' + p.price + ' · ' + p.unit + '</div>' +
           '</div>' +
-          '<button type="button" class="cross-sell-add" data-cross-sell-add data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + p.mrp + '" data-unit="' + p.unit + '" aria-label="Add ' + p.name + ' to cart">+ Add</button>' +
+          '<button type="button" class="cross-sell-add" data-cross-sell-add data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '"' + (p.mrp > p.price ? ' data-mrp="' + p.mrp + '"' : '') + ' data-unit="' + p.unit + '" aria-label="Add ' + p.name + ' to cart">+ Add</button>' +
         '</div>';
     }).join('');
 
@@ -520,12 +533,12 @@
 
     // ---- Site search ----
     var SEARCH_INDEX = [
-      { title: 'Atta Original', desc: 'Cardamom, whole wheat atta, pure desi ghee. ₹259 / 250g.', type: 'Product', url: 'atta-original.html' },
-      { title: 'Atta Kesari', desc: 'Real saffron, mixed into every batch. ₹299 / 250g.', type: 'Product', url: 'atta-kesari.html' },
-      { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. ₹299 / 250g.', type: 'Product', url: 'atta-lite-sugar.html' },
-      { title: 'Atta Ajwain', desc: 'Spiced with ajwain, less sweet than the others. ₹259 / 250g.', type: 'Product', url: 'atta-ajwain.html' },
-      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed. ₹739.', type: 'Gift Set', url: 'index.html#gifts' },
-      { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes. ₹999.', type: 'Gift Set', url: 'index.html#gifts' },
+      { title: 'Atta Original', desc: 'Cardamom, whole wheat atta, pure desi ghee. 250g.', type: 'Product', url: 'atta-original.html' },
+      { title: 'Atta Kesari', desc: 'Real saffron, mixed into every batch. 250g.', type: 'Product', url: 'atta-kesari.html' },
+      { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. 250g.', type: 'Product', url: 'atta-lite-sugar.html' },
+      { title: 'Atta Ajwain', desc: 'Spiced with ajwain, less sweet than the others. 250g.', type: 'Product', url: 'atta-ajwain.html' },
+      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed.', type: 'Gift Set', url: 'index.html#gifts' },
+      { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes.', type: 'Gift Set', url: 'index.html#gifts' },
       { title: 'Corporate Gifting', desc: 'Bulk and corporate orders from 25 boxes, quoted on WhatsApp.', type: 'Page', url: 'corporate-gifting.html' },
       { title: 'Maida-free cookies: how to read a label', desc: 'A plain guide to maida, atta, fats and sugar on biscuit labels.', type: 'Page', url: 'maida-free-cookies-guide.html' },
       { title: 'About Us', desc: 'Our story — baked in Bikaner by Krazy Bakers.', type: 'Page', url: 'about.html' },

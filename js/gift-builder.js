@@ -13,6 +13,8 @@
     3: { price: 739, name: 'Trio Gift Set', unit: '750g, 3 flavours' },
     4: { slug: 'full-range-set', price: 999, name: 'Full Range Gift Set', unit: '1kg, one of each' }
   };
+  // Live prices (js/prices.js) replace the launch figures above when the owner has changed them.
+  if (window.MunchingoPrices) { SETS[3].price = window.MunchingoPrices.price('trio-gift-set', SETS[3].price); SETS[4].price = window.MunchingoPrices.price('full-range-set', SETS[4].price); }
   // Canonical order (matches gifting.html's checkbox order) so the cart line is
   // identical whichever order the customer taps the tiles.
   var FLAVOURS = [
@@ -23,7 +25,7 @@
   ];
   // Selling prices (what the customer would actually pay per box). Taken from
   // data/products.js when that file is on the page, else these mirror it.
-  var SINGLE_FALLBACK = { Original: 259, Kesari: 299, 'Lite-sugar': 299, Ajwain: 259 };
+  var SINGLE_FALLBACK = { Original: 300, Kesari: 350, 'Lite-sugar': 350, Ajwain: 300 };
   var PRODUCT_SLUG = { Original: 'atta-original', Kesari: 'atta-kesari', 'Lite-sugar': 'atta-lite-sugar', Ajwain: 'atta-ajwain' };
 
   var cart = function () { return window.MunchingoCart; };
