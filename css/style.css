@@ -1070,20 +1070,22 @@ body.v2 .v2-footer .v2-top{grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
   body.v2 .v2-footer .v2-top{grid-template-columns:1fr;gap:28px}
   body.v2 .eyebrow{font-size:11px}
 
-  /* ── Hero: the photo IS the hero ── */
-  .v2-hero{padding:0!important;min-height:min(80svh,680px);display:flex;align-items:flex-end;overflow:hidden;color:#FFF6EA;isolation:isolate}
-  .v2-hero .hb{display:block;position:absolute;inset:0;z-index:-1}
-  .v2-hero .hb img{width:100%;height:100%;object-fit:cover;object-position:50% 38%}
-  .v2-hero .hb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,21,16,.35) 0%,rgba(35,21,16,0) 32%,rgba(35,21,16,.55) 62%,rgba(35,21,16,.9) 100%)}
-  .v2-hero .v2-wrap{padding-bottom:22px;grid-template-areas:'copy' 'proof';row-gap:14px}
+  /* ── Hero: the photo sits at its natural proportions (9:16) and the headline starts just under the products,
+     on the photo's own dark fade, so nothing covers the boxes or the bowl. Height follows the content. ── */
+  .v2-hero{padding:0!important;min-height:0;display:block;overflow:hidden;color:#FFF6EA;isolation:isolate;background:#2b1a12}
+  .v2-hero .hb{display:block;position:absolute;left:0;right:0;top:0;z-index:-1}
+  .v2-hero .hb img{display:block;width:100%;height:auto}
+  .v2-hero .hb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,21,16,.16) 0%,rgba(35,21,16,0) 18%)}
+  .v2-hero .v2-wrap{padding-top:98vw;padding-bottom:22px;grid-template-areas:'copy' 'proof';row-gap:12px}
   .v2-hero-art{display:none}
-  body.v2 .v2-hero h1{color:#fff;font-size:clamp(3rem,15vw,4rem);margin:12px 0 4px;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+  body.v2 .v2-hero h1{color:#fff;font-size:clamp(2.6rem,12.4vw,3.6rem);margin:10px 0 2px;text-shadow:0 2px 18px rgba(0,0,0,.35)}
   body.v2 .v2-hero h1 .v2-l2,body.v2 .v2-hero h1 .script{color:var(--marigold-soft)}
   .v2-hero p.v2-lede{display:none}
-  .v2-hero .v2-ctas{margin-top:18px;gap:10px}
+  .v2-hero .v2-ctas{margin-top:14px;gap:10px;flex-wrap:nowrap}
+  .v2-hero .v2-ctas .btn{flex:1 1 0;min-width:0;padding-left:10px;padding-right:10px;justify-content:center;font-size:15px;white-space:nowrap}
   .v2-hero .v2-ctas .btn.solid{box-shadow:0 12px 26px -10px rgba(0,0,0,.55)}
   .v2-hero .v2-ctas .btn.outline{background:rgba(255,246,234,.14);color:#fff;border-color:rgba(255,246,234,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-  .v2-hero .v2-proof{grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;padding-top:14px;border-top:1px solid rgba(255,246,234,.28)}
+  .v2-hero .v2-proof{grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;padding-top:12px;border-top:1px solid rgba(255,246,234,.28)}
   .v2-hero .v2-proof b{font-size:24px;color:#fff}
   .v2-hero .v2-proof span{color:rgba(255,246,234,.82);font-size:11px;margin-top:3px}
 
