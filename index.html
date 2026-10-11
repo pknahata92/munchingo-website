@@ -145,7 +145,9 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   function enter(){
     markSeen(); sec.classList.add('cd-hidden'); unlock(); clearInterval(timer);
     setTimeout(function(){ sec.style.display='none'; },450);
-    window.scrollTo(0,0);
+    // A deep link such as /#gifts should land on that section; otherwise start at the top.
+    var tgt = location.hash && document.getElementById(location.hash.slice(1));
+    if (tgt) tgt.scrollIntoView(); else window.scrollTo(0,0);
   }
   if(!tick()) return;
   // Shown on EVERY homepage load until dispatch day (the daily scratch-card clue is the reason to come back).
@@ -327,7 +329,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       <h2 id="gb-title">Your box.<span class="gb-l2">Your people.</span></h2>
       <p class="gb-lede">Pick a gift set, fill it with their favourites, add a note in your own words. Baked in Bikaner and delivered to their doorstep, anywhere in India.</p>
       <div data-gb-left></div>
-      <noscript><p class="gb-lede"><a class="btn solid" href="gifting.html#gifting">Choose a gift set →</a></p></noscript>
+      <noscript><p class="gb-lede"><a class="btn solid" href="index.html#gifts">Choose a gift set →</a></p></noscript>
     </div>
     <div data-gb-right></div>
   </div>

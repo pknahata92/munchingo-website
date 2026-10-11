@@ -1,0 +1,4 @@
+# The old standalone gifting page is retired: its range cards and gift-set builder live on the homepage.
+# 301 = permanent, so search engines move the page's standing to the homepage.
+/gifting       /#gifts   301
+/gifting.html  /#gifts   301
