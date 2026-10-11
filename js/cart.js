@@ -98,14 +98,18 @@
     } catch (e) { /* tracking must never break the cart */ }
   }
 
-  function addToCart(item) {
+  function addToCart(item, opts) {
+    var silent = opts && opts.silent;
     var cart = getCart();
     var existing = cart.find(function (c) { return c.slug === item.slug; });
     if (existing) { existing.qty += 1; }
     else { cart.push({ slug: item.slug, name: item.name, price: item.price, mrp: item.mrp, unit: item.unit, qty: 1 }); }
     saveCart(cart);
-    track('add_to_cart', 'AddToCart', { currency: 'INR', value: item.price, items: [{ item_id: item.slug, item_name: item.name, price: item.price, quantity: 1 }] });
-    return cart;
+    if (!silent) {
+      track('add_to_cart', 'AddToCart', { currency: 'INR', value: item.price, items: [{ item_id: item.slug, item_name: item.name, price: item.price, quantity: 1 }] });
+      autoPackOfFour();
+    }
+    return getCart();
   }
   function removeFromCart(slug) {
     saveCart(getCart().filter(function (c) { return c.slug !== slug; }));
@@ -113,12 +117,13 @@
   function clearCart() {
     saveCart([]);
   }
-  function setQty(slug, qty) {
+  function setQty(slug, qty, opts) {
     var cart = getCart();
     var item = cart.find(function (c) { return c.slug === slug; });
     if (item) {
       item.qty = Math.max(1, qty | 0);
       saveCart(cart);
+      if (!(opts && opts.silent)) autoPackOfFour();
     }
   }
   function cartCount() {
@@ -211,10 +216,35 @@
     BASE_SLUGS_FOR_UPGRADE.forEach(function (slug) {
       var item = getCart().find(function (c) { return c.slug === slug; });
       if (!item) return;
-      if (item.qty > 1) setQty(slug, item.qty - 1);
+      if (item.qty > 1) setQty(slug, item.qty - 1, { silent: true });
       else removeFromCart(slug);
     });
-    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' });
+    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+  }
+
+  // One of every flavour in the bag is exactly the Full Range Gift Set, which costs less than four singles.
+  // So the moment all four are present they are swapped for the set automatically (repeats for 2+ of each),
+  // and the customer is told once, in plain words. Extra units beyond one-of-each stay as singles.
+  function autoPackOfFour() {
+    var swaps = 0;
+    while (hasFullRangeUpgrade(getCart()) && swaps < 20) { upgradeToFullRange(); swaps++; }
+    if (swaps) {
+      try { sessionStorage.setItem('mngAutoPack', String(swaps)); } catch (e) {}
+      showAutoPackNotice(swaps);
+    }
+    return swaps;
+  }
+  function showAutoPackNotice(n) {
+    try {
+      if (typeof document === 'undefined' || !document.body) return;
+      var old = document.getElementById('mng-autopack'); if (old) old.remove();
+      var d = document.createElement('div');
+      d.id = 'mng-autopack'; d.setAttribute('role', 'status');
+      d.textContent = (n > 1 ? n + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 all four flavours are now one set, and you save \u20B9' + (AOV_FULL_RANGE_SAVING * n) + '.';
+      d.style.cssText = 'position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,420px);background:#1c1b19;color:#fff;padding:12px 16px;border-radius:14px;font:500 14px/1.4 Poppins,system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);text-align:center';
+      document.body.appendChild(d);
+      setTimeout(function () { if (d.parentNode) d.remove(); }, 5200);
+    } catch (e) { /* a notice must never break the cart */ }
   }
 
   // total is derived from cart, not passed separately, so this can never

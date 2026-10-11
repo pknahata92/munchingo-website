@@ -185,7 +185,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=27"></script>
+<script src="js/cart.js?v=28"></script>
 <script src="js/cart-bar.js?v=2" defer></script>
 <script>
 function renderCart() {
@@ -236,12 +236,25 @@ function renderCart() {
   aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
   MunchingoCart.initAovUpgrade(aovProgressEl, renderCart);
 
+  // The 3-box minimum is enforced on the server, so say it here instead of letting checkout bounce the customer.
+  var goEl = document.getElementById('cart-checkout');
+  var boxesNow = MunchingoCart.cartBoxes();
+  var shortBy = MunchingoCart.MIN_BOXES - boxesNow;
+  if (shortBy > 0) {
+    goEl.setAttribute('aria-disabled', 'true'); goEl.style.opacity = '.55';
+    goEl.textContent = 'Add ' + shortBy + ' more box' + (shortBy === 1 ? '' : 'es') + ' to check out';
+  } else {
+    goEl.removeAttribute('aria-disabled'); goEl.style.opacity = '';
+    goEl.textContent = 'Proceed to Checkout';
+  }
+
   var crossSellEl = document.getElementById('cart-cross-sell');
   crossSellEl.innerHTML = MunchingoCart.renderCrossSellHtml();
   MunchingoCart.initCrossSell(crossSellEl, renderCart);
 }
 document.addEventListener('DOMContentLoaded', function () {
   renderCart();
+  document.getElementById('cart-checkout').addEventListener('click', function (e) { if (this.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
 
   // Gift note — separate from renderCart's re-render cycle (which fires on
   // every qty/remove change) so typing here is never interrupted or reset.

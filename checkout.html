@@ -175,6 +175,19 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <label for="ck-phone">WhatsApp number</label>
         <input type="tel" id="ck-phone" placeholder="10-digit mobile number" inputmode="tel" autocomplete="tel-national" required>
       </div>
+      <label class="ck-remember" id="ck-recipient-toggle-label"><input type="checkbox" id="ck-is-gift"> 🎁 This is a gift: deliver it to someone else</label>
+      <div id="ck-recipient-block" hidden>
+        <div class="field">
+          <label for="ck-rcp-name">Recipient's name</label>
+          <input type="text" id="ck-rcp-name" placeholder="Who is it for?" autocomplete="off" maxlength="80">
+        </div>
+        <div class="field">
+          <label for="ck-rcp-phone">Recipient's mobile number</label>
+          <input type="tel" id="ck-rcp-phone" placeholder="10-digit mobile (the courier may call)" inputmode="tel" autocomplete="off">
+          <small class="ck-pin-status">We only share this with the courier. We will not message them without your say-so.</small>
+        </div>
+        <p class="ck-pin-status" style="margin:0 0 10px"><b>The address below is the recipient's.</b> Your receipt and invoice come to you.</p>
+      </div>
       <div class="field">
         <label for="ck-addr-pincode">Pincode</label>
         <input type="text" inputmode="numeric" maxlength="6" id="ck-addr-pincode" placeholder="6-digit pincode" autocomplete="postal-code" required>
@@ -265,7 +278,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=27"></script>
+<script src="js/cart.js?v=28"></script>
 <script src="js/cart-bar.js?v=2" defer></script>
 <script>
 // Point this at your Render backend.
@@ -484,6 +497,15 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
     if (!phoneOk) { showError('Please enter a valid 10-digit mobile number (WhatsApp number preferred, we send order updates there).'); return; }
     // Backend only adds +91 for exactly 10 digits, so send the bare 10-digit mobile.
     var phoneToSend = phoneDigits.replace(/^(91|0)(?=[6-9]\d{9}$)/, '');
+    var isGift = document.getElementById('ck-is-gift').checked;
+    var rcpName = '', rcpPhone = '';
+    if (isGift) {
+      rcpName = document.getElementById('ck-rcp-name').value.trim();
+      var rcpDigits = document.getElementById('ck-rcp-phone').value.replace(/\D/g, '').replace(/^(91|0)(?=[6-9]\d{9}$)/, '');
+      if (!rcpName) { showError('Please add the recipient\'s name, or untick the gift option.'); return; }
+      if (!/^[6-9][0-9]{9}$/.test(rcpDigits)) { showError('Please enter the recipient\'s 10-digit mobile number so the courier can reach them.'); return; }
+      rcpPhone = rcpDigits;
+    }
     if (MunchingoCart.isPreorder() && !email) { showError('Please add your email address. Pre-orders are confirmed, and tracking is sent, by email.'); return; }
     if (subscribe && !email) { showError('An email address is required to subscribe — that\'s how we\'ll let you know each month your box is ready.'); return; }
 
@@ -513,6 +535,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
           giftNote: MunchingoCart.getGiftNote() || undefined,
           previewKey: MunchingoCart.previewKey() || undefined,
           addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
+          recipient: isGift ? { name: rcpName, phone: rcpPhone } : undefined,
         }),
       });
       var data = null;
@@ -566,6 +589,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.munchingoSaveCustomer = function () {
     try {
       if (!$('ck-remember').checked) { localStorage.removeItem(KEY); return; }
+      if ($('ck-is-gift').checked) return;   // a recipient's address is not the buyer's: keep what was saved before
       localStorage.setItem(KEY, JSON.stringify({
         name: $('ck-name').value.trim(), phone: $('ck-phone').value.trim(), address: $('ck-addr-line1').value.trim(),
         pincode: $('ck-addr-pincode').value.trim(), city: $('ck-addr-city').value.trim(), state: $('ck-addr-state').value.trim(), email: $('ck-email').value.trim()
@@ -596,6 +620,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   pin.addEventListener('input', lookup);
   if (pin.value.replace(/\D/g, '').length === 6) lookup();
+
+  // Gift recipient: the address below becomes the recipient's; payer details stay for the receipt.
+  $('ck-is-gift').addEventListener('change', function () {
+    $('ck-recipient-block').hidden = !this.checked;
+    if (this.checked) { if ($('ck-gift-field').hidden) { $('ck-gift-field').hidden = false; $('ck-gift-toggle').hidden = true; } $('ck-rcp-name').focus(); }
+  });
 
   // 3. Collapsed extras.
   $('ck-email-toggle').addEventListener('click', function () { $('ck-email-field').hidden = false; this.hidden = true; $('ck-email').focus(); });
