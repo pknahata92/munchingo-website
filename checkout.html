@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=66">
+<link rel="stylesheet" href="css/style.css?v=67">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -289,7 +289,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/cart.js?v=29"></script>
-<script src="js/cart-bar.js?v=2" defer></script>
+<script src="js/offers.js?v=1" defer></script>
+<script src="js/cart-bar.js?v=4" defer></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
@@ -389,7 +390,8 @@ function renderSummary() {
   }
   var nudgeHtml = '';
   if (!subscribeChecked && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.next) {
-    nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more of single boxes and save <b>₹' + lastQuote.next.off + '</b>.'
+    var np = lastQuote.next.pct ? (lastQuote.tiers || []).filter(function (t) { return t.pct; })[0] : null;
+    nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more of single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ₹' + np.cap + ')' : '') : 'save <b>₹' + lastQuote.next.off + '</b>') + '.'
       + '<small>Tip: add more of a flavour you already have. Three different flavours become a Trio, which is already at its best price.</small></div>';
   }
   if (!subscribeChecked && (!lastQuote || lastQuote.key !== quoteKey(cart))) refreshQuote(cart, quoteKey(cart));

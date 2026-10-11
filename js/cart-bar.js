@@ -16,6 +16,20 @@
     '<div class="mcb-prog" aria-hidden="true"><i data-mcb-fill></i></div><small data-mcb-hint></small></div>' +
     '<a class="btn solid mcb-cta" data-mcb-cta href="checkout.html">Checkout →</a>';
 
+  // Stock-up offer (js/offers.js): how close the single boxes in the bag are to the percentage tier. Gift sets never count.
+  var BASE = ['atta-original', 'atta-kesari', 'atta-lite-sugar', 'atta-ajwain'];
+  function offerHint(c) {
+    var o = window.MunchingoOffers && window.MunchingoOffers.tier();
+    if (!o || !o.pct) return '';
+    var singles = c.getCart().filter(function (i) { return BASE.indexOf(i.slug) !== -1; }).reduce(function (n, i) { return n + i.price * i.qty; }, 0);
+    if (!singles) return '';
+    if (singles >= o.min) {
+      var d = Math.round(singles * o.pct / 100); if (o.cap) d = Math.min(d, o.cap);
+      return o.pct + '% off unlocked · saves ' + inr(d);
+    }
+    return 'Add ' + inr(o.min - singles) + ' more for ' + o.pct + '% off';
+  }
+
   function q(n) { return bar.querySelector('[data-mcb-' + n + ']'); }
   function refresh() {
     var c = window.MunchingoCart; if (!c) return;
@@ -26,7 +40,7 @@
     q('total').textContent = inr(total);
     q('fill').style.width = Math.min(100, Math.round(boxes / min * 100)) + '%';
     var more = short + (short === 1 ? ' more box' : ' more boxes');
-    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : 'Ready to order';
+    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : (offerHint(c) || 'Ready to order');
     var cta = q('cta');
     if (short) { cta.textContent = 'Add ' + more; cta.setAttribute('href', 'index.html#range'); }
     else { cta.textContent = 'Checkout →'; cta.setAttribute('href', 'checkout.html'); }
@@ -37,6 +51,7 @@
     document.body.appendChild(bar);
     refresh();
     document.addEventListener('munchingo:cart', refresh);
+    document.addEventListener('munchingo:offer', refresh);
     window.addEventListener('storage', refresh);
     window.addEventListener('pageshow', refresh);
   }

@@ -1297,3 +1297,7 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 .checkout-closed{display:flex;flex-direction:column;gap:2px;margin:0 0 16px;padding:14px 16px;border-radius:14px;background:#25544A;color:#FBF4E6;font-size:14px;line-height:1.5}
 .checkout-closed b{color:var(--marigold);font-size:15px}
 .checkout-closed[hidden]{display:none}
+
+/* stock-up offer line (js/offers.js) */
+.v2-tierline[hidden]{display:none}
+.v2-tierline b{color:var(--terra-deep,#86482A)}
