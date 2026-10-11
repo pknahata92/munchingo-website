@@ -208,7 +208,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=26"></script>
+<script src="js/cart.js?v=27"></script>
 <script src="js/cart-bar.js?v=2" defer></script>
 <script>
 var ORDER_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/order/';
@@ -277,7 +277,10 @@ function trackPurchase(order) {
       gtag('event', 'purchase', { transaction_id: order.orderId, value: Number(order.total), currency: 'INR', items: items });
     }
     if (typeof fbq === 'function') {
-      fbq('track', 'Purchase', { value: Number(order.total), currency: 'INR', content_type: 'product', num_items: count });
+      // Meta's catalogue IDs for the four boxes (gift sets are not catalogue items, so they are left out of content_ids).
+      var META = { 'atta original': '91slwpjdqq', 'atta ajwain': '97q9r5q5q3', 'atta kesari': 'w2w5ynf2m5', 'atta sugar-lite': 'vf5p90bcy5' };
+      var ids = (order.items || []).map(function (i) { return META[String(i.name || '').toLowerCase().replace(/^munchingo\s+/, '').replace(/\s*\(.*$/, '')]; }).filter(Boolean);
+      fbq('track', 'Purchase', { value: Number(order.total), currency: 'INR', content_type: 'product', content_ids: ids, num_items: count });
     }
   } catch (e) { /* tracking must never break the confirmation page */ }
 }

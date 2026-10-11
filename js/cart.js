@@ -83,13 +83,17 @@
     catch (e) { /* ignore — private-browsing / storage blocked */ }
   }
   // Funnel analytics (GA4 + Meta Pixel). Fires only on the real domain, so previews and tests never pollute the data.
+  // Meta matches Pixel events to catalogue items by the catalogue's own retailer ID, not our URL slug. GA keeps the slug.
+  var META_IDS = { 'atta-original': '91slwpjdqq', 'atta-ajwain': '97q9r5q5q3', 'atta-kesari': 'w2w5ynf2m5', 'atta-lite-sugar': 'vf5p90bcy5' };
+  function metaId(slug) { return META_IDS[slug] || slug; }
+
   function track(event, meta, params) {
     try {
       if (!/(^|\.)munchingo\.com$/.test(location.hostname)) return;
       if (typeof window.gtag === 'function') window.gtag('event', event, params);
       if (typeof window.fbq === 'function' && meta) window.fbq('track', meta, {
         value: params.value, currency: 'INR', content_type: 'product',
-        content_ids: (params.items || []).map(function (i) { return i.item_id; }), num_items: (params.items || []).length
+        content_ids: (params.items || []).map(function (i) { return metaId(i.item_id); }), num_items: (params.items || []).length
       });
     } catch (e) { /* tracking must never break the cart */ }
   }
@@ -358,6 +362,7 @@
     isSlugSoldOut: isSlugSoldOut,
     isFlavourSoldOut: isFlavourSoldOut,
     track: track,
+    metaId: metaId,
     renderAovProgressHtml: renderAovProgressHtml,
     initAovUpgrade: initAovUpgrade,
     renderCrossSellHtml: renderCrossSellHtml,
