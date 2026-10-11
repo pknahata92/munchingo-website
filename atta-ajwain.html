@@ -332,6 +332,8 @@ document.addEventListener('DOMContentLoaded', function () {
     $('add').textContent = 'Add to bag · ₹' + (PRICE * q).toLocaleString('en-IN');
   }
   sync();   // show the live price straight away, not only after the quantity changes
+  // Product view for GA4 (view_item) and Meta (ViewContent), at the live price. Only fires on munchingo.com.
+  if (window.MunchingoCart && MunchingoCart.track) MunchingoCart.track('view_item', 'ViewContent', { currency: 'INR', value: PRICE, items: [{ item_id: SLUG, item_name: NAME, price: PRICE, quantity: 1 }] });
   $('minus').onclick = function () { q = Math.max(1, q - 1); sync(); };
   $('plus').onclick = function () { q = Math.min(20, q + 1); sync(); };
 
