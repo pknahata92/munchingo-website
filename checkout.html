@@ -55,6 +55,14 @@
 .checkout-note{font-size:12.5px;color:var(--ink-3);margin-top:1rem;line-height:1.6}
 .checkout-error{background:#FBEFE8;border:1px solid var(--terra);color:var(--terra-deep);border-radius:4px;padding:.8rem 1rem;font-size:13px;margin-bottom:1.2rem;display:none}
 .checkout-summary .row.discount-row{color:#2f6b4f}
+.ck-bag-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem}
+.ck-bag-head b{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.ck-edit{background:none;border:0;color:var(--terra-deep,#86482A);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:.3rem 0;min-height:36px}
+.ck-qty{display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap}
+.ck-qty button{width:32px;height:32px;border-radius:50%;border:1px solid rgba(42,26,18,.25);background:var(--paper);color:var(--ink);font-size:16px;line-height:1;cursor:pointer;padding:0}
+.ck-qty .ck-rm{width:auto;border-radius:6px;padding:0 .6rem;font-size:12px;color:var(--terra-deep,#86482A)}
+.checkout-summary .row.ck-editrow{align-items:center;gap:.6rem;flex-wrap:wrap}
+.checkout-summary .row.ck-editrow>span:first-child{flex:1 1 150px}
 .tier-nudge{background:#FDF6E8;border:1px dashed var(--gold, #CEAD5E);border-radius:6px;padding:.7rem 1rem;margin:.2rem 0 1rem;font-size:13px;color:var(--ink)}
 .tier-nudge small{display:block;color:var(--ink-soft, #6b5a4e);margin-top:2px}
 .checkout-promo-featured{display:flex;align-items:center;justify-content:space-between;gap:.8rem;background:#FDF6E8;border:1px dashed var(--gold, #CEAD5E);border-radius:6px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:13px;color:var(--ink)}
@@ -326,18 +334,25 @@ function refreshQuote(cart, key) {
     .catch(function () { quotingKey = null; });
 }
 
+var editingBag = false;
 function renderSummary() {
   var cart = MunchingoCart.getCart();
   var summaryEl = document.getElementById('checkout-summary');
   var submitBtn = document.getElementById('ck-submit');
 
   if (!cart.length) {
+    editingBag = false;
     document.getElementById('checkout-empty').style.display = '';
     document.getElementById('checkout-body').style.display = 'none';
     return;
   }
 
-  var rows = cart.map(function (item) {
+  var rows = '<div class="ck-bag-head"><b>Your bag</b><button type="button" class="ck-edit" data-ck-edit>' + (editingBag ? 'Done' : 'Edit bag') + '</button></div>' + cart.map(function (item) {
+    if (editingBag) {
+      return '<div class="row ck-editrow"><span>' + item.name + ' (' + item.unit + ')</span>'
+        + '<span class="ck-qty"><button type="button" data-ck-dec="' + item.slug + '" aria-label="One less">−</button><b>' + item.qty + '</b><button type="button" data-ck-inc="' + item.slug + '" aria-label="One more">+</button><button type="button" class="ck-rm" data-ck-rm="' + item.slug + '">Remove</button></span>'
+        + '<span>₹' + (item.price * item.qty) + '</span></div>';
+    }
     return '<div class="row"><span>' + item.name + ' (' + item.unit + ') × ' + item.qty + '</span><span>₹' + (item.price * item.qty) + '</span></div>';
   }).join('');
 
@@ -402,6 +417,19 @@ function renderSummary() {
     if (appliedCoupon) { appliedCoupon = null; showPromoMsg('', false); document.getElementById('ck-promo-input').value = ''; }
     renderSummary();
   }
+
+  // Edit bag: change quantities or remove a line without leaving checkout. Any applied code is cleared (the total changed).
+  document.getElementById('checkout-summary').addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t) return;
+    var slug = t.getAttribute('data-ck-inc') || t.getAttribute('data-ck-dec') || t.getAttribute('data-ck-rm');
+    if (t.hasAttribute('data-ck-edit')) { editingBag = !editingBag; renderSummary(); return; }
+    if (!slug) return;
+    var item = MunchingoCart.getCart().filter(function (c) { return c.slug === slug; })[0]; if (!item) return;
+    if (t.hasAttribute('data-ck-inc')) MunchingoCart.setQty(slug, Math.min(50, item.qty + 1));
+    else if (t.hasAttribute('data-ck-dec') && item.qty > 1) MunchingoCart.setQty(slug, item.qty - 1);
+    else MunchingoCart.removeFromCart(slug);
+    onCartChangedByPageAction();
+  });
 
   var aovProgressEl = document.getElementById('checkout-aov-progress');
   aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
