@@ -222,28 +222,88 @@
     addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
   }
 
-  // One of every flavour in the bag is exactly the Full Range Gift Set, which costs less than four singles.
-  // So the moment all four are present they are swapped for the set automatically (repeats for 2+ of each),
-  // and the customer is told once, in plain words. Extra units beyond one-of-each stay as singles.
-  function autoPackOfFour() {
-    var swaps = 0;
-    while (hasFullRangeUpgrade(getCart()) && swaps < 20) { upgradeToFullRange(); swaps++; }
-    if (swaps) {
-      try { sessionStorage.setItem('mngAutoPack', String(swaps)); } catch (e) {}
-      showAutoPackNotice(swaps);
-    }
-    return swaps;
+  // Any three different flavours are exactly the Trio, and all four are exactly the Full Range set. Both cost less than
+  // the same boxes bought one by one, so the bag swaps them automatically and says so once, in plain words.
+  var FLAV_META = [
+    { slug: 'atta-original',   token: 'original',   label: 'Original' },
+    { slug: 'atta-kesari',     token: 'kesari',     label: 'Kesari' },
+    { slug: 'atta-lite-sugar', token: 'lite-sugar', label: 'Sugar-Lite' },
+    { slug: 'atta-ajwain',     token: 'ajwain',     label: 'Ajwain' }
+  ];
+  var TRIO_UNIT = '750g, 3 flavours';
+  function trioPrice() { return livePrice('trio-gift-set', 739); }
+  function isTrioSlug(slug) { return typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0; }
+  function distinctSingles(cart) {
+    return FLAV_META.filter(function (f) { return cart.some(function (c) { return c.slug === f.slug && c.qty >= 1; }); });
   }
-  function showAutoPackNotice(n) {
+  // Swaps one of each of three different loose flavours for one Trio. Returns { saved, labels } or null if not worthwhile.
+  function swapToTrio() {
+    var cart = getCart(), d = distinctSingles(cart);
+    if (d.length < 3) return null;
+    var picks = d.slice(0, 3), tp = trioPrice();
+    var sum = picks.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
+    if (sum <= tp) return null;                         // never "upgrade" into a dearer set
+    var slug = 'trio-gift-set-' + picks.map(function (f) { return f.token; }).sort().join('-');
+    if (isSlugSoldOut(slug)) return null;
+    picks.forEach(function (f) {
+      var item = getCart().find(function (c) { return c.slug === f.slug; });
+      if (item.qty > 1) setQty(f.slug, item.qty - 1, { silent: true }); else removeFromCart(f.slug);
+    });
+    var labels = picks.map(function (f) { return f.label; }).join(', ');
+    addToCart({ slug: slug, name: 'Trio Gift Set (' + labels + ')', price: tp, unit: TRIO_UNIT }, { silent: true });
+    return { saved: sum - tp, labels: labels };
+  }
+  // A Trio in the bag can become the Full Range set by adding the 4th flavour: replaces one Trio with one Full Range set.
+  function upgradeTrioToFullRange() {
+    var t = getCart().filter(function (c) { return isTrioSlug(c.slug); })[0];
+    if (!t) return;
+    if (t.qty > 1) setQty(t.slug, t.qty - 1, { silent: true }); else removeFromCart(t.slug);
+    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+    autoPackOfFour();
+  }
+  // A Trio plus a loose box of the 4th flavour is the Full Range set for less money: merge them.
+  function mergeTrioAndFourth() {
+    var cart = getCart(), t = cart.filter(function (c) { return isTrioSlug(c.slug); })[0];
+    if (!t) return null;
+    var padded = '-' + t.slug + '-';
+    var have = FLAV_META.filter(function (f) { return padded.indexOf('-' + f.token + '-') >= 0; });
+    if (have.length !== 3) return null;
+    var miss = FLAV_META.filter(function (f) { return have.indexOf(f) < 0; })[0];
+    var single = cart.filter(function (c) { return c.slug === miss.slug && c.qty >= 1; })[0];
+    if (!single) return null;
+    var saved = t.price + single.price - AOV_FULL_RANGE_PRICE;
+    if (saved <= 0) return null;
+    if (t.qty > 1) setQty(t.slug, t.qty - 1, { silent: true }); else removeFromCart(t.slug);
+    if (single.qty > 1) setQty(single.slug, single.qty - 1, { silent: true }); else removeFromCart(single.slug);
+    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+    return { saved: saved };
+  }
+  function autoPackOfFour() {
+    var parts = [], frSwaps = 0, trSwaps = 0, trSaved = 0, trLabels = '', mgSwaps = 0, mgSaved = 0, guard = 0;
+    while (hasFullRangeUpgrade(getCart()) && guard++ < 20) { upgradeToFullRange(); frSwaps++; }
+    var m; guard = 0;
+    while ((m = mergeTrioAndFourth()) && guard++ < 20) { mgSwaps++; mgSaved += m.saved; }
+    var r; guard = 0;
+    while ((r = swapToTrio()) && guard++ < 20) { trSwaps++; trSaved += r.saved; trLabels = r.labels; }
+    if (frSwaps) parts.push((frSwaps > 1 ? frSwaps + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 all four flavours are now one set, you save \u20B9' + (AOV_FULL_RANGE_SAVING * frSwaps));
+    if (mgSwaps) parts.push((mgSwaps > 1 ? mgSwaps + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 your Trio and the 4th flavour are now one set, you save \u20B9' + mgSaved);
+    if (trSwaps) parts.push((trSwaps > 1 ? trSwaps + ' Trio Gift Sets' : 'Trio Gift Set (' + trLabels + ')') + ' \u2014 your 3 flavours are now one set, you save \u20B9' + trSaved);
+    if (parts.length) {
+      try { sessionStorage.setItem('mngAutoPack', String(frSwaps + trSwaps + mgSwaps)); } catch (e) {}
+      showAutoPackNotice(parts.join('. ') + '.');
+    }
+    return frSwaps + trSwaps + mgSwaps;
+  }
+  function showAutoPackNotice(text) {
     try {
       if (typeof document === 'undefined' || !document.body) return;
       var old = document.getElementById('mng-autopack'); if (old) old.remove();
       var d = document.createElement('div');
       d.id = 'mng-autopack'; d.setAttribute('role', 'status');
-      d.textContent = (n > 1 ? n + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 all four flavours are now one set, and you save \u20B9' + (AOV_FULL_RANGE_SAVING * n) + '.';
+      d.textContent = text;
       d.style.cssText = 'position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,420px);background:#1c1b19;color:#fff;padding:12px 16px;border-radius:14px;font:500 14px/1.4 Poppins,system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.25);text-align:center';
       document.body.appendChild(d);
-      setTimeout(function () { if (d.parentNode) d.remove(); }, 5200);
+      setTimeout(function () { if (d.parentNode) d.remove(); }, 6000);
     } catch (e) { /* a notice must never break the cart */ }
   }
 
@@ -263,7 +323,7 @@
     if (pendingMin) {
       msgClass = 'pending';
       var need = MIN_BOXES - boxes;
-      msgHtml = 'Add <b>' + need + '</b> more box' + (need === 1 ? '' : 'es') + ' to unlock delivery (' + MIN_BOXES + '-box minimum)';
+      msgHtml = 'Add <b>' + need + '</b> more box' + (need === 1 ? '' : 'es') + ' to unlock delivery (' + MIN_BOXES + '-box minimum). Any 3 boxes together are just <b>\u20B9' + trioPrice() + '</b>.';
     } else if (hasSet) {
       // Genuinely holds the discounted set — this claim is real.
       msgClass = 'unlocked';
@@ -274,6 +334,12 @@
       msgClass = 'upsell';
       msgHtml = 'You\'ve got all 4 flavours in your cart — swap for the Full Range Gift Set and save ₹' + AOV_FULL_RANGE_SAVING;
       upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-upgrade>Swap &amp; Save ₹' + AOV_FULL_RANGE_SAVING + '</button>';
+    } else if (cart.some(function (c) { return isTrioSlug(c.slug); }) && !hasSet) {
+      // A Trio is in the bag: the honest next step is the 4th flavour, priced as the difference.
+      var diff = Math.max(0, AOV_FULL_RANGE_PRICE - trioPrice());
+      msgClass = 'upsell';
+      msgHtml = 'Your Trio is saved \u2713 Add the 4th flavour for just <b>\u20B9' + diff + '</b> and it becomes the Full Range set.';
+      upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-trio-upgrade>Make it the Full Range \u00B7 +\u20B9' + diff + '</button>';
     } else if (total < AOV_FULL_RANGE_PRICE) {
       msgClass = 'upsell';
       msgHtml = 'Delivery unlocked ✓ — add <b>₹' + (AOV_FULL_RANGE_PRICE - total) + '</b> more for the Full Range Gift Set, save ₹' + AOV_FULL_RANGE_SAVING;
@@ -299,6 +365,8 @@
   function initAovUpgrade(containerEl, onUpgraded) {
     if (!containerEl) return;
     var btn = containerEl.querySelector('[data-aov-upgrade]');
+    var tbtn = containerEl.querySelector('[data-aov-trio-upgrade]');
+    if (tbtn) tbtn.addEventListener('click', function () { upgradeTrioToFullRange(); if (typeof onUpgraded === 'function') onUpgraded(); });
     if (!btn) return;
     btn.addEventListener('click', function () {
       upgradeToFullRange();
