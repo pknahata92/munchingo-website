@@ -1303,3 +1303,31 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 .v2-tierline b{color:var(--terra-deep,#86482A)}
 .aov-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .aov-keep-btn{background:none;border:1px solid rgba(42,26,18,.3);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:600 13px/1 Poppins,system-ui,sans-serif;cursor:pointer;min-height:40px}
+/* range-card quantity stepper (js/cart.js) */
+.v2-add[hidden],.v2-step[hidden]{display:none!important}
+.v2-range .v2-card .v2-step{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--marigold);color:var(--ink);border-radius:999px;padding:4px}
+.v2-range .v2-card .v2-step button{width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.6);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;padding:0}
+.v2-range .v2-card .v2-step output{font:700 16px var(--f-body);min-width:2ch;text-align:center}
+/* compact footer on phones: two link columns side by side, tighter rows and gaps (was about 1,430 px tall) */
+@media (max-width:700px){
+  body.v2 .v2-footer{padding-top:36px}
+  body.v2 .v2-footer .v2-top{grid-template-columns:1fr 1fr;gap:18px 22px}
+  body.v2 .v2-footer .v2-top>.v2-about,body.v2 .v2-footer .v2-top>div:nth-child(4){grid-column:1/-1}
+  body.v2 .v2-footer .v2-ftop-head{height:auto;margin-bottom:6px}
+  body.v2 .v2-footer .v2-about .v2-ftop-head{margin-bottom:10px}
+  body.v2 .v2-footer .v2-about p:not(.v2-legal){padding-top:0;font-size:14px;margin:0 0 6px}
+  body.v2 .v2-footer .v2-legal{margin-top:8px}
+  body.v2 .v2-footer ul a{display:block;padding:8px 0;font-size:14px;line-height:1.35}
+  body.v2 .v2-footer .v2-top>div:nth-child(4) ul a{display:inline-flex}
+  body.v2 .v2-footer .v2-top>div:nth-child(4) ul{display:flex;flex-wrap:wrap;gap:0 22px}
+  body.v2 .v2-psst{display:none}
+  body.v2 .v2-word{padding-bottom:6px}
+  body.v2 .v2-baseline{padding:12px 0 calc(14px + env(safe-area-inset-bottom))}
+}
+/* desktop footer: keep the playful wordmark but at a third of the size, tighter spacing (was about 830 px tall) */
+@media (min-width:701px){
+  body.v2 .v2-footer{padding-top:56px}
+  body.v2 .v2-psst{margin:36px 0 12px;font-size:20px}
+  body.v2 .v2-word{font-size:clamp(3rem,8vw,7rem);padding:4px 0 8px}
+  body.v2 .v2-baseline{padding:14px 0 18px}
+}

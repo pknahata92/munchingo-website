@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=68">
+<link rel="stylesheet" href="css/style.css?v=72">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -331,7 +331,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800">' + (p.save > 0 ? '<span class="v2-save">Save ₹' + p.save + '</span>' : '') + '</a>' +
         '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
           '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span>· 250g</span></div>' +
-          '<button class="btn solid v2-add" data-add-to-cart data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + (p.mrp > p.price ? p.mrp : '') + '" data-unit="250g">Add to bag</button></div>' +
+          '<button class="btn solid v2-add" data-add-to-cart data-stepper data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + (p.mrp > p.price ? p.mrp : '') + '" data-unit="250g">Add to bag</button></div>' +
       '</article>';
   }).join('');
 })();
@@ -456,7 +456,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 })();
 </script>
 
-<script src="js/cart.js?v=30" defer></script>
+<script src="js/cart.js?v=31" defer></script>
 <script src="js/offers.js?v=1" defer></script>
 <script src="js/cart-bar.js?v=5" defer></script>
 <script src="js/gift-builder.js?v=5" defer></script>

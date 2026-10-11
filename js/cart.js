@@ -651,20 +651,40 @@
         btn.classList.add('sold-out');
         return;
       }
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
+      function itemFromBtn() {
         var mrpAttr = btn.getAttribute('data-mrp');
-        addToCart({
+        return {
           slug: btn.getAttribute('data-slug'),
           name: btn.getAttribute('data-name'),
           price: parseInt(btn.getAttribute('data-price'), 10),
           mrp: mrpAttr ? parseInt(mrpAttr, 10) : undefined,
           unit: btn.getAttribute('data-unit')
-        });
+        };
+      }
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        addToCart(itemFromBtn());
+        if (btn.hasAttribute('data-stepper')) return;        // the stepper below replaces the button, no flash needed
         var original = btn.textContent;
         btn.textContent = 'Added ✓';
         setTimeout(function () { btn.textContent = original; }, 1200);
       });
+      // Range cards: once the box is in the bag the button becomes  - qty +  (same pattern as every quick-commerce app).
+      if (btn.hasAttribute('data-stepper') && staticSlug) {
+        var step = document.createElement('div');
+        step.className = 'v2-step'; step.hidden = true;
+        step.innerHTML = '<button type="button" data-d aria-label="One less">\u2212</button><output aria-live="polite"></output><button type="button" data-i aria-label="One more">+</button>';
+        btn.parentNode.insertBefore(step, btn.nextSibling);
+        var out = step.querySelector('output');
+        var qtyOf = function () { var it = getCart().filter(function (c) { return c.slug === staticSlug; })[0]; return it ? it.qty : 0; };
+        var sync = function () { var q = qtyOf(); btn.hidden = q > 0; step.hidden = q === 0; out.textContent = q; };
+        step.querySelector('[data-i]').addEventListener('click', function () { if (qtyOf() < 50) addToCart(itemFromBtn()); });
+        step.querySelector('[data-d]').addEventListener('click', function () { var q = qtyOf(); if (q <= 1) removeFromCart(staticSlug); else setQty(staticSlug, q - 1); });
+        document.addEventListener('munchingo:cart', sync);
+        window.addEventListener('pageshow', sync);
+        window.addEventListener('storage', sync);
+        sync();
+      }
     });
 
     // Mobile nav toggle
