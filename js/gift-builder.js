@@ -96,6 +96,7 @@
     function canonical(list) { return FLAVOURS.filter(function (f) { return list.indexOf(f.value) !== -1; }).map(function (f) { return f.value; }); }
 
     function render() {
+      var pn = right.querySelector('.gb-panel'); if (pn) pn.classList.toggle('gb-none', !picks.length);   // phones hide the empty price rows
       var slots = $('slots'); slots.innerHTML = ''; slots.style.gridTemplateColumns = 'repeat(' + size + ',1fr)';
       for (var i = 0; i < size; i++) {
         var s = document.createElement('div'); s.className = 'gb-slot';

@@ -169,10 +169,9 @@
   }
   function ordersOpen() { return Date.now() >= LAUNCH_AT || !!previewKey(); }
 
-  // ---- Minimum order: 3 boxes (replaced the old value-based minimum) ----
-  // A Trio gift set is 3 boxes and the Full Range set is 4; every other item is one box.
-  // Must match MIN_BOXES in webhook-backend/routes/checkout.js.
-  var MIN_BOXES = 3;
+  // ---- Minimum order: Rs 700 of items before any discount (12 Oct 2026; replaced the 3-box minimum) ----
+  // Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js. Box counts below are only used for packing and wording.
+  var MIN_ORDER_VALUE = 700;
   function boxesFor(slug) {
     if (slug === 'full-range-set') return 4;
     if (typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0) return 3;
@@ -370,9 +369,9 @@
   function renderAovProgressHtml(cart) {
     var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
     var boxes = cart.reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
-    var pendingMin = boxes < MIN_BOXES;
-    // Until the 3-box minimum is met the bar fills by boxes; after that it fills toward the Full Range set.
-    var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
+    var pendingMin = total < MIN_ORDER_VALUE;
+    // Until the minimum order is met the bar fills toward it; after that it fills toward the Full Range set.
+    var fillPct = pendingMin ? Math.round((total / MIN_ORDER_VALUE) * 100) : Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
 
     var hasSet = cart.some(function (c) { return c.slug === 'full-range-set'; });
     var sg = suggestion();
@@ -380,8 +379,8 @@
     var msgClass, msgHtml, upgradeBtnHtml = '';
     if (pendingMin) {
       msgClass = 'pending';
-      var need = MIN_BOXES - boxes;
-      msgHtml = 'Add <b>' + need + '</b> more box' + (need === 1 ? '' : 'es') + ' to unlock delivery (' + MIN_BOXES + '-box minimum). Any 3 boxes together are just <b>\u20B9' + trioPrice() + '</b>.';
+      var need = MIN_ORDER_VALUE - total;
+      msgHtml = 'Add <b>\u20B9' + need + '</b> more to unlock delivery (minimum order \u20B9' + MIN_ORDER_VALUE + ').';
     } else if (sg) {
       msgClass = 'upsell';
       msgHtml = suggestionHtml(sg);
@@ -514,7 +513,7 @@
     DISPATCH_FROM: DISPATCH_FROM,
     isPreorder: isPreorder,
     applyDispatchCopy: applyDispatchCopy,
-    MIN_BOXES: MIN_BOXES,
+    MIN_ORDER_VALUE: MIN_ORDER_VALUE,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,
@@ -522,6 +521,9 @@
     track: track,
     metaId: metaId,
     suggestion: suggestion,
+    suggestionHtml: suggestionHtml,
+    acceptSuggestion: acceptSuggestion,
+    keepSuggestion: keepSig,
     renderAovProgressHtml: renderAovProgressHtml,
     initAovUpgrade: initAovUpgrade,
     renderCrossSellHtml: renderCrossSellHtml,
@@ -727,7 +729,7 @@
       { title: 'Maida-free cookies: how to read a label', desc: 'A plain guide to maida, atta, fats and sugar on biscuit labels.', type: 'Page', url: 'maida-free-cookies-guide.html' },
       { title: 'About Us', desc: 'Our story — baked in Bikaner by Krazy Bakers.', type: 'Page', url: 'about.html' },
       { title: 'Contact', desc: 'WhatsApp, email, Instagram, corporate gifting.', type: 'Page', url: 'contact.html' },
-      { title: 'Your Cart', desc: 'Review your bag and check out on WhatsApp.', type: 'Page', url: 'cart.html' },
+      { title: 'Your Cart', desc: 'Review your bag and check out securely online.', type: 'Page', url: 'cart.html' },
       { title: 'Is Atta Sugar-Lite safe for diabetics?', desc: 'Sweetened with maltitol, no added sugar. Contains polyols; may have a laxative effect.', type: 'FAQ', url: 'contact.html#faq-diabetic' },
       { title: "What's the shelf life?", desc: 'Best before 90 days from packing.', type: 'FAQ', url: 'contact.html#faq-shelf-life' },
       { title: 'Can I customise a corporate hamper?', desc: 'Corporate gifting and bulk orders from 25 boxes.', type: 'FAQ', url: 'contact.html#faq-hamper' },

@@ -41,15 +41,14 @@
     var c = window.MunchingoCart; if (!c) return;
     var n = c.cartCount(), total = c.cartTotal();
     if (!n) { bar.classList.remove('on'); document.body.classList.remove('has-mcb'); return; }
-    var boxes = c.cartBoxes(), min = c.MIN_BOXES, short = Math.max(0, min - boxes);
+    var min = c.MIN_ORDER_VALUE, short = Math.max(0, min - total);
     q('count').textContent = n + (n === 1 ? ' item' : ' items');
     q('total').textContent = inr(total);
-    q('fill').style.width = Math.min(100, Math.round(boxes / min * 100)) + '%';
-    var more = short + (short === 1 ? ' more box' : ' more boxes');
-    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : (setHint(c) || offerHint(c) || 'Ready to order');
+    q('fill').style.width = Math.min(100, Math.round(total / min * 100)) + '%';
+    q('hint').textContent = short ? 'Minimum order ' + inr(min) : (setHint(c) || offerHint(c) || 'Ready to order');
     var cta = q('cta');
-    if (short) { cta.textContent = 'Add ' + more; cta.setAttribute('href', 'index.html#range'); }
-    else { cta.textContent = 'Checkout →'; cta.setAttribute('href', 'checkout.html'); }
+    if (short) { cta.textContent = 'Add ' + inr(short) + ' more'; cta.setAttribute('href', 'index.html#range'); }
+    else { cta.textContent = 'Checkout \u2192'; cta.setAttribute('href', 'checkout.html'); }
     bar.classList.add('on'); document.body.classList.add('has-mcb');
   }
 
