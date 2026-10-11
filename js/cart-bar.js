@@ -30,6 +30,12 @@
     return 'Add ' + inr(o.min - singles) + ' more for ' + o.pct + '% off';
   }
 
+  // A cheaper set the buyer could choose (js/cart.js suggestion()): only a tip here; the choice is made in the bag.
+  function setHint(c) {
+    var sg = c.suggestion && c.suggestion();
+    return sg ? 'Tip: save ' + inr(sg.saved) + ' as a ' + (sg.kind === 'trio' ? 'Trio' : 'Full Range') + ' set' : '';
+  }
+
   function q(n) { return bar.querySelector('[data-mcb-' + n + ']'); }
   function refresh() {
     var c = window.MunchingoCart; if (!c) return;
@@ -40,7 +46,7 @@
     q('total').textContent = inr(total);
     q('fill').style.width = Math.min(100, Math.round(boxes / min * 100)) + '%';
     var more = short + (short === 1 ? ' more box' : ' more boxes');
-    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : (offerHint(c) || 'Ready to order');
+    q('hint').textContent = short ? 'Add ' + more + ' to order (' + min + '-box minimum)' : (setHint(c) || offerHint(c) || 'Ready to order');
     var cta = q('cta');
     if (short) { cta.textContent = 'Add ' + more; cta.setAttribute('href', 'index.html#range'); }
     else { cta.textContent = 'Checkout →'; cta.setAttribute('href', 'checkout.html'); }

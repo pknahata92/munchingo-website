@@ -278,22 +278,9 @@
     addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
     return { saved: saved };
   }
-  function autoPackOfFour() {
-    var parts = [], frSwaps = 0, trSwaps = 0, trSaved = 0, trLabels = '', mgSwaps = 0, mgSaved = 0, guard = 0;
-    while (hasFullRangeUpgrade(getCart()) && guard++ < 20) { upgradeToFullRange(); frSwaps++; }
-    var m; guard = 0;
-    while ((m = mergeTrioAndFourth()) && guard++ < 20) { mgSwaps++; mgSaved += m.saved; }
-    var r; guard = 0;
-    while ((r = swapToTrio()) && guard++ < 20) { trSwaps++; trSaved += r.saved; trLabels = r.labels; }
-    if (frSwaps) parts.push((frSwaps > 1 ? frSwaps + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 all four flavours are now one set, you save \u20B9' + (AOV_FULL_RANGE_SAVING * frSwaps));
-    if (mgSwaps) parts.push((mgSwaps > 1 ? mgSwaps + ' Full Range Gift Sets' : 'Full Range Gift Set') + ' \u2014 your Trio and the 4th flavour are now one set, you save \u20B9' + mgSaved);
-    if (trSwaps) parts.push((trSwaps > 1 ? trSwaps + ' Trio Gift Sets' : 'Trio Gift Set (' + trLabels + ')') + ' \u2014 your 3 flavours are now one set, you save \u20B9' + trSaved);
-    if (parts.length) {
-      try { sessionStorage.setItem('mngAutoPack', String(frSwaps + trSwaps + mgSwaps)); } catch (e) {}
-      showAutoPackNotice(parts.join('. ') + '.');
-    }
-    return frSwaps + trSwaps + mgSwaps;
-  }
+  // The bag no longer changes itself. A cheaper set is SUGGESTED (see suggestion()) and the customer chooses; kept as a no-op
+  // because add/set-quantity still call it.
+  function autoPackOfFour() { return 0; }
   function showAutoPackNotice(text) {
     try {
       if (typeof document === 'undefined' || !document.body) return;
@@ -307,6 +294,77 @@
     } catch (e) { /* a notice must never break the cart */ }
   }
 
+  // ---- Suggested sets (the buyer decides; nothing in the bag changes unless they tap) ----
+  // Three different flavours as singles cost more than the Trio; all four cost more than the Full Range set; a Trio plus the
+  // 4th flavour costs more than the Full Range set. The saving shown is the real change in what they would pay, counting the
+  // stock-up offer (10% off single boxes) they might lose by switching.
+  var KEEP_KEY = 'mngKeep';
+  function keptList() { try { return JSON.parse(sessionStorage.getItem(KEEP_KEY)) || []; } catch (e) { return []; } }
+  function keepSig(sig) { try { var k = keptList(); if (k.indexOf(sig) < 0) k.push(sig); sessionStorage.setItem(KEEP_KEY, JSON.stringify(k)); } catch (e) {} }
+  function singlesOf(cart) { return cart.filter(function (c) { return BASE_SLUGS_FOR_UPGRADE.indexOf(c.slug) >= 0; }).reduce(function (n, c) { return n + c.qty * c.price; }, 0); }
+  function stockUpOff(singles) {
+    var o = window.MunchingoOffers && window.MunchingoOffers.tier();
+    if (!o || !o.pct || singles < o.min) return 0;
+    var d = Math.round(singles * o.pct / 100);
+    return o.cap ? Math.min(d, o.cap) : d;
+  }
+  function payableOf(cart) { return cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0) - stockUpOff(singlesOf(cart)); }
+  // The bag as it would be after removing one of each slug and adding one set.
+  function afterSwap(cart, slugs, add) {
+    var out = cart.map(function (c) { return { slug: c.slug, qty: c.qty, price: c.price }; });
+    slugs.forEach(function (sl) { var i = out.findIndex(function (c) { return c.slug === sl; }); if (i >= 0) { if (out[i].qty > 1) out[i].qty--; else out.splice(i, 1); } });
+    var ex = out.find(function (c) { return c.slug === add.slug; });
+    if (ex) ex.qty++; else out.push({ slug: add.slug, qty: 1, price: add.price });
+    return out;
+  }
+  function suggestion() {
+    var sg = suggestionCore();
+    if (sg && stockUpOff(singlesOf(getCart())) > 0) sg.tierNote = true;
+    return sg;
+  }
+  function suggestionCore() {
+    var cart = getCart(), kept = keptList(), d = distinctSingles(cart), now = payableOf(cart), s;
+    if (d.length === 4) {
+      if (kept.indexOf('full') >= 0) return null;
+      s = now - payableOf(afterSwap(cart, BASE_SLUGS_FOR_UPGRADE, { slug: 'full-range-set', price: AOV_FULL_RANGE_PRICE }));
+      return s > 0 ? { kind: 'full', sig: 'full', saved: s, singles: d.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0), setPrice: AOV_FULL_RANGE_PRICE } : null;
+    }
+    var t = cart.filter(function (c) { return isTrioSlug(c.slug); })[0];
+    if (t) {
+      var padded = '-' + t.slug + '-';
+      var have = FLAV_META.filter(function (f) { return padded.indexOf('-' + f.token + '-') >= 0; });
+      if (have.length === 3) {
+        var miss = FLAV_META.filter(function (f) { return have.indexOf(f) < 0; })[0];
+        var single = cart.filter(function (c) { return c.slug === miss.slug && c.qty >= 1; })[0];
+        var sig = 'merge:' + t.slug;
+        if (single && kept.indexOf(sig) < 0) {
+          s = now - payableOf(afterSwap(cart, [t.slug, single.slug], { slug: 'full-range-set', price: AOV_FULL_RANGE_PRICE }));
+          if (s > 0) return { kind: 'merge', sig: sig, saved: s, singles: t.price + single.price, setPrice: AOV_FULL_RANGE_PRICE, extra: miss.label };
+        }
+      }
+    }
+    if (d.length >= 3) {
+      var picks = d.slice(0, 3), tp = trioPrice(), tsig = 'trio:' + picks.map(function (f) { return f.token; }).sort().join('-');
+      if (kept.indexOf(tsig) >= 0) return null;
+      var tslug = 'trio-gift-set-' + picks.map(function (f) { return f.token; }).sort().join('-');
+      if (isSlugSoldOut(tslug)) return null;
+      s = now - payableOf(afterSwap(cart, picks.map(function (f) { return f.slug; }), { slug: tslug, price: tp }));
+      var sum = picks.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
+      return s > 0 ? { kind: 'trio', sig: tsig, saved: s, singles: sum, setPrice: tp, labels: picks.map(function (f) { return f.label; }).join(', ') } : null;
+    }
+    return null;
+  }
+  function acceptSuggestion() {
+    var sg = suggestion(); if (!sg) return 0;
+    if (sg.kind === 'full') upgradeToFullRange(); else if (sg.kind === 'merge') mergeTrioAndFourth(); else swapToTrio();
+    return 1;
+  }
+  function suggestionHtml(sg) {
+    var what = sg.kind === 'trio' ? 'Trio Gift Set' : 'Full Range Gift Set';
+    var lead = sg.kind === 'trio' ? 'Your 3 flavours (' + sg.labels + ')' : sg.kind === 'full' ? 'All 4 flavours' : 'Your Trio and a box of ' + sg.extra;
+    return lead + ' come to <b>\u20B9' + sg.singles + '</b> as separate boxes. As the ' + what + ' they are <b>\u20B9' + sg.setPrice + '</b>. Save <b>\u20B9' + sg.saved + '</b> if you like' + (sg.tierNote ? ' (counting the 10% stock-up offer you would otherwise get)' : '') + '.';
+  }
+
   // total is derived from cart, not passed separately, so this can never
   // drift out of sync with what's actually in the cart.
   function renderAovProgressHtml(cart) {
@@ -317,23 +375,22 @@
     var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
 
     var hasSet = cart.some(function (c) { return c.slug === 'full-range-set'; });
-    var canUpgrade = !hasSet && hasFullRangeUpgrade(cart);
+    var sg = suggestion();
 
     var msgClass, msgHtml, upgradeBtnHtml = '';
     if (pendingMin) {
       msgClass = 'pending';
       var need = MIN_BOXES - boxes;
       msgHtml = 'Add <b>' + need + '</b> more box' + (need === 1 ? '' : 'es') + ' to unlock delivery (' + MIN_BOXES + '-box minimum). Any 3 boxes together are just <b>\u20B9' + trioPrice() + '</b>.';
+    } else if (sg) {
+      msgClass = 'upsell';
+      msgHtml = suggestionHtml(sg);
+      upgradeBtnHtml = '<div class="aov-actions"><button type="button" class="aov-upgrade-btn" data-aov-accept>Switch to ' + (sg.kind === 'trio' ? 'Trio' : 'Full Range') + ' \u00B7 save \u20B9' + sg.saved + '</button>'
+        + '<button type="button" class="aov-keep-btn" data-aov-keep data-sig="' + sg.sig + '">Keep as singles</button></div>';
     } else if (hasSet) {
       // Genuinely holds the discounted set — this claim is real.
       msgClass = 'unlocked';
       msgHtml = '🎉 Full Range value unlocked — you\'re saving up to ₹' + AOV_FULL_RANGE_SAVING + ' vs buying separately';
-    } else if (canUpgrade) {
-      // All 4 flavours present as loose singles: real one-tap swap
-      // available, not just a text nudge.
-      msgClass = 'upsell';
-      msgHtml = 'You\'ve got all 4 flavours in your cart — swap for the Full Range Gift Set and save ₹' + AOV_FULL_RANGE_SAVING;
-      upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-upgrade>Swap &amp; Save ₹' + AOV_FULL_RANGE_SAVING + '</button>';
     } else if (cart.some(function (c) { return isTrioSlug(c.slug); }) && !hasSet) {
       // A Trio is in the bag: the honest next step is the 4th flavour, priced as the difference.
       var diff = Math.max(0, AOV_FULL_RANGE_PRICE - trioPrice());
@@ -364,6 +421,9 @@
   // Wires the "Swap & Save" button if present in the given container.
   function initAovUpgrade(containerEl, onUpgraded) {
     if (!containerEl) return;
+    var acc = containerEl.querySelector('[data-aov-accept]'), keep = containerEl.querySelector('[data-aov-keep]');
+    if (acc) acc.addEventListener('click', function () { acceptSuggestion(); if (typeof onUpgraded === 'function') onUpgraded(); });
+    if (keep) keep.addEventListener('click', function () { keepSig(keep.getAttribute('data-sig')); if (typeof onUpgraded === 'function') onUpgraded(); });
     var btn = containerEl.querySelector('[data-aov-upgrade]');
     var tbtn = containerEl.querySelector('[data-aov-trio-upgrade]');
     if (tbtn) tbtn.addEventListener('click', function () { upgradeTrioToFullRange(); if (typeof onUpgraded === 'function') onUpgraded(); });
@@ -461,6 +521,7 @@
     isFlavourSoldOut: isFlavourSoldOut,
     track: track,
     metaId: metaId,
+    suggestion: suggestion,
     renderAovProgressHtml: renderAovProgressHtml,
     initAovUpgrade: initAovUpgrade,
     renderCrossSellHtml: renderCrossSellHtml,

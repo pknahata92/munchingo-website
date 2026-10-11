@@ -1301,3 +1301,5 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 /* stock-up offer line (js/offers.js) */
 .v2-tierline[hidden]{display:none}
 .v2-tierline b{color:var(--terra-deep,#86482A)}
+.aov-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.aov-keep-btn{background:none;border:1px solid rgba(42,26,18,.3);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:600 13px/1 Poppins,system-ui,sans-serif;cursor:pointer;min-height:40px}
