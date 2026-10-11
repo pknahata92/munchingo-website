@@ -1190,9 +1190,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[role=button]:focus-v
 
 /* Countdown banner */
 :root{--cd-green:#25544A;--cd-green-2:#2E6358}
-.v2-countdown{position:fixed;inset:0;z-index:1000;overflow:auto;display:flex;align-items:center;justify-content:center;background:var(--cd-green);color:#FBF4E6;text-align:center;padding:48px 0;transition:opacity .4s ease,visibility .4s ease}
+.v2-countdown{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;z-index:1000;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--cd-green);color:#FBF4E6;text-align:center;padding:48px 0;transition:opacity .4s ease,visibility .4s ease}
 .v2-countdown.cd-hidden{opacity:0;visibility:hidden}
-html.cd-lock,html.cd-lock body{overflow:hidden}
+html.cd-lock,html.cd-lock body{overflow:hidden;overscroll-behavior:none}
+html.cd-lock body{position:fixed;inset:0;width:100%}
 .v2-countdown .cd-arc{position:absolute;border-radius:50%;border:34px solid rgba(251,244,230,.06);pointer-events:none}
 .v2-countdown .cd-arc-a{width:340px;height:340px;top:-210px;left:-120px}
 .v2-countdown .cd-arc-b{width:340px;height:340px;bottom:-230px;right:-110px}
@@ -1220,13 +1221,31 @@ html.cd-lock,html.cd-lock body{overflow:hidden}
 .cd-cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:26px;background:transparent;color:#FFF9EC;border:1.5px solid rgba(251,244,230,.7);border-radius:999px;padding:15px 30px;font:600 14px var(--f-body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,transform .08s}
 .cd-cta:hover{background:#FFF9EC;color:var(--cd-green)}.cd-cta:hover .v2-arrow{transform:translate(2px,-2px)}.cd-cta:active{transform:scale(.98)}
 .cd-cta:focus-visible{outline:2px solid var(--marigold);outline-offset:3px}
-@media (max-width:720px){
-  .v2-countdown{padding:32px 0}
+@media (max-width:720px), (max-height:700px){
+  /* One screen, no scrolling: everything is compact enough to fit an iPhone, and a short script scales it down on very small screens. */
+  .v2-countdown{padding:12px 0}
+  .cd-eyebrow{font-size:11px}
+  .v2-countdown h2{font-size:clamp(1.9rem,8.6vw,2.5rem);margin:10px auto 8px}
+  .cd-sub{font-size:14px;line-height:1.45;margin:0 auto 16px}
   .cd-tiles{gap:8px}
-  .cd-tile{width:calc(25% - 6px);padding:16px 0 10px}
-  .cd-tile b{font-size:32px}
-  .cd-tile span{font-size:9.5px;letter-spacing:.1em}
-  .cd-sub{font-size:15px;margin-bottom:26px}
+  .cd-tile{width:calc(25% - 6px);padding:12px 0 8px}
+  .cd-tile b{font-size:28px}
+  .cd-tile span{font-size:9.5px;letter-spacing:.1em;margin-top:6px}
+  .cd-date{margin-top:16px;padding:9px 18px;font-size:12px}
+  .cd-scratch{margin-top:14px}
+  .cd-scratch-head{margin-bottom:6px}
+  .cd-scratch-head b{font-size:18px}
+  .cd-scratch-card{height:112px}
+  .cd-scratch-reveal{padding:10px 18px}
+  .cd-scratch-reveal strong{font-size:21px;margin:4px 0 2px}
+  .cd-scratch-reveal span{font-size:12px;line-height:1.35}
+  .cd-scratch-note{margin-top:5px;font-size:11px}
+  .cd-cta{margin-top:16px;padding:12px 24px}
+}
+@media (max-height:700px){
+  .cd-sub{display:none}
+  .v2-countdown h2{margin-bottom:14px}
+  .cd-scratch-card{height:96px}
 }
 body.v2 .v2-countdown h2{color:#FFF9EC}
 

@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=64">
+<link rel="stylesheet" href="css/style.css?v=66">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -191,6 +191,21 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   }
   scratchInit();
   root.classList.add('cd-lock');
+  // Safety net: if the content is still taller than the screen (very small phones, big text settings), scale it to fit.
+  var inner=sec.querySelector('.cd-inner');
+  function fit(){
+    if(!inner||!sec.parentNode) return;
+    inner.style.transform=''; inner.style.transformOrigin='';
+    var sr=sec.getBoundingClientRect(), r0=inner.getBoundingClientRect(), h=r0.height, avail=sr.height-16;
+    if(avail>0&&h>avail){
+      var k=Math.max(.55,avail/h), dy=(sr.height-h*k)/2-(r0.top-sr.top);
+      inner.style.transformOrigin='50% 0';
+      inner.style.transform='translateY('+dy.toFixed(1)+'px) scale('+k.toFixed(3)+')';
+    }
+  }
+  fit(); setTimeout(fit,300);
+  window.addEventListener('resize',fit); window.addEventListener('orientationchange',function(){ setTimeout(fit,250); });
+  if(window.ResizeObserver) new ResizeObserver(fit).observe(sec);
   timer=setInterval(tick,1000);
   var btn=sec.querySelector('[data-cd-enter]');
   btn.addEventListener('click',enter);
