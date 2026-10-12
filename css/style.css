@@ -1221,6 +1221,13 @@ html.cd-lock body{position:fixed;inset:0;width:100%}
 .cd-cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:26px;background:transparent;color:#FFF9EC;border:1.5px solid rgba(251,244,230,.7);border-radius:999px;padding:15px 30px;font:600 14px var(--f-body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,transform .08s}
 .cd-cta:hover{background:#FFF9EC;color:var(--cd-green)}.cd-cta:hover .v2-arrow{transform:translate(2px,-2px)}.cd-cta:active{transform:scale(.98)}
 .cd-cta:focus-visible{outline:2px solid var(--marigold);outline-offset:3px}
+/* Once today's clue is scratched: everything except the card fades back and the button becomes the one thing to do. */
+.v2-countdown .cd-inner>:not(.cd-scratch):not(.cd-cta){transition:opacity .6s ease,filter .6s ease}
+.v2-countdown.cd-revealed .cd-inner>:not(.cd-scratch):not(.cd-cta){opacity:.28;filter:blur(3px);pointer-events:none}
+.v2-countdown.cd-revealed .cd-cta{background:var(--marigold);border-color:var(--marigold);color:var(--ink);font-weight:700;box-shadow:0 0 0 0 rgba(227,167,47,.6),0 10px 28px rgba(0,0,0,.3);animation:cdPulse 2s ease-out infinite}
+.v2-countdown.cd-revealed .cd-cta:hover{background:#FFF9EC;border-color:#FFF9EC;color:var(--cd-green)}
+@keyframes cdPulse{0%{box-shadow:0 0 0 0 rgba(227,167,47,.55),0 10px 28px rgba(0,0,0,.3)}70%,100%{box-shadow:0 0 0 16px rgba(227,167,47,0),0 10px 28px rgba(0,0,0,.3)}}
+@media (prefers-reduced-motion:reduce){.v2-countdown.cd-revealed .cd-cta{animation:none}}
 @media (max-width:720px), (max-height:700px){
   /* One screen, no scrolling: everything is compact enough to fit an iPhone, and a short script scales it down on very small screens. */
   .v2-countdown{padding:12px 0}

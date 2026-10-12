@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=82">
+<link rel="stylesheet" href="css/style.css?v=83">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -112,7 +112,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       </div>
       <p class="cd-scratch-note" data-cd-scratch-note>Scratch with your finger. A new clue unlocks every day.</p>
     </div>
-    <button type="button" class="cd-cta" data-cd-enter>Pre-order from the lineup <span class="v2-arrow">↗</span></button>
+    <button type="button" class="cd-cta" data-cd-enter><span data-cd-cta-label>Pre-order from the lineup</span> <span class="v2-arrow">↗</span></button>
   </div>
 </section>
 <script>
@@ -176,8 +176,9 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v1', done;
     try{ done=(JSON.parse(localStorage.getItem(KEY)||'{}'))[day]; }catch(e){ done=false; }
     function save(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); o[day]=true; localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
-    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent='Revealed. Come back tomorrow for the next clue.'; save(); }
-    if(done){ cv.style.display='none'; note.textContent='Revealed. Come back tomorrow for the next clue.'; return; }
+    function reveal(){ sec.classList.add('cd-revealed'); var l=sec.querySelector('[data-cd-cta-label]'); if(l) l.textContent='Proceed to Pre-Order'; }
+    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent='Revealed. Come back tomorrow for the next clue.'; save(); reveal(); }
+    if(done){ cv.style.display='none'; note.textContent='Revealed. Come back tomorrow for the next clue.'; reveal(); return; }
     var ctx=cv.getContext('2d',{willReadFrequently:true}), last=null, drawing=false, over=false;
     function paint(){
       var r=cv.getBoundingClientRect(); if(!r.width||over) return;
