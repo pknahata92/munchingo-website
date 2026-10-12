@@ -397,8 +397,18 @@
       msgHtml = 'Your Trio is saved \u2713 Add the 4th flavour for just <b>\u20B9' + diff + '</b> and it becomes the Full Range set.';
       upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-trio-upgrade>Make it the Full Range \u00B7 +\u20B9' + diff + '</button>';
     } else if (total < AOV_FULL_RANGE_PRICE) {
-      msgClass = 'upsell';
-      msgHtml = 'Delivery unlocked ✓ — add <b>₹' + (AOV_FULL_RANGE_PRICE - total) + '</b> more for the Full Range Gift Set, save ₹' + AOV_FULL_RANGE_SAVING;
+      // The Full Range set is one of EACH flavour, so only name an upgrade the bag can really become: the missing flavours, and what
+      // it costs on top of the one-of-each singles already here (e.g. Kesari + Sugar-Lite in the bag: add Original and Ajwain, +\u20B9299).
+      var haveF = distinctSingles(cart), missF = FLAV_META.filter(function (f) { return haveF.indexOf(f) < 0; });
+      var haveSum = haveF.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
+      var extraCost = AOV_FULL_RANGE_PRICE - haveSum;
+      if (haveF.length && missF.length && extraCost > 0) {
+        msgClass = 'upsell';
+        msgHtml = 'Delivery unlocked \u2713 Add <b>' + missF.map(function (f) { return f.label; }).join(missF.length > 2 ? ', ' : ' and ') + '</b> and your bag becomes the Full Range Gift Set: just <b>\u20B9' + extraCost + '</b> more, and you save \u20B9' + AOV_FULL_RANGE_SAVING + '.';
+      } else {
+        msgClass = 'unlocked';
+        msgHtml = 'Delivery unlocked \u2713 you\'re all set';
+      }
     } else {
       // Spent past the Full Range price without actually holding that set
       // or all 4 flavours (e.g. several units of just 1-2 flavours) — no
