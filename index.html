@@ -161,7 +161,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   var CLUES={
     '2026-10-11':['INGREDIENT HINT','Maida? Not invited.','Good cookies, the Munchingo way. No maida.'],
     '2026-10-12':['A LITTLE GOLDEN CLUE','Desi ghee, the real deal.','Pure desi ghee. Bas, smell says the rest.'],
-    '2026-10-13':['A NOSTALGIC ONE','Tiffin box, unlocked.','That last homemade bite? Somehow always the best.'],
+    '2026-10-13':['A CHAI-TIME CLUE','Chai\u2019s favourite plus-one.','Crisp, ghee-rich and made for dunking. Put the kettle on.'],
     '2026-10-14':['WHERE IT BEGAN','A little Bikaner magic.','One week at a cousin\u2019s bakery sparked it all.'],
     '2026-10-15':['THE BIG REVEAL','Meet Munchingo.','A little taste of home, baked for today.']
   };
@@ -173,7 +173,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     box.querySelector('[data-cd-clue-title]').textContent=clue[1];
     box.querySelector('[data-cd-clue-text]').textContent=clue[2];
     box.querySelector('[data-cd-scratch-day]').textContent=new Date(day+'T12:00:00+05:30').toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short'});
-    var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v1', done;
+    var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v2', done;
     try{ done=(JSON.parse(localStorage.getItem(KEY)||'{}'))[day]; }catch(e){ done=false; }
     function save(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); o[day]=true; localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
     function reveal(){ sec.classList.add('cd-revealed'); var l=sec.querySelector('[data-cd-cta-label]'); if(l) l.textContent='Proceed to Pre-Order'; }
