@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=81">
+<link rel="stylesheet" href="css/style.css?v=82">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's (Task 4) —
    duplicated here rather than touching index.html, which is out of this
@@ -162,6 +162,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
           <button class="btn solid" id="add">Add to bag · ₹300</button>
         </div>
         <div class="v2-mov" id="mov"><span class="v2-mov-ico" aria-hidden="true">🛵</span><span id="movText">Minimum order ₹700. Mix and match any flavours.</span><button class="v2-pair" id="pair" data-add-to-cart data-slug="atta-original" data-name="Atta Original" data-price="300" data-unit="250g">+ Atta Original <span data-price-for="atta-original">₹300</span></button></div>
+        <div data-pincode-check></div>
         <div class="v2-trust">
           <div><b>No maida</b>100% whole wheat flour</div>
           <div><b>FSSAI licensed</b>Lic. 10826003000333</div>
@@ -320,6 +321,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 <script src="js/cart.js?v=34" defer></script>
 <script src="js/offers.js?v=2" defer></script>
+<script src="js/pincode.js?v=1" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=3" defer></script>
 <script src="js/cart-bar.js?v=6" defer></script>

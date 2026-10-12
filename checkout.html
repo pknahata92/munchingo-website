@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=81">
+<link rel="stylesheet" href="css/style.css?v=82">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -290,6 +290,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <script src="js/cart.js?v=34"></script>
 <script src="js/offers.js?v=2" defer></script>
+<script src="js/pincode.js?v=1" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=3" defer></script>
 <script src="js/cart-bar.js?v=6" defer></script>
@@ -553,6 +554,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
 
     if (!name || !phone || !addrLine1 || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
     if (!/^[0-9]{6}$/.test(addrPincode)) { showError('Pincode should be exactly 6 digits.'); return; }
+    if (window.__pinBlocked) { showError('Sorry, we cannot deliver to this pincode yet. Please message us on WhatsApp (+91 99889 92024) and we will try to arrange it.'); return; }
     var phoneDigits = phone.replace(/\D/g, '');
     var phoneOk = /^[6-9][0-9]{9}$/.test(phoneDigits) || /^91[6-9][0-9]{9}$/.test(phoneDigits) || /^0[6-9][0-9]{9}$/.test(phoneDigits);
     phoneOk = phoneOk && /^[+0-9\s\-().]+$/.test(phone);
@@ -661,6 +663,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 2. Pincode -> city + state (India Post public lookup; only the 6-digit pincode is sent).
   var pin = $('ck-addr-pincode'), status = $('ck-pin-status'), lastLooked = '', autoCity = '', autoState = '';
+  // Delhivery says whether we can deliver to this pincode. Only an explicit "no" blocks the order (see js/pincode.js).
+  window.__pinBlocked = false;
+  function deliveryCheck(v) {
+    if (!window.MunchingoPincode) return;
+    window.MunchingoPincode.check(v).then(function (r) {
+      if (pin.value.replace(/\D/g, '') !== v) return;                    // the customer kept typing
+      window.__pinBlocked = r.serviceable === false;
+      if (r.serviceable === false) { status.className = 'ck-pin-status'; status.style.color = '#9b3b2e'; status.innerHTML = window.MunchingoPincode.message(r).html; }
+      else { status.style.color = ''; if (r.serviceable === true) { status.className = 'ck-pin-status ok'; status.textContent = (status.textContent || '').replace(/ · Delivery available$/, '') + ' · Delivery available'; } }
+    });
+  }
   function lookup() {
     var v = pin.value.replace(/\D/g, '');
     if (v.length !== 6 || v === lastLooked) return;
@@ -672,15 +685,16 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(function (d) {
         clearTimeout(timer);
         var po = d && d[0] && d[0].Status === 'Success' && d[0].PostOffice && d[0].PostOffice[0];
-        if (!po) { status.textContent = 'Please type your city and state.'; return; }
+        if (!po) { status.textContent = 'Please type your city and state.'; deliveryCheck(v); return; }
         var city = $('ck-addr-city'), state = $('ck-addr-state');
         if (!city.value || city.value === autoCity) { city.value = po.District || po.Block || ''; autoCity = city.value; }
         if (!state.value || state.value === autoState) { state.value = po.State || ''; autoState = state.value; }
         status.className = 'ck-pin-status ok'; status.textContent = '✓ ' + city.value + ', ' + state.value;
+        deliveryCheck(v);
       })
-      .catch(function () { clearTimeout(timer); status.className = 'ck-pin-status'; status.textContent = 'Please type your city and state.'; });
+      .catch(function () { clearTimeout(timer); status.className = 'ck-pin-status'; status.textContent = 'Please type your city and state.'; deliveryCheck(v); });
   }
-  pin.addEventListener('input', lookup);
+  pin.addEventListener('input', function () { if (pin.value.replace(/\D/g, '').length !== 6) { window.__pinBlocked = false; status.style.color = ''; } lookup(); });
   if (pin.value.replace(/\D/g, '').length === 6) lookup();
 
   // Gift recipient: the address below becomes the recipient's; payer details stay for the receipt.

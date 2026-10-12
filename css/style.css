@@ -1425,3 +1425,13 @@ html.mc-lock{overflow:hidden}
 /* the fold buttons exist at every width; only phones show them (the original heading shows everywhere else) */
 .v2-footer .v2-fold-btn{display:none}
 @media (max-width:700px){ :is(body.v2,body:not(.v2)) .v2-footer .v2-fold>.v2-ftop-head{display:none} }
+
+/* delivery check by pincode (js/pincode.js) */
+.pc-wrap{margin:14px 0 4px}
+.pc-label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.04em;margin:0 0 6px;color:var(--ink-3,#6b5a4e)}
+.pc-row{display:flex;gap:8px}
+.pc-in{flex:1;min-width:0;border:1.5px solid rgba(42,26,18,.2);border-radius:999px;padding:11px 16px;font:500 15px inherit;background:var(--paper,#fff);color:var(--ink,#2A1A12)}
+.pc-btn{border:0;border-radius:999px;padding:0 20px;background:var(--ink,#2A1A12);color:#FFF6EA;font:600 14px inherit;cursor:pointer;min-height:44px}
+.pc-msg{margin:7px 2px 0;font-size:13px;line-height:1.45;min-height:1.2em;color:var(--ink-3,#6b5a4e)}
+.pc-msg.ok{color:#2f6b4f;font-weight:600}.pc-msg.bad{color:#9b3b2e;font-weight:600}
+.pc-msg a{color:inherit}
