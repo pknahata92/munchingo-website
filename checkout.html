@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=80">
+<link rel="stylesheet" href="css/style.css?v=81">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-456YHSDMX6"></script>
 <script>
@@ -289,7 +289,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/cart.js?v=34"></script>
-<script src="js/offers.js?v=1" defer></script>
+<script src="js/offers.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=3" defer></script>
 <script src="js/cart-bar.js?v=6" defer></script>
@@ -444,6 +444,11 @@ function renderSummary() {
   MunchingoCart.initCrossSell(crossSellEl, onCartChangedByPageAction);
 }
 
+// When someone applies a code and the bag holds a gift set, say plainly why sets are different (they are priced as a deal already).
+function giftSetNote() {
+  var has = MunchingoCart.getCart().some(function (c) { return c.slug === 'full-range-set' || String(c.slug).indexOf('trio-gift-set') === 0; });
+  return has ? ' Gift sets are already at their best price.' : '';
+}
 function showPromoMsg(msg, isError) {
   var el = document.getElementById('ck-promo-msg');
   el.textContent = msg;
@@ -474,10 +479,10 @@ async function applyPromoCode() {
     var data = await res.json();
     if (!res.ok || !data.ok) {
       appliedCoupon = null;
-      showPromoMsg(data.error || 'That code is not valid.', true);
+      showPromoMsg((data.error || 'That code is not valid.') + (/gift sets/i.test(data.error || '') ? '' : giftSetNote()), true);
     } else {
       appliedCoupon = { code: code.toUpperCase(), discountAmount: data.discountAmount, finalTotal: data.finalTotal };
-      showPromoMsg('Applied — you saved ₹' + data.discountAmount + '.', false);
+      showPromoMsg('Applied — you saved ₹' + data.discountAmount + '.' + giftSetNote(), false);
     }
   } catch (err) {
     appliedCoupon = null;

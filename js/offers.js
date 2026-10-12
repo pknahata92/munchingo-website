@@ -13,8 +13,17 @@
       ? 'Flat ' + t.pct + '% off on ' + rs(t.min) + '+ of single boxes' + (t.cap ? ', up to ' + rs(t.cap) : '')
       : 'Spend ' + rs(t.min) + ' on single boxes, save ' + rs(t.off);
   }
+  // The announce bar has room for one short line; the full conditions (single boxes only, up to the cap) show on product pages and in the bag.
+  function describeShort(t) {
+    if (!t) return '';
+    return t.pct ? 'Flat ' + t.pct + '% off on shopping above ' + rs(t.min) : 'Save ' + rs(t.off) + ' on shopping above ' + rs(t.min);
+  }
   function apply(t) {
     current = t;
+    [].forEach.call(document.querySelectorAll('[data-tier-short]'), function (el) {
+      if (!t) { el.hidden = true; return; }
+      el.textContent = describeShort(t); el.hidden = false;
+    });
     [].forEach.call(document.querySelectorAll('[data-tier-line]'), function (el) {
       if (!t) { el.hidden = true; return; }
       var txt = el.querySelector('[data-tier-text]') || el;

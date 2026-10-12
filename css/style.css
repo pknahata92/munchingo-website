@@ -1310,26 +1310,26 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 .v2-range .v2-card .v2-step output{font:700 16px var(--f-body);min-width:2ch;text-align:center}
 /* compact footer on phones: two link columns side by side, tighter rows and gaps (was about 1,430 px tall) */
 @media (max-width:700px){
-  body.v2 .v2-footer{padding-top:36px}
-  body.v2 .v2-footer .v2-top{grid-template-columns:1fr 1fr;gap:18px 22px}
-  body.v2 .v2-footer .v2-top>.v2-about,body.v2 .v2-footer .v2-top>div:nth-child(4){grid-column:1/-1}
-  body.v2 .v2-footer .v2-ftop-head{height:auto;margin-bottom:6px}
-  body.v2 .v2-footer .v2-about .v2-ftop-head{margin-bottom:10px}
-  body.v2 .v2-footer .v2-about p:not(.v2-legal){padding-top:0;font-size:14px;margin:0 0 6px}
-  body.v2 .v2-footer .v2-legal{margin-top:8px}
-  body.v2 .v2-footer ul a{display:block;padding:8px 0;font-size:14px;line-height:1.35}
-  body.v2 .v2-footer .v2-top>div:nth-child(4) ul a{display:inline-flex}
-  body.v2 .v2-footer .v2-top>div:nth-child(4) ul{display:flex;flex-wrap:wrap;gap:0 22px}
-  body.v2 .v2-psst{display:none}
-  body.v2 .v2-word{padding-bottom:6px}
-  body.v2 .v2-baseline{padding:12px 0 calc(14px + env(safe-area-inset-bottom))}
+  :is(body.v2,body:not(.v2)) .v2-footer{padding-top:36px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top{grid-template-columns:1fr 1fr;gap:18px 22px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top>.v2-about,:is(body.v2,body:not(.v2)) .v2-footer .v2-top>div:nth-child(4){grid-column:1/-1}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-ftop-head{height:auto;margin-bottom:6px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-about .v2-ftop-head{margin-bottom:10px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-about p:not(.v2-legal){padding-top:0;font-size:14px;margin:0 0 6px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-legal{margin-top:8px}
+  :is(body.v2,body:not(.v2)) .v2-footer ul a{display:block;padding:8px 0;font-size:14px;line-height:1.35}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top>div:nth-child(4) ul a{display:inline-flex}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top>div:nth-child(4) ul{display:flex;flex-wrap:wrap;gap:0 22px}
+  :is(body.v2,body:not(.v2)) .v2-psst{display:none}
+  :is(body.v2,body:not(.v2)) .v2-word{padding-bottom:6px}
+  :is(body.v2,body:not(.v2)) .v2-baseline{padding:12px 0 calc(14px + env(safe-area-inset-bottom))}
 }
 /* desktop footer: keep the playful wordmark but at a third of the size, tighter spacing (was about 830 px tall) */
 @media (min-width:701px){
-  body.v2 .v2-footer{padding-top:56px}
-  body.v2 .v2-psst{margin:36px 0 12px;font-size:20px}
-  body.v2 .v2-word{font-size:clamp(3rem,8vw,7rem);padding:4px 0 8px}
-  body.v2 .v2-baseline{padding:14px 0 18px}
+  :is(body.v2,body:not(.v2)) .v2-footer{padding-top:56px}
+  :is(body.v2,body:not(.v2)) .v2-psst{margin:36px 0 12px;font-size:20px}
+  :is(body.v2,body:not(.v2)) .v2-word{font-size:clamp(3rem,8vw,7rem);padding:4px 0 8px}
+  :is(body.v2,body:not(.v2)) .v2-baseline{padding:14px 0 18px}
 }
 
 /* mini bag (js/minicart.js) and announce-bar link */
@@ -1376,30 +1376,30 @@ html.mc-lock{overflow:hidden}
   .mcb-cta{padding:11px 16px;font-size:14px;font-weight:600}
 }
 @media (max-width:700px){
-  body.v2 .v2-footer .v2-top>.v2-about{margin-bottom:0}
-  body.v2 .v2-footer .v2-fold{grid-column:1/-1;border-top:1px solid rgba(234,220,200,.14)}
-  body.v2 .v2-footer .v2-fold-btn{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;color:var(--marigold);padding:14px 0;font:600 12px var(--f-body);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
-  body.v2 .v2-footer .v2-fold-btn::after{content:"+";font-size:18px;letter-spacing:0;opacity:.8}
-  body.v2 .v2-footer .v2-fold.open .v2-fold-btn::after{content:"\2212"}
-  body.v2 .v2-footer .v2-fold ul{display:none}
-  body.v2 .v2-footer .v2-fold.open ul{display:grid;padding-bottom:8px}
-  body.v2 .v2-footer .v2-top>div:nth-child(4).v2-fold.open ul{display:grid}
-  body.v2 .v2-footer .v2-fold ul a{padding:7px 0}
-  body.v2 .v2-footer .v2-top{gap:14px 0}
-  body.v2 .v2-footer .v2-word{padding-bottom:4px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top>.v2-about{margin-bottom:0}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold{grid-column:1/-1;border-top:1px solid rgba(234,220,200,.14)}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold-btn{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;color:var(--marigold);padding:14px 0;font:600 12px var(--f-body);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold-btn::after{content:"+";font-size:18px;letter-spacing:0;opacity:.8}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold.open .v2-fold-btn::after{content:"\2212"}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold ul{display:none}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold.open ul{display:grid;padding-bottom:8px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top>div:nth-child(4).v2-fold.open ul{display:grid}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold ul a{padding:7px 0}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-top{gap:14px 0}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-word{padding-bottom:4px}
 }
-@media (max-width:700px){ body.v2 .v2-footer .v2-top>div:nth-child(4).v2-fold:not(.open) ul{display:none} }
+@media (max-width:700px){ :is(body.v2,body:not(.v2)) .v2-footer .v2-top>div:nth-child(4).v2-fold:not(.open) ul{display:none} }
 
 /* footer links: tight vertical rhythm (rows were about 38 px tall) */
-body.v2 .v2-footer ul{gap:0}
-body.v2 .v2-footer ul a{padding:4px 0;line-height:1.35}
-body.v2 .v2-footer .v2-ftop-head{margin-bottom:8px}
+:is(body.v2,body:not(.v2)) .v2-footer ul{gap:0}
+:is(body.v2,body:not(.v2)) .v2-footer ul a{padding:4px 0;line-height:1.35}
+:is(body.v2,body:not(.v2)) .v2-footer .v2-ftop-head{margin-bottom:8px}
 @media (max-width:700px){
-  body.v2 .v2-footer .v2-fold ul a{padding:4px 0;font-size:14px}
-  body.v2 .v2-footer .v2-fold.open ul{padding-bottom:6px}
-  body.v2 .v2-footer .v2-fold-btn{padding:12px 0}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold ul a{padding:4px 0;font-size:14px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold.open ul{padding-bottom:6px}
+  :is(body.v2,body:not(.v2)) .v2-footer .v2-fold-btn{padding:12px 0}
 }
-body.v2 .v2-footer ul a{margin:0}
+:is(body.v2,body:not(.v2)) .v2-footer ul a{margin:0}
 
 /* Build a box on phones: one compact block instead of a second product grid (section was about 1,850 px) */
 @media (max-width:700px){
@@ -1424,4 +1424,4 @@ body.v2 .v2-footer ul a{margin:0}
 
 /* the fold buttons exist at every width; only phones show them (the original heading shows everywhere else) */
 .v2-footer .v2-fold-btn{display:none}
-@media (max-width:700px){ body.v2 .v2-footer .v2-fold>.v2-ftop-head{display:none} }
+@media (max-width:700px){ :is(body.v2,body:not(.v2)) .v2-footer .v2-fold>.v2-ftop-head{display:none} }
