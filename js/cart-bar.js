@@ -47,7 +47,7 @@
     q('fill').style.width = Math.min(100, Math.round(total / min * 100)) + '%';
     q('hint').textContent = short ? 'Minimum order ' + inr(min) : (setHint(c) || offerHint(c) || 'Ready to order');
     var cta = q('cta');
-    if (short) { cta.textContent = 'Add ' + inr(short) + ' more'; cta.setAttribute('href', 'index.html#range'); }
+    if (short) { cta.textContent = 'Add ' + inr(short) + ' more'; cta.setAttribute('href', 'index.html?shop=1#range'); }
     else { cta.textContent = 'Checkout \u2192'; cta.setAttribute('href', 'checkout.html'); }
     bar.classList.add('on'); document.body.classList.add('has-mcb');
   }

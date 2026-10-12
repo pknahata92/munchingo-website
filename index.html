@@ -150,6 +150,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     if (tgt) tgt.scrollIntoView(); else window.scrollTo(0,0);
   }
   if(!tick()) return;
+  // Sent here from the bag bar ("Add more"): the visitor is mid-order, so skip the popup and land on the range.
+  if(/[?&]shop=1(&|$)/.test(location.search)){
+    sec.style.display='none';
+    var go=location.hash&&document.getElementById(location.hash.slice(1)); if(go) setTimeout(function(){go.scrollIntoView();},0);
+    return;
+  }
   // Shown on EVERY homepage load until dispatch day (the daily scratch-card clue is the reason to come back).
   // Daily scratch-card clue (11-15 Oct, IST). Scratched state stays on this device.
   var CLUES={
@@ -460,7 +466,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=3" defer></script>
-<script src="js/cart-bar.js?v=6" defer></script>
+<script src="js/cart-bar.js?v=7" defer></script>
 <script src="js/gift-builder.js?v=6" defer></script>
 
 </body>

@@ -293,7 +293,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <script src="js/pincode.js?v=1" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=3" defer></script>
-<script src="js/cart-bar.js?v=6" defer></script>
+<script src="js/cart-bar.js?v=7" defer></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
@@ -424,7 +424,9 @@ function renderSummary() {
   }
 
   // Edit bag: change quantities or remove a line without leaving checkout. Any applied code is cleared (the total changed).
-  document.getElementById('checkout-summary').addEventListener('click', function (e) {
+  // Bound once: renderSummary runs after every change, and a listener added each time toggled Edit/Done twice (so it never opened).
+  var sumEl = document.getElementById('checkout-summary');
+  if (!sumEl._ckBound) sumEl._ckBound = true, sumEl.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t) return;
     var slug = t.getAttribute('data-ck-inc') || t.getAttribute('data-ck-dec') || t.getAttribute('data-ck-rm');
     if (t.hasAttribute('data-ck-edit')) { editingBag = !editingBag; renderSummary(); return; }
