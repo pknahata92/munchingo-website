@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=83">
+<link rel="stylesheet" href="css/style.css?v=84">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's / gifting.html's
    (Task 4 / Task 6) — duplicated here rather than touching those files,
@@ -112,6 +112,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <div class="wrap"><nav class="v2-crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span>Cart</nav></div>
 
+<div class="cart-stage">
 <div class="pagehead v2-pagehead">
   <div class="wrap">
     <span class="eyebrow">Your Cart</span>
@@ -131,6 +132,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div id="cart-cross-sell"></div>
 
   <div id="cart-summary" class="cart-summary" style="display:none">
+    <h2 class="cart-summary-title">Order summary</h2>
     <div class="total-row"><span>Total</span><span id="cart-total">₹0</span></div>
     <p class="gst-note">Price inclusive of 5% GST (GSTIN 06AIIPN5005C2ZP)</p>
     <div id="cart-aov-progress"></div>
@@ -140,8 +142,13 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     </div>
     <div data-pincode-check></div>
     <a id="cart-checkout" class="btn solid block" href="checkout.html">Proceed to Checkout</a>
-    <p>You'll pay securely by card, UPI, or netbanking. We'll confirm your order with a GST invoice on email and WhatsApp, and email your tracking link when it ships. All orders are pre-paid and delivered to your doorstep.</p>
+    <ul class="cart-trust">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z" fill="currentColor"/></svg>Secure payment by card, UPI or netbanking</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v8H3V7Zm11 2h4l3 3v3h-7V9ZM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="currentColor"/></svg>Free delivery across India</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6V2Zm8 1.5V8h4.5L14 3.5ZM9 12v1.5h8V12H9Zm0 3.5V17h8v-1.5H9Z" fill="currentColor"/></svg>GST invoice by email and WhatsApp, tracking link when it ships</li>
+    </ul>
   </div>
+</div>
 </div>
 
 <footer class="v2-footer">
@@ -193,6 +200,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <script src="js/minicart.js?v=3" defer></script>
 <script src="js/cart-bar.js?v=7" defer></script>
 <script>
+var THUMBS = { 'atta-original': 'images/box-original.webp', 'atta-kesari': 'images/box-kesari.webp', 'atta-ajwain': 'images/box-ajwain.webp', 'atta-lite-sugar': 'images/box-lite.webp' };
 function renderCart() {
   var cart = MunchingoCart.getCart();
   var listEl = document.getElementById('cart-list');
@@ -211,15 +219,17 @@ function renderCart() {
   cart.forEach(function (item) {
     var row = document.createElement('div');
     row.className = 'cart-row';
+    var thumb = THUMBS[item.slug];
     row.innerHTML =
-      '<div><div class="name">' + item.name + '</div><div class="unit">' + item.unit + ' · ₹' + item.price + (item.mrp && item.mrp > item.price ? ' <s style="color:var(--fg-3);font-weight:400">₹' + item.mrp + '</s>' : '') + ' each</div></div>' +
+      '<div class="thumb">' + (thumb ? '<img src="' + thumb + '" alt="" width="72" height="72" loading="lazy">' : '<img class="mark" src="images/watermark-m.webp" alt="" width="72" height="72">') + '</div>' +
+      '<div class="info"><div class="name">' + item.name + '</div><div class="unit">' + item.unit + ' · ₹' + item.price + (item.mrp && item.mrp > item.price ? ' <s style="color:var(--fg-3);font-weight:400">₹' + item.mrp + '</s>' : '') + ' each</div>' +
+        '<button type="button" class="remove" data-remove>Remove</button></div>' +
       '<div class="qty">' +
-        '<button type="button" data-dec>−</button>' +
+        '<button type="button" data-dec aria-label="One less">−</button>' +
         '<span>' + item.qty + '</span>' +
-        '<button type="button" data-inc>+</button>' +
+        '<button type="button" data-inc aria-label="One more">+</button>' +
       '</div>' +
-      '<div class="price">₹' + (item.price * item.qty) + '</div>' +
-      '<button type="button" class="remove" data-remove>Remove</button>';
+      '<div class="price">₹' + (item.price * item.qty) + '</div>';
 
     row.querySelector('[data-inc]').addEventListener('click', function () {
       MunchingoCart.setQty(item.slug, item.qty + 1);
