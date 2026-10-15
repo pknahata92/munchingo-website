@@ -91,7 +91,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </head>
 <body class="v2">
 
-<section class="v2-countdown" id="countdown" data-countdown="2026-10-16T00:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
+<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T13:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
   <span class="cd-arc cd-arc-a" aria-hidden="true"></span><span class="cd-arc cd-arc-b" aria-hidden="true"></span>
   <div class="v2-wrap cd-inner">
     <span class="cd-eyebrow">Pre-orders are open</span>
@@ -128,11 +128,16 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   function seen(){ try{return sessionStorage.getItem('mngCdSeen')==='1';}catch(e){return false;} }
   function markSeen(){ try{sessionStorage.setItem('mngCdSeen','1');}catch(e){} }
   function unlock(){ root.classList.remove('cd-lock'); }
+  function revertCopy(){
+    document.querySelectorAll('[data-pre-launch]').forEach(function(n){if(n.parentNode) n.parentNode.removeChild(n);});
+    var t=document.querySelector('[data-launch-pill-text]'); if(t) t.textContent='Diwali gift sets are here';
+  }
   function launched(){
     clearInterval(timer); unlock();
     if(sec.parentNode) sec.parentNode.removeChild(sec);
-    document.querySelectorAll('[data-pre-launch]').forEach(function(n){n.parentNode.removeChild(n);});
-    var t=document.querySelector('[data-launch-pill-text]'); if(t) t.textContent='Diwali gift sets are here';
+    revertCopy();
+    // On a page load after launch this script runs before the hero and announce bar exist, so run it again once they do.
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',revertCopy);
   }
   function tick(){
     var left=target-Date.now();
