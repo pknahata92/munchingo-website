@@ -91,10 +91,10 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </head>
 <body class="v2">
 
-<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T13:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
+<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T13:00:00+05:30" data-end="2026-10-16T00:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
   <span class="cd-arc cd-arc-a" aria-hidden="true"></span><span class="cd-arc cd-arc-b" aria-hidden="true"></span>
   <div class="v2-wrap cd-inner">
-    <span class="cd-eyebrow">Pre-orders are open</span>
+    <span class="cd-eyebrow" data-cd-eyebrow>Pre-orders are open</span>
     <h2 id="cd-title"><span data-cd-title>Pre-order now. We dispatch on 16 October.</span></h2>
     <p class="cd-sub" data-cd-sub>Desi ghee atta cookies, baked in Bikaner and delivered to your doorstep. Order today and yours is in the very first batch out.</p>
     <div class="cd-tiles" data-cd-tiles role="timer" aria-live="off">
@@ -122,6 +122,9 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 (function(){
   var sec=document.getElementById('countdown'); if(!sec) return;
   var target=new Date(sec.getAttribute('data-countdown')).getTime();
+  // data-countdown = launch moment (tiles hit zero, popup switches to launch mode). data-end = popup removed entirely.
+  var end=new Date(sec.getAttribute('data-end')||sec.getAttribute('data-countdown')).getTime();
+  var live=false, LIVE_CTA='Shop the range';
   var els={}; ['d','h','m','s'].forEach(function(k){els[k]=sec.querySelector('[data-cd="'+k+'"]');});
   var root=document.documentElement, timer;
   function pad(n){return n<10?'0'+n:''+n;}
@@ -139,9 +142,22 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     // On a page load after launch this script runs before the hero and announce bar exist, so run it again once they do.
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',revertCopy);
   }
+  // Launch mode: the countdown is over, the popup stays for launch day with the final scratch card, then goes at data-end.
+  function launchMode(){
+    if(live) return; live=true;
+    var q=function(a){return sec.querySelector('['+a+']');};
+    var tiles=q('data-cd-tiles'); if(tiles) tiles.style.display='none';
+    var e=q('data-cd-eyebrow'); if(e) e.textContent='Launch day';
+    var t=q('data-cd-title'); if(t) t.textContent='Munchingo is here.';
+    var u=q('data-cd-sub'); if(u) u.textContent='Atta cookies made with pure desi ghee, baked in Bikaner and delivered to your doorstep. Pre-orders are open and the first boxes dispatch on 16 October.';
+    var n=q('data-cd-scratch-note'); if(n) n.textContent='Scratch with your finger to reveal.';
+    var l=q('data-cd-cta-label'); if(l) l.textContent=LIVE_CTA;
+    if(typeof fit==='function') fit();
+  }
   function tick(){
-    var left=target-Date.now();
-    if(left<=0){ launched(); return false; }
+    var now=Date.now(), left=target-now;
+    if(now>=end){ launched(); return false; }
+    if(left<=0){ launchMode(); return true; }
     var s=Math.floor(left/1000);
     els.d.textContent=pad(Math.floor(s/86400)); els.h.textContent=pad(Math.floor(s%86400/3600));
     els.m.textContent=pad(Math.floor(s%3600/60)); els.s.textContent=pad(s%60);
@@ -181,9 +197,10 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v2', done;
     try{ done=(JSON.parse(localStorage.getItem(KEY)||'{}'))[day]; }catch(e){ done=false; }
     function save(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); o[day]=true; localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
-    function reveal(){ sec.classList.add('cd-revealed'); var l=sec.querySelector('[data-cd-cta-label]'); if(l) l.textContent='Proceed to Pre-Order'; }
-    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent='Revealed. Come back tomorrow for the next clue.'; save(); reveal(); }
-    if(done){ cv.style.display='none'; note.textContent='Revealed. Come back tomorrow for the next clue.'; reveal(); return; }
+    function reveal(){ sec.classList.add('cd-revealed'); var l=sec.querySelector('[data-cd-cta-label]'); if(l) l.textContent=live?LIVE_CTA:'Proceed to Pre-Order'; }
+    function doneNote(){ return live?'Revealed. Welcome to Munchingo.':'Revealed. Come back tomorrow for the next clue.'; }
+    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent=doneNote(); save(); reveal(); }
+    if(done){ cv.style.display='none'; note.textContent=doneNote(); reveal(); return; }
     var ctx=cv.getContext('2d',{willReadFrequently:true}), last=null, drawing=false, over=false;
     function paint(){
       var r=cv.getBoundingClientRect(); if(!r.width||over) return;
