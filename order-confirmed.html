@@ -276,14 +276,24 @@ function trackPurchase(order) {
       return { item_name: String(i.name), quantity: i.quantity, price: i.price };
     });
     var count = items.reduce(function (n, i) { return n + (Number(i.quantity) || 0); }, 0);
-    if (typeof gtag === 'function') {
-      gtag('event', 'purchase', { transaction_id: order.orderId, value: Number(order.total), currency: 'INR', items: items });
-    }
+    // GA4: ask the server first. If the server already sent this order to GA4 (customer came back late) it says fire:false.
+    // Any failure fires as before. Meta is always fired and de-duplicated by eventID = order id (the server sends the same id).
+    var fireGa4 = function (allowed) {
+      if (allowed && typeof gtag === 'function') {
+        gtag('event', 'purchase', { transaction_id: order.orderId, value: Number(order.total), currency: 'INR', items: items });
+      }
+    };
+    try {
+      fetch(ORDER_API.replace('/api/order/', '/api/purchase-seen'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: order.orderId }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { fireGa4(!j || j.fire !== false); })
+        .catch(function () { fireGa4(true); });
+    } catch (e) { fireGa4(true); }
     if (typeof fbq === 'function') {
       // Meta's catalogue IDs for the four boxes (gift sets are not catalogue items, so they are left out of content_ids).
       var META = { 'atta original': '91slwpjdqq', 'atta ajwain': '97q9r5q5q3', 'atta kesari': 'w2w5ynf2m5', 'atta sugar-lite': 'vf5p90bcy5' };
       var ids = (order.items || []).map(function (i) { return META[String(i.name || '').toLowerCase().replace(/^munchingo\s+/, '').replace(/\s*\(.*$/, '')]; }).filter(Boolean);
-      fbq('track', 'Purchase', { value: Number(order.total), currency: 'INR', content_type: 'product', content_ids: ids, num_items: count });
+      fbq('track', 'Purchase', { value: Number(order.total), currency: 'INR', content_type: 'product', content_ids: ids, num_items: count }, { eventID: String(order.orderId) });
     }
   } catch (e) { /* tracking must never break the confirmation page */ }
 }
