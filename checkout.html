@@ -80,6 +80,10 @@
 .subscribe-toggle{display:flex;align-items:flex-start;gap:.7rem;background:#FDF6E8;border:1px solid var(--gold, #CEAD5E);border-radius:6px;padding:.9rem 1.1rem;margin-bottom:1rem;cursor:pointer;font-size:13px;color:var(--ink);line-height:1.5}
 .subscribe-toggle input{margin-top:.2rem;flex-shrink:0}
 .subscribe-toggle span strong{color:var(--ink)}
+.ck-offers{margin:.4rem 0 1.2rem}
+.ck-offers-h{font:600 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:0 0 .7rem}
+.ck-paybox .trust-row{margin-top:.4rem}
+.checkout-error{scroll-margin-top:90px}
 .trust-row{display:flex;justify-content:space-between;gap:.6rem;margin:1.4rem 0 1.2rem;padding:.9rem .4rem;border-top:1px solid rgba(42,26,18,.1);border-bottom:1px solid rgba(42,26,18,.1)}
 .trust-item{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1;text-align:center}
 .trust-item svg{width:20px;height:20px;stroke:var(--terra);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -143,7 +147,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 
 <div class="checkout-wrap">
   <h1 style="margin:0 0 .3rem">Checkout</h1>
-  <p style="color:var(--ink-3);margin:0 0 2rem">Pay securely by card, UPI, or netbanking. Your confirmation and GST invoice reach you by email and WhatsApp once payment goes through.</p>
+  <p style="color:var(--ink-3);margin:0 0 2rem">Pay by UPI, card or netbanking. Your GST invoice reaches you on WhatsApp and email as soon as payment goes through.</p>
     <div class="checkout-closed" id="ck-closed" hidden role="status">
       <b>Orders are not open just yet.</b>
       <span>Fill your bag now. We&rsquo;ll be ready for you soon.</span>
@@ -159,22 +163,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div id="checkout-aov-progress"></div>
     <div id="checkout-cross-sell"></div>
 
-    <label class="subscribe-toggle" id="ck-subscribe-label">
-      <input type="checkbox" id="ck-subscribe">
-      <span><strong>Subscribe &amp; Save 8%</strong> — delivered monthly, cancel or pause anytime on WhatsApp</span>
-    </label>
 
-    <div class="checkout-promo-featured" id="ck-promo-featured">
-      <span>🎁 First order? Use <strong id="ck-promo-featured-code">FOUNDING10</strong> for 10% off (up to ₹100)<span id="ck-founding-left" style="display:block;font-size:12px;color:var(--terra);font-weight:700;margin-top:2px"></span></span>
-      <button type="button" id="ck-promo-featured-apply">Apply</button>
-    </div>
-    <div class="checkout-promo" id="ck-promo-row">
-      <input type="text" id="ck-promo-input" placeholder="Have a different code?">
-      <button type="button" id="ck-promo-apply">Apply</button>
-    </div>
-    <p class="checkout-promo-msg" id="ck-promo-msg"></p>
-
-    <div class="checkout-error" id="checkout-error"></div>
 
     <form class="checkout-form" id="checkout-form">
       <div class="field">
@@ -223,13 +212,34 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       </div>
       <div class="field" id="ck-email-field">
         <label for="ck-email" id="ck-email-label">Email (for your GST invoice)</label>
-        <input type="email" id="ck-email" placeholder="We'll email your order confirmation and GST invoice" autocomplete="email">
+        <input type="email" id="ck-email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="field" id="ck-gift-field" hidden>
         <label for="ck-gift-note">Gift note</label>
         <textarea id="ck-gift-note" rows="2" maxlength="200" placeholder="e.g. Happy Diwali, love Priya"></textarea>
       </div>
       <label class="ck-remember"><input type="checkbox" id="ck-remember" checked> Remember my details on this phone</label>
+    </form>
+
+    <div class="ck-offers"><h2 class="ck-offers-h">Offers</h2>
+    <label class="subscribe-toggle" id="ck-subscribe-label">
+      <input type="checkbox" id="ck-subscribe">
+      <span><strong>Subscribe &amp; Save 8%</strong> — a fresh box every month. Pause or cancel anytime on WhatsApp.</span>
+    </label>
+
+    <div class="checkout-promo-featured" id="ck-promo-featured">
+      <span>🎁 First order? Use <strong id="ck-promo-featured-code">FOUNDING10</strong> for 10% off (up to ₹100)<span id="ck-founding-left" style="display:block;font-size:12px;color:var(--terra);font-weight:700;margin-top:2px"></span></span>
+      <button type="button" id="ck-promo-featured-apply">Apply</button>
+    </div>
+    <div class="checkout-promo" id="ck-promo-row">
+      <input type="text" id="ck-promo-input" placeholder="Have a different code?">
+      <button type="button" id="ck-promo-apply">Apply</button>
+    </div>
+    <p class="checkout-promo-msg" id="ck-promo-msg"></p>
+</div>
+
+    <div class="checkout-error" id="checkout-error" role="alert"></div>
+    <div class="checkout-form ck-paybox">
       <div class="trust-row">
         <div class="trust-item">
           <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
@@ -244,9 +254,9 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
           <span data-dispatch-note data-pre="Free shipping · pre-order dispatches 16 Oct" data-post="Free shipping · dispatched in 48 hrs">Free shipping · dispatched in 48 hrs</span>
         </div>
       </div>
-      <button type="submit" class="btn solid block" id="ck-submit">Pay ₹0</button>
+      <button type="submit" form="checkout-form" class="btn solid block" id="ck-submit">Pay ₹0</button>
       <p class="checkout-note">You'll be redirected to Razorpay's secure payment page. Your order confirmation and GST invoice are sent to your email and the WhatsApp number above; the tracking link is emailed when your order ships. Prices shown are inclusive of GST — GSTIN 06AIIPN5005C2ZP.</p>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -288,7 +298,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
-<script src="js/cart.js?v=35"></script>
+<script src="js/cart.js?v=36"></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=1" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
@@ -394,8 +404,8 @@ function renderSummary() {
   var nudgeHtml = '';
   if (!subscribeChecked && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.next) {
     var np = lastQuote.next.pct ? (lastQuote.tiers || []).filter(function (t) { return t.pct; })[0] : null;
-    nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more of single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ₹' + np.cap + ')' : '') : 'save <b>₹' + lastQuote.next.off + '</b>') + '.'
-      + '<small>Tip: add more of a flavour you already have. Three different flavours can be a Trio, which is already at its best price.</small></div>';
+    nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more in single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ₹' + np.cap + ')' : '') : 'save <b>₹' + lastQuote.next.off + '</b>') + '.'
+      + '<small>More of a flavour you already have counts too. Gift sets are already priced below singles, so this offer is for single boxes.</small></div>';
   }
   if (!subscribeChecked && (!lastQuote || lastQuote.key !== quoteKey(cart))) refreshQuote(cart, quoteKey(cart));
 
@@ -500,6 +510,7 @@ function showError(msg) {
   var errEl = document.getElementById('checkout-error');
   errEl.textContent = msg;
   errEl.style.display = 'block';
+  try { errEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
 }
 function hideError() {
   document.getElementById('checkout-error').style.display = 'none';
