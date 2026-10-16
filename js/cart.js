@@ -404,17 +404,17 @@
       var extraCost = AOV_FULL_RANGE_PRICE - haveSum;
       if (haveF.length && missF.length && extraCost > 0) {
         msgClass = 'upsell';
-        msgHtml = 'Delivery unlocked \u2713 Add <b>' + missF.map(function (f) { return f.label; }).join(missF.length > 2 ? ', ' : ' and ') + '</b> and your bag becomes the Full Range Gift Set: just <b>\u20B9' + extraCost + '</b> more, and you save \u20B9' + AOV_FULL_RANGE_SAVING + '.';
+        msgHtml = 'Free delivery \u2713 Add <b>' + missF.map(function (f) { return f.label; }).join(missF.length > 2 ? ', ' : ' and ') + '</b> for <b>\u20B9' + extraCost + '</b> more and this bag becomes the Full Range Gift Set. You save \u20B9' + AOV_FULL_RANGE_SAVING + '.';
       } else {
         msgClass = 'unlocked';
-        msgHtml = 'Delivery unlocked \u2713 you\'re all set';
+        msgHtml = 'Free delivery \u2713 you\'re all set';
       }
     } else {
       // Spent past the Full Range price without actually holding that set
       // or all 4 flavours (e.g. several units of just 1-2 flavours) — no
       // specific savings claim applies here, so none is made.
       msgClass = 'unlocked';
-      msgHtml = 'Delivery unlocked ✓ — you\'re all set';
+      msgHtml = 'Free delivery ✓ you\'re all set';
     }
 
     return '' +
