@@ -107,6 +107,42 @@
 
   var touched = {};
 
+  // ---- Pincode vs city: the pincode (checked by checkout.html with Delhivery and India Post) is the authority.
+  var ALIASES = [['gurgaon', 'gurugram'], ['bombay', 'mumbai'], ['bangalore', 'bengaluru'], ['calcutta', 'kolkata'], ['madras', 'chennai'], ['poona', 'pune'],
+    ['trivandrum', 'thiruvananthapuram'], ['cochin', 'kochi'], ['mysore', 'mysuru'], ['baroda', 'vadodara'], ['allahabad', 'prayagraj'], ['benares', 'varanasi'],
+    ['banaras', 'varanasi'], ['bhubaneshwar', 'bhubaneswar'], ['vizag', 'visakhapatnam'], ['pondicherry', 'puducherry'], ['mangalore', 'mangaluru'],
+    ['belgaum', 'belagavi'], ['hubli', 'hubballi'], ['simla', 'shimla'], ['panjim', 'panaji'], ['amdavad', 'ahmedabad'], ['kanpur', 'cawnpore']];
+  var pinInfo = null, cityConfirmed = '';
+  function normPlace(s) { var t = String(s || '').toLowerCase().replace(/[^a-z]/g, ''); ALIASES.forEach(function (a) { if (t.indexOf(a[0]) === 0 || t === a[0]) t = a[1] + t.slice(a[0].length); }); return t; }
+  function cityMatchesPin(typed) {
+    if (!pinInfo) return true;
+    var t = normPlace(typed); if (!t) return true;
+    var names = [pinInfo.city, pinInfo.district].concat(pinInfo.names || []).filter(Boolean);
+    if (!names.length) return true;                                   // nothing to compare with: do not nag
+    return names.some(function (n) { var c = normPlace(n); return t === c || (t.length >= 4 && c.indexOf(t) !== -1) || (c.length >= 4 && t.indexOf(c) !== -1); });
+  }
+  function suggestedCity() { return pinInfo ? (pinInfo.city || pinInfo.district || '') : ''; }
+  function setPinInfo(info) {
+    pinInfo = info || null; cityConfirmed = '';
+    var c = $('ck-addr-city'); if (!c) return;
+    if (!pinInfo) { show('ck-addr-city', ''); return; }
+    // The state (and a city) the pincode just filled in: drop any stale error from what was typed before.
+    ['ck-addr-state', 'ck-addr-city'].forEach(function (id) { var f = $(id); if (f && f.value.trim()) { touched[id] = true; run(id); } });
+  }
+  function showCityMismatch(input) {
+    var el = errEl('ck-addr-city'), typed = input.value.trim(), sug = suggestedCity();
+    el.textContent = '';
+    el.appendChild(document.createTextNode('Pincode ' + pinInfo.pin + ' is in ' + sug + ', not "' + typed + '". '));
+    var use = document.createElement('button'); use.type = 'button'; use.className = 'ck-use-city ck-link'; use.textContent = 'Use ' + sug;
+    use.addEventListener('click', function () { input.value = sug; cityConfirmed = ''; touched['ck-addr-city'] = true; run('ck-addr-city'); });
+    var keep = document.createElement('button'); keep.type = 'button'; keep.className = 'ck-keep-city ck-link'; keep.textContent = 'Keep "' + typed + '"';
+    keep.addEventListener('click', function () { cityConfirmed = pinInfo.pin + '|' + normPlace(typed); run('ck-addr-city'); });
+    // Pressing a button would first blur the city box, which redraws this message and swallows the click: keep the focus where it is.
+    [use, keep].forEach(function (b) { b.addEventListener('mousedown', function (e) { e.preventDefault(); }); });
+    el.appendChild(use); el.appendChild(document.createTextNode(' ')); el.appendChild(keep);
+    el.hidden = false; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', el.id);
+  }
+
   function errEl(id) {
     var el = $('ck-err-' + id);
     if (el) return el;
@@ -115,6 +151,9 @@
     el.id = 'ck-err-' + id; el.className = 'ck-err'; el.hidden = true; el.setAttribute('role', 'alert');
     var anchor = input.parentNode.classList.contains('ck-phone') ? input.parentNode : input;
     anchor.parentNode.insertBefore(el, anchor.nextSibling);
+    // City and State sit side by side in half-width columns: their messages go full width under the row.
+    var row = input.closest && input.closest('.addr-row');
+    if (row && row.parentNode) { row.parentNode.insertBefore(el, row.nextSibling); el.style.margin = '-.6rem 0 1rem'; }
     // Pincode has a status line right under it: put the error after that so the two never collide.
     if (id === 'ck-addr-pincode' && $('ck-pin-status')) $('ck-pin-status').parentNode.insertBefore(el, $('ck-pin-status').nextSibling);
     return el;
@@ -136,6 +175,9 @@
     if (!active(id)) { show(id, ''); return true; }
     var msg = r.check(r.clean(input.value));
     show(id, msg);
+    if (!msg && id === 'ck-addr-city' && pinInfo && input.value.trim() && !cityMatchesPin(input.value) && cityConfirmed !== pinInfo.pin + '|' + normPlace(input.value)) {
+      showCityMismatch(input); return false;
+    }
     return !msg;
   }
   function sanitize(id) {
@@ -193,6 +235,6 @@
     };
   }
 
-  window.MunchingoFields = { validateAll: validateAll, cleanPhone: cleanPhone };
+  window.MunchingoFields = { setPinInfo: setPinInfo, validateAll: validateAll, cleanPhone: cleanPhone };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

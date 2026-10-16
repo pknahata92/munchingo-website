@@ -708,38 +708,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 2. Pincode -> city + state (India Post public lookup; only the 6-digit pincode is sent).
   var pin = $('ck-addr-pincode'), status = $('ck-pin-status'), lastLooked = '', autoCity = '', autoState = '';
-  // Delhivery says whether we can deliver to this pincode. Only an explicit "no" blocks the order (see js/pincode.js).
+  // The pincode is checked the moment its 6th digit is typed: Delhivery says whether we deliver there (through our backend, see js/pincode.js)
+  // and India Post names the area. Only an explicit "no" from Delhivery, or a pincode that does not exist, blocks the order.
   window.__pinBlocked = false;
-  function deliveryCheck(v) {
-    if (!window.MunchingoPincode) return;
-    window.MunchingoPincode.check(v).then(function (r) {
-      if (pin.value.replace(/\D/g, '') !== v) return;                    // the customer kept typing
-      window.__pinBlocked = r.serviceable === false;
-      if (r.serviceable === false) { status.className = 'ck-pin-status'; status.style.color = '#9b3b2e'; status.innerHTML = window.MunchingoPincode.message(r).html; }
-      else { status.style.color = ''; if (r.serviceable === true) { status.className = 'ck-pin-status ok'; status.textContent = (status.textContent || '').replace(/ · Delivery available$/, '') + ' · Delivery available'; } }
-    });
-  }
-  function lookup() {
-    var v = pin.value.replace(/\D/g, '');
-    if (v.length !== 6 || v === lastLooked) return;
-    lastLooked = v; status.className = 'ck-pin-status'; status.textContent = 'Finding your city…';
+  function setStatus(cls, html, color) { status.className = 'ck-pin-status' + (cls ? ' ' + cls : ''); status.style.color = color || ''; status.innerHTML = html; }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function postOffices(v) {
     var ctl = ('AbortController' in window) ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 4000);
-    fetch('https://api.postalpincode.in/pincode/' + v, ctl ? { signal: ctl.signal } : {})
+    return fetch('https://api.postalpincode.in/pincode/' + v, ctl ? { signal: ctl.signal } : {})
       .then(function (r) { return r.json(); })
       .then(function (d) {
         clearTimeout(timer);
-        var po = d && d[0] && d[0].Status === 'Success' && d[0].PostOffice && d[0].PostOffice[0];
-        if (!po) { status.textContent = 'Please type your city and state.'; deliveryCheck(v); return; }
-        var city = $('ck-addr-city'), state = $('ck-addr-state');
-        if (!city.value || city.value === autoCity) { city.value = po.District || po.Block || ''; autoCity = city.value; }
-        if (!state.value || state.value === autoState) { state.value = po.State || ''; autoState = state.value; }
-        status.className = 'ck-pin-status ok'; status.textContent = '✓ ' + city.value + ', ' + state.value;
-        deliveryCheck(v);
+        var list = d && d[0] && d[0].Status === 'Success' && d[0].PostOffice;
+        if (!list || !list.length) return null;
+        return { district: list[0].District || list[0].Block || '', state: list[0].State || '', names: list.map(function (o) { return o.Name; }).filter(Boolean) };
       })
-      .catch(function () { clearTimeout(timer); status.className = 'ck-pin-status'; status.textContent = 'Please type your city and state.'; deliveryCheck(v); });
+      .catch(function () { clearTimeout(timer); return null; });
   }
-  pin.addEventListener('input', function () { if (pin.value.replace(/\D/g, '').length !== 6) { window.__pinBlocked = false; status.style.color = ''; } lookup(); });
+  function lookup() {
+    var v = pin.value.replace(/\D/g, '');
+    if (v.length !== 6) { if (window.MunchingoFields) window.MunchingoFields.setPinInfo(null); return; }
+    if (v === lastLooked) return;
+    lastLooked = v; window.__pinBlocked = false; setStatus('', 'Checking delivery…');
+    Promise.all([window.MunchingoPincode ? window.MunchingoPincode.check(v) : Promise.resolve({ valid: null, serviceable: null }), postOffices(v)]).then(function (res) {
+      if (pin.value.replace(/\D/g, '') !== v) return;                    // the customer kept typing
+      var r = res[0] || {}, ip = res[1] || {};
+      var area = r.city || r.district || ip.district || '', st = r.state || ip.state || '';
+      var where = [area, st].filter(Boolean).join(', ');
+      window.__pinBlocked = r.serviceable === false || r.valid === false;
+      if (r.valid === false && !ip.state) { setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e'); return; }
+      if (r.serviceable === false) setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e');
+      else if (r.serviceable === true) setStatus('ok', '✓ We deliver to ' + esc(where || v) + '. Free shipping.');
+      else setStatus('ok', '✓ ' + esc(where || v) + '. We confirm delivery when you pay.');
+      // The pincode decides the state (it drives the GST on your invoice); the city is filled when empty and otherwise checked against the pincode.
+      var city = $('ck-addr-city'), state = $('ck-addr-state');
+      if (st) {
+        var changed = state.value && state.value.trim().toLowerCase() !== st.toLowerCase() && state.value !== autoState;
+        state.value = st; autoState = st;
+        if (changed && r.serviceable !== false) status.innerHTML += ' <span class="ck-state-note">State set to ' + esc(st) + ' from your pincode.</span>';
+      }
+      if (area && (!city.value || city.value === autoCity)) { city.value = area; autoCity = area; }
+      if (window.MunchingoFields) window.MunchingoFields.setPinInfo({ pin: v, city: area, district: r.district || ip.district || '', names: ip.names || [] });
+    });
+  }
+  pin.addEventListener('input', function () { if (pin.value.replace(/\D/g, '').length !== 6) { window.__pinBlocked = false; status.style.color = ''; lastLooked = ''; } lookup(); });
   if (pin.value.replace(/\D/g, '').length === 6) lookup();
 
   // Gift recipient: the address below becomes the recipient's; payer details stay for the receipt.
