@@ -1485,3 +1485,10 @@ html.mc-lock{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.cart-row,.cart-row:hover{transition:none;transform:none}}
 @media (max-width:820px){.cart-row .qty button{width:44px;height:44px}}
 @media (min-width:980px) and (min-height:880px){.cart-page>.cart-summary{position:sticky;top:104px}}
+
+/* Desktop hero: one styled group photo (all four boxes) replaces the single-box crossfade. Phone keeps its own full-bleed banner. */
+@media (min-width:721px){
+  .v2-front .v2-rot{display:none}
+  .v2-front picture img{animation:none!important;opacity:1;object-position:50% 50%}
+  .v2-hero-art{aspect-ratio:1.4/1}
+}
