@@ -38,8 +38,8 @@
 .checkout-summary .row.gst-note{font-size:11.5px;color:var(--ink-3);padding-top:.2rem}
 .checkout-form .field{margin-bottom:1.2rem}
 .checkout-form label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:.4rem;letter-spacing:.03em}
-.checkout-form input,.checkout-form textarea{width:100%;padding:.8rem 1rem;border:1px solid rgba(42,26,18,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--ink);background:var(--paper)}
-.checkout-form input:focus,.checkout-form textarea:focus{outline:none;border-color:var(--terra)}
+.checkout-form input,.checkout-form textarea,.checkout-form select{width:100%;padding:.8rem 1rem;border:1px solid rgba(42,26,18,.2);border-radius:4px;font-family:var(--f-body);font-size:14px;color:var(--ink);background:var(--paper)}
+.checkout-form input:focus,.checkout-form textarea:focus,.checkout-form select:focus{outline:none;border-color:var(--terra)}
 .checkout-form textarea{resize:vertical;min-height:80px}
 .checkout-form .addr-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin-bottom:1.2rem}
 .checkout-form .addr-row .field{margin-bottom:0}
@@ -83,9 +83,9 @@
 /* Form fields: one standard. 16px text (stops iOS zooming on focus), 48px tall, visible focus ring, errors under the field. */
 .checkout-form .field{margin-bottom:1.1rem}
 .checkout-form label{font-size:14px;margin-bottom:.35rem}
-.checkout-form input:not([type=checkbox]),.checkout-form textarea,.checkout-promo input{font-size:16px;min-height:48px;padding:.7rem 1rem;border-radius:6px;border:1px solid rgba(42,26,18,.28)}
+.checkout-form input:not([type=checkbox]),.checkout-form textarea,.checkout-form select,.checkout-promo input{font-size:16px;min-height:48px;padding:.7rem 1rem;border-radius:6px;border:1px solid rgba(42,26,18,.28)}
 .checkout-form textarea{min-height:88px}
-.checkout-form input:focus,.checkout-form textarea:focus,.checkout-promo input:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(163,90,52,.18)}
+.checkout-form input:focus,.checkout-form textarea:focus,.checkout-form select:focus,.checkout-promo input:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(163,90,52,.18)}
 .checkout-form input[aria-invalid=true],.checkout-form textarea[aria-invalid=true]{border-color:#B3402F;background:#FFF8F5}
 .checkout-form .ck-err{display:block;margin-top:5px;font-size:13px;line-height:1.35;color:#B3402F}
 .checkout-form .ck-err[hidden]{display:none}
@@ -237,6 +237,18 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <label for="ck-email" id="ck-email-label">Email (for your GST invoice)</label>
         <input type="email" id="ck-email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="120">
       </div>
+      <div class="field" id="ck-source-field">
+        <label for="ck-source">How did you hear about us? (optional)</label>
+        <select id="ck-source">
+          <option value="">Choose one</option>
+          <option value="instagram">Instagram</option>
+          <option value="friend_family">A friend or family member</option>
+          <option value="google">Google</option>
+          <option value="prashant">Prashant told me directly</option>
+          <option value="corporate">Corporate gifting or an event</option>
+          <option value="other">Somewhere else</option>
+        </select>
+      </div>
       <div class="field" id="ck-gift-field" hidden>
         <label for="ck-gift-note">Gift note</label>
         <textarea id="ck-gift-note" rows="2" maxlength="200" placeholder="e.g. Happy Diwali, love Priya"></textarea>
@@ -321,6 +333,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
+<script src="js/source-tag.js?v=1"></script>
 <script src="js/cart.js?v=36"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
@@ -643,6 +656,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
           giftNote: MunchingoCart.getGiftNote() || undefined,
           previewKey: MunchingoCart.previewKey() || undefined,
           track: browserIds(),
+          source: (window.MunchingoSource ? window.MunchingoSource.current(($('ck-source') || {}).value || '') : undefined),
           addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
           recipient: isGift ? { name: rcpName, phone: rcpPhone } : undefined,
         }),
