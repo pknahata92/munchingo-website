@@ -656,7 +656,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
           giftNote: MunchingoCart.getGiftNote() || undefined,
           previewKey: MunchingoCart.previewKey() || undefined,
           track: browserIds(),
-          source: (window.MunchingoSource ? window.MunchingoSource.current(($('ck-source') || {}).value || '') : undefined),
+          source: (window.MunchingoSource ? window.MunchingoSource.current((document.getElementById('ck-source') || {}).value || '') : undefined),
           addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
           recipient: isGift ? { name: rcpName, phone: rcpPhone } : undefined,
         }),
@@ -683,6 +683,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
       // Network failures ("Failed to fetch") and anything unexpected get the
       // friendly message; only our own thrown messages and server-supplied
       // error strings are shown as-is.
+      if (!(err && err.userFacing)) { try { console.error('[checkout] unexpected error:', err); } catch (e2) {} }   // the friendly message hides the real cause, so keep it in the console
       showError(err && err.userFacing ? err.message : CHECKOUT_UNREACHABLE_MSG);
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
