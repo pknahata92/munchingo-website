@@ -714,12 +714,20 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       if (!$('ck-remember').checked) { localStorage.removeItem(KEY); return; }
       if ($('ck-is-gift').checked) return;   // a recipient's address is not the buyer's: keep what was saved before
+      if (!$('ck-name').value.trim() && !$('ck-phone').value.trim() && !$('ck-addr-line1').value.trim()) return;   // an empty form never wipes what was saved
       localStorage.setItem(KEY, JSON.stringify({
         name: $('ck-name').value.trim(), phone: $('ck-phone').value.trim(), address: $('ck-addr-line1').value.trim(),
         pincode: $('ck-addr-pincode').value.trim(), city: $('ck-addr-city').value.trim(), state: $('ck-addr-state').value.trim(), email: $('ck-email').value.trim()
       }));
     } catch (e) { /* storage blocked: ignore */ }
   };
+  // Remember as the customer types, not only after a successful order: someone who fills the form and leaves, or comes back later, still
+  // finds it filled in. Ticking Remember off forgets it. Fields filled by the pincode lookup are caught when the page is hidden.
+  ['ck-name', 'ck-phone', 'ck-addr-line1', 'ck-addr-pincode', 'ck-addr-city', 'ck-addr-state', 'ck-email', 'ck-remember', 'ck-is-gift'].forEach(function (id) {
+    if ($(id)) $(id).addEventListener('change', function () { window.munchingoSaveCustomer(); });
+  });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') window.munchingoSaveCustomer(); });
+  window.addEventListener('pagehide', function () { window.munchingoSaveCustomer(); });
 
   // 2. Pincode -> city + state (India Post public lookup; only the 6-digit pincode is sent).
   var pin = $('ck-addr-pincode'), status = $('ck-pin-status'), lastLooked = '', autoCity = '', autoState = '';
