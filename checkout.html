@@ -160,7 +160,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="search-panel-inner">
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      <input type="text" placeholder="Search flavours, boxes, FAQs..." data-search-input autocomplete="off">
+      <input type="text" placeholder="Search flavors, boxes, FAQs..." data-search-input autocomplete="off">
       <button class="search-close" aria-label="Close search" data-search-close>&times;</button>
     </div>
     <div class="search-results" data-search-results></div>
@@ -448,7 +448,7 @@ function renderSummary() {
   if (!subscribeChecked && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.next) {
     var np = lastQuote.next.pct ? (lastQuote.tiers || []).filter(function (t) { return t.pct; })[0] : null;
     nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more in single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ₹' + np.cap + ')' : '') : 'save <b>₹' + lastQuote.next.off + '</b>') + '.'
-      + '<small>More of a flavour you already have counts too. Gift sets are already priced below singles, so this offer is for single boxes.</small></div>';
+      + '<small>More of a flavor you already have counts too. Gift sets are already priced below singles, so this offer is for single boxes.</small></div>';
   }
   if (!subscribeChecked && (!lastQuote || lastQuote.key !== quoteKey(cart))) refreshQuote(cart, quoteKey(cart));
 

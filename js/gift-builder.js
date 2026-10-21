@@ -1,6 +1,6 @@
 // Munchingo gift-set builder — used on index.html (#gifts).
 // Pages supply the headline copy plus two empty mount points:
-//   <div data-gb-left></div>   (step 1 set choice + step 2 flavour tiles)
+//   <div data-gb-left></div>   (step 1 set choice + step 2 flavor tiles)
 //   <div data-gb-right></div>  (the dark "your gift set" panel)
 // Everything that touches the cart goes through window.MunchingoCart, using the
 // exact slugs / names / prices gifting.html already sends, so the backend's
@@ -10,7 +10,7 @@
 
   // Same figures as gifting.html's static Add-to-Bag buttons.
   var SETS = {
-    3: { price: 739, name: 'Trio Gift Set', unit: '750g, 3 flavours' },
+    3: { price: 739, name: 'Trio Gift Set', unit: '750g, 3 flavors' },
     4: { slug: 'full-range-set', price: 999, name: 'Full Range Gift Set', unit: '1kg, one of each' }
   };
   // Live prices (js/prices.js) replace the launch figures above when the owner has changed them.
@@ -49,15 +49,15 @@
     if (!left || !right || !cart()) return;
 
     var size = 3;          // 3 = Trio (pick any 3), 4 = Full Range (one of each)
-    var picks = [];        // flavour values, in tap order
+    var picks = [];        // flavor values, in tap order
 
     left.innerHTML =
       '<p class="gb-step"><i>1</i>Choose your set</p>' +
       '<div class="gb-opts" role="radiogroup" aria-label="Gift set size">' +
-        '<button type="button" class="gb-opt on" data-size="3" role="radio" aria-checked="true"><span class="gb-flag">PICK &amp; MIX</span><span class="n">3</span><span><b>Trio Gift Set</b><small>Any 3 of our 4 flavours · 750g</small></span></button>' +
+        '<button type="button" class="gb-opt on" data-size="3" role="radio" aria-checked="true"><span class="gb-flag">PICK &amp; MIX</span><span class="n">3</span><span><b>Trio Gift Set</b><small>Any 3 of our 4 flavors · 750g</small></span></button>' +
         '<button type="button" class="gb-opt" data-size="4" role="radio" aria-checked="false"><span class="gb-flag">BEST VALUE</span><span class="n">4</span><span><b>Full Range Gift Set</b><small>One of each · 1kg</small></span></button>' +
       '</div>' +
-      '<p class="gb-step"><i>2</i><span data-gb-step2>Fill it with any 3 flavours</span></p>' +
+      '<p class="gb-step"><i>2</i><span data-gb-step2>Fill it with any 3 flavors</span></p>' +
       '<div class="gb-flavours">' +
         FLAVOURS.map(function (f) {
           return '<button type="button" class="gb-fl" style="--c:' + f.color + '" data-f="' + f.value + '">' +
@@ -72,13 +72,13 @@
         '<div class="gb-slots" data-gb="slots"></div>' +
         '<div class="gb-bar"><i data-gb="barfill"></i></div>' +
         '<button type="button" class="gb-btn-dark" data-gb="surprise">✦ Surprise me</button>' +
-        '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every flavour, already in the box.</p>' +
+        '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every flavor, already in the box.</p>' +
         '<div class="gb-note" data-gb="note"><span>🎁</span><a href="#" data-gb="notelink">Add a gift note</a>' +
           '<textarea rows="3" maxlength="200" placeholder="Happy Diwali! Love, …" aria-label="Gift note"></textarea></div>' +
         '<div class="gb-row"><span>Bought separately</span><s data-gb="mrp">₹0</s></div>' +
         '<div class="gb-row gb-save"><span>You save</span><b data-gb="sv">—</b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
-        '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavours to start</button>' +
+        '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
         '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
       '</aside>';
@@ -133,7 +133,7 @@
         b.title = out ? (byValue(v).title + ' is currently sold out') : '';
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
-      left.querySelector('[data-gb-step2]').textContent = size === 4 ? 'Filled with all four flavours' : 'Fill it with any 3 flavours';
+      left.querySelector('[data-gb-step2]').textContent = size === 4 ? 'Filled with all four flavors' : 'Fill it with any 3 flavors';
       $('surprise').hidden = size === 4; $('great').hidden = size !== 4;
       $('viewbag').hidden = true;
     }

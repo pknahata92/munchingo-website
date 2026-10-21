@@ -14,7 +14,7 @@
   try { book = JSON.parse(localStorage.getItem(KEY)); } catch (e) { book = null; }
   if (!book || typeof book !== 'object') book = null;
 
-  // Trio sets carry their flavours in the slug (trio-gift-set-kesari-original-ajwain) but have one price.
+  // Trio sets carry their flavors in the slug (trio-gift-set-kesari-original-ajwain) but have one price.
   function keyFor(slug) { return slug && String(slug).indexOf('trio-gift-set') === 0 ? 'trio-gift-set' : slug; }
   function get(slug) { var b = book && book[keyFor(slug)]; return b && typeof b.price === 'number' ? b : null; }
   function price(slug, fallback) { var b = get(slug); return b ? b.price : fallback; }

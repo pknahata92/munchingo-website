@@ -17,7 +17,7 @@ window.MUNCHINGO_PRODUCTS = [
     bandP: 'Green cardamom, mixed into every batch with pure desi ghee. The one we started with, and the one most people reorder first.',
     ingr: [{ label: 'Elaichi', sub: 'Green cardamom' }, { label: 'Desi ghee', sub: 'Never palm oil' }, { label: 'Whole wheat atta', sub: '49.5% of the mix' }],
     faqQ1: 'Is Original the same recipe you started with?',
-    faqA1: 'Yes. Whole wheat atta, pure desi ghee and cardamom, the same recipe Munchingo launched with. Every other flavour builds on this one.',
+    faqA1: 'Yes. Whole wheat atta, pure desi ghee and cardamom, the same recipe Munchingo launched with. Every other flavor builds on this one.',
   },
   {
     slug: 'atta-ajwain', name: 'Atta Ajwain', tag: 'Spiced & less sweet',
@@ -30,10 +30,10 @@ window.MUNCHINGO_PRODUCTS = [
     nutrition100g: { energyKcal: 440, proteinG: 6.8, carbG: 52, totalSugarG: 20, addedSugarG: 19, fibreG: 5.8, fatG: 24, satFatG: 14.5, transFatG: 0, cholesterolMg: 60, sodiumMg: 403, calciumMg: 50, ironMg: 2.8, potassiumMg: 196 },
     rdaPct: { energy: 22.0, protein: 12.4, carb: 17.3, addedSugar: 38.0, fibre: 23.2, fat: 36.9, satFat: 65.9, sodium: 20.2, calcium: 5.0, iron: 14.7, potassium: 5.6 },
     bandEyebrow: 'What makes it Ajwain', bandH2: 'Real ajwain. <span class="script">Nothing pretending.</span>',
-    bandP: 'Whole carom seed, mixed into every batch with pure desi ghee and just enough salt to round it out. Less sweet than our other flavours, though not sugar-free (see the nutrition table).',
+    bandP: 'Whole carom seed, mixed into every batch with pure desi ghee and just enough salt to round it out. Less sweet than our other flavors, though not sugar-free (see the nutrition table).',
     ingr: [{ label: 'Ajwain', sub: 'Carom seed' }, { label: 'Salt', sub: 'Balanced, not bland' }, { label: 'Desi ghee', sub: 'Never palm oil' }],
     faqQ1: 'Is Ajwain very spicy?',
-    faqA1: 'No, it is warm and aromatic rather than hot: whole carom seed and salt, no chilli. It is less sweet than our other flavours, but it does contain sugar (19 g per 100 g).',
+    faqA1: 'No, it is warm and aromatic rather than hot: whole carom seed and salt, no chilli. It is less sweet than our other flavors, but it does contain sugar (19 g per 100 g).',
   },
   {
     slug: 'atta-kesari', name: 'Atta Kesari', tag: 'Royally sweet',

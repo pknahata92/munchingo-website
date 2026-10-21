@@ -4,8 +4,8 @@
   var GIFT_NOTE_KEY = 'munchingo_gift_note';
   var WA_NUMBER = '919988992024';
 
-  // Sold-out flavours for the website only (WhatsApp ordering reflects stock
-  // set separately in Meta Commerce Manager). The owner toggles flavours in the
+  // Sold-out flavors for the website only (WhatsApp ordering reflects stock
+  // set separately in Meta Commerce Manager). The owner toggles flavors in the
   // admin; the backend serves the live list at /api/stock and is also what
   // actually blocks a sold-out item at checkout — this file only controls what
   // the UI shows before that. The last list seen is cached so every page paints
@@ -45,7 +45,7 @@
     }
     return false;
   }
-  // Whether a trio-picker flavour value (e.g. "Lite-sugar") is sold out.
+  // Whether a trio-picker flavor value (e.g. "Lite-sugar") is sold out.
   function isFlavourSoldOut(flavourValue) {
     var token = flavourValue.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     return SOLD_OUT_SLUGS.indexOf('atta-' + token) !== -1;
@@ -198,7 +198,7 @@
 
   var BASE_SLUGS_FOR_UPGRADE = ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'];
 
-  // Whether the cart holds at least 1 of each of the 4 base flavours as
+  // Whether the cart holds at least 1 of each of the 4 base flavors as
   // loose singles — i.e. a real, one-tap-swappable Full Range Gift Set
   // sitting unassembled in the cart.
   function hasFullRangeUpgrade(cart) {
@@ -208,8 +208,8 @@
     });
   }
 
-  // Swaps 1 unit of each of the 4 base flavours for 1 Full Range Gift Set
-  // — decrements (or removes, if that was the only unit) each base flavour
+  // Swaps 1 unit of each of the 4 base flavors for 1 Full Range Gift Set
+  // — decrements (or removes, if that was the only unit) each base flavor
   // by exactly 1, leaving any extra quantity untouched, then adds the set.
   function upgradeToFullRange() {
     BASE_SLUGS_FOR_UPGRADE.forEach(function (slug) {
@@ -221,7 +221,7 @@
     addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
   }
 
-  // Any three different flavours are exactly the Trio, and all four are exactly the Full Range set. Both cost less than
+  // Any three different flavors are exactly the Trio, and all four are exactly the Full Range set. Both cost less than
   // the same boxes bought one by one, so the bag swaps them automatically and says so once, in plain words.
   var FLAV_META = [
     { slug: 'atta-original',   token: 'original',   label: 'Original' },
@@ -229,13 +229,13 @@
     { slug: 'atta-lite-sugar', token: 'lite-sugar', label: 'Sugar-Lite' },
     { slug: 'atta-ajwain',     token: 'ajwain',     label: 'Ajwain' }
   ];
-  var TRIO_UNIT = '750g, 3 flavours';
+  var TRIO_UNIT = '750g, 3 flavors';
   function trioPrice() { return livePrice('trio-gift-set', 739); }
   function isTrioSlug(slug) { return typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0; }
   function distinctSingles(cart) {
     return FLAV_META.filter(function (f) { return cart.some(function (c) { return c.slug === f.slug && c.qty >= 1; }); });
   }
-  // Swaps one of each of three different loose flavours for one Trio. Returns { saved, labels } or null if not worthwhile.
+  // Swaps one of each of three different loose flavors for one Trio. Returns { saved, labels } or null if not worthwhile.
   function swapToTrio() {
     var cart = getCart(), d = distinctSingles(cart);
     if (d.length < 3) return null;
@@ -252,7 +252,7 @@
     addToCart({ slug: slug, name: 'Trio Gift Set (' + labels + ')', price: tp, unit: TRIO_UNIT }, { silent: true });
     return { saved: sum - tp, labels: labels };
   }
-  // A Trio in the bag can become the Full Range set by adding the 4th flavour: replaces one Trio with one Full Range set.
+  // A Trio in the bag can become the Full Range set by adding the 4th flavor: replaces one Trio with one Full Range set.
   function upgradeTrioToFullRange() {
     var t = getCart().filter(function (c) { return isTrioSlug(c.slug); })[0];
     if (!t) return;
@@ -260,7 +260,7 @@
     addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
     autoPackOfFour();
   }
-  // A Trio plus a loose box of the 4th flavour is the Full Range set for less money: merge them.
+  // A Trio plus a loose box of the 4th flavor is the Full Range set for less money: merge them.
   function mergeTrioAndFourth() {
     var cart = getCart(), t = cart.filter(function (c) { return isTrioSlug(c.slug); })[0];
     if (!t) return null;
@@ -294,8 +294,8 @@
   }
 
   // ---- Suggested sets (the buyer decides; nothing in the bag changes unless they tap) ----
-  // Three different flavours as singles cost more than the Trio; all four cost more than the Full Range set; a Trio plus the
-  // 4th flavour costs more than the Full Range set. The saving shown is the real change in what they would pay, counting the
+  // Three different flavors as singles cost more than the Trio; all four cost more than the Full Range set; a Trio plus the
+  // 4th flavor costs more than the Full Range set. The saving shown is the real change in what they would pay, counting the
   // stock-up offer (10% off single boxes) they might lose by switching.
   var KEEP_KEY = 'mngKeep';
   function keptList() { try { return JSON.parse(sessionStorage.getItem(KEEP_KEY)) || []; } catch (e) { return []; } }
@@ -360,7 +360,7 @@
   }
   function suggestionHtml(sg) {
     var what = sg.kind === 'trio' ? 'Trio Gift Set' : 'Full Range Gift Set';
-    var lead = sg.kind === 'trio' ? 'Your 3 flavours (' + sg.labels + ')' : sg.kind === 'full' ? 'All 4 flavours' : 'Your Trio and a box of ' + sg.extra;
+    var lead = sg.kind === 'trio' ? 'Your 3 flavors (' + sg.labels + ')' : sg.kind === 'full' ? 'All 4 flavors' : 'Your Trio and a box of ' + sg.extra;
     return lead + ' come to <b>\u20B9' + sg.singles + '</b> as separate boxes. As the ' + what + ' they are <b>\u20B9' + sg.setPrice + '</b>. Save <b>\u20B9' + sg.saved + '</b> if you like' + (sg.tierNote ? ' (counting the 10% stock-up offer you would otherwise get)' : '') + '.';
   }
 
@@ -391,13 +391,13 @@
       msgClass = 'unlocked';
       msgHtml = '🎉 Full Range value unlocked — you\'re saving up to ₹' + AOV_FULL_RANGE_SAVING + ' vs buying separately';
     } else if (cart.some(function (c) { return isTrioSlug(c.slug); }) && !hasSet) {
-      // A Trio is in the bag: the honest next step is the 4th flavour, priced as the difference.
+      // A Trio is in the bag: the honest next step is the 4th flavor, priced as the difference.
       var diff = Math.max(0, AOV_FULL_RANGE_PRICE - trioPrice());
       msgClass = 'upsell';
-      msgHtml = 'Your Trio is saved \u2713 Add the 4th flavour for just <b>\u20B9' + diff + '</b> and it becomes the Full Range set.';
+      msgHtml = 'Your Trio is saved \u2713 Add the 4th flavor for just <b>\u20B9' + diff + '</b> and it becomes the Full Range set.';
       upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-trio-upgrade>Make it the Full Range \u00B7 +\u20B9' + diff + '</button>';
     } else if (total < AOV_FULL_RANGE_PRICE) {
-      // The Full Range set is one of EACH flavour, so only name an upgrade the bag can really become: the missing flavours, and what
+      // The Full Range set is one of EACH flavor, so only name an upgrade the bag can really become: the missing flavors, and what
       // it costs on top of the one-of-each singles already here (e.g. Kesari + Sugar-Lite in the bag: add Original and Ajwain, +\u20B9299).
       var haveF = distinctSingles(cart), missF = FLAV_META.filter(function (f) { return haveF.indexOf(f) < 0; });
       var haveSum = haveF.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
@@ -411,7 +411,7 @@
       }
     } else {
       // Spent past the Full Range price without actually holding that set
-      // or all 4 flavours (e.g. several units of just 1-2 flavours) — no
+      // or all 4 flavors (e.g. several units of just 1-2 flavors) — no
       // specific savings claim applies here, so none is made.
       msgClass = 'unlocked';
       msgHtml = 'Free delivery ✓ you\'re all set';
@@ -444,7 +444,7 @@
   }
 
   // ---- "Complete your box" cross-sell strip (cart.html + checkout.html) ----
-  // One-tap add cards for whichever base flavours aren't already in the
+  // One-tap add cards for whichever base flavors aren't already in the
   // cart — the single mechanism the impulse-buying research kept pointing
   // to hardest: zero-friction, one-tap add, shown at the exact moment
   // someone's already mid-purchase. Deliberately NOT: countdown timers,
@@ -654,7 +654,7 @@
     initLightbox();
     document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {
       var staticSlug = btn.getAttribute('data-slug');
-      // Trio's button slug changes as flavours are picked (handled by its
+      // Trio's button slug changes as flavors are picked (handled by its
       // own script in gifting.html) — only grey out buttons with a fixed
       // slug here (base SKUs + Full Range).
       if (staticSlug && staticSlug.indexOf('trio-gift-set') !== 0 && isSlugSoldOut(staticSlug)) {
@@ -733,8 +733,8 @@
       { title: 'Atta Kesari', desc: 'Real saffron, mixed into every batch. 250g.', type: 'Product', url: 'atta-kesari.html' },
       { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. 250g.', type: 'Product', url: 'atta-lite-sugar.html' },
       { title: 'Atta Ajwain', desc: 'Spiced with ajwain, less sweet than the others. 250g.', type: 'Product', url: 'atta-ajwain.html' },
-      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavours, 250g each, gift-boxed.', type: 'Gift Set', url: 'index.html#gifts' },
-      { title: 'The Full Range Gift Set', desc: 'One of each flavour, 1kg total, 4 boxes.', type: 'Gift Set', url: 'index.html#gifts' },
+      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavors, 250g each, gift-boxed.', type: 'Gift Set', url: 'index.html#gifts' },
+      { title: 'The Full Range Gift Set', desc: 'One of each flavor, 1kg total, 4 boxes.', type: 'Gift Set', url: 'index.html#gifts' },
       { title: 'Corporate Gifting', desc: 'Bulk and corporate orders from 25 boxes, quoted on WhatsApp.', type: 'Page', url: 'corporate-gifting.html' },
       { title: 'Maida-free cookies: how to read a label', desc: 'A plain guide to maida, atta, fats and sugar on biscuit labels.', type: 'Page', url: 'maida-free-cookies-guide.html' },
       { title: 'About Us', desc: 'Our story — baked in Bikaner by Krazy Bakers.', type: 'Page', url: 'about.html' },
@@ -770,7 +770,7 @@
           return item.title.toLowerCase().indexOf(q) !== -1 || item.desc.toLowerCase().indexOf(q) !== -1;
         }).slice(0, 8);
         if (!matches.length) {
-          searchResults.innerHTML = '<div class="search-empty">No results for "' + escapeHtml(query) + '". Try a flavour name, "gift set", or a question about shipping/payment.</div>';
+          searchResults.innerHTML = '<div class="search-empty">No results for "' + escapeHtml(query) + '". Try a flavor name, "gift set", or a question about shipping/payment.</div>';
           return;
         }
         searchResults.innerHTML = matches.map(function (item) {
