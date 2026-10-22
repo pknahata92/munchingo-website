@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Rate your box — Munchingo</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=84">
+<style>
+/* Focused page: no menu, like checkout. Star rows are real radio buttons (keyboard and screen-reader friendly). */
+.rv-top{background:#0E1F3F;padding:12px 20px;display:flex;justify-content:center}
+.rv-top img{height:40px;width:auto}
+.rv-wrap{max-width:560px;margin:0 auto;padding:2rem 20px 4rem}
+.rv-wrap h1{font-size:1.9rem;margin:0 0 .4rem}
+.rv-lede{color:var(--ink-2);margin:0 0 1.6rem;font-size:15px}
+.rv-flav{border:0;margin:0 0 1.1rem;padding:1rem 1.1rem;background:var(--paper);border-radius:14px;box-shadow:var(--shadow)}
+.rv-flav legend{font-weight:600;color:var(--ink);font-size:15px;padding:0;margin-bottom:.4rem;float:left;width:100%}
+.rv-stars{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px;clear:both}
+.rv-stars input{position:absolute;opacity:0;width:1px;height:1px}
+.rv-stars label{font-size:34px;line-height:1;color:#D9CBB0;cursor:pointer;padding:2px}
+.rv-stars input:checked ~ label,.rv-stars label:hover,.rv-stars label:hover ~ label{color:#E3A72F}
+.rv-stars input:focus-visible + label{outline:2px solid var(--terra);border-radius:6px}
+.rv-field{margin:1.2rem 0}
+.rv-field > label,.rv-field > span{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.4rem}
+.rv-field textarea{width:100%;min-height:96px;padding:.8rem 1rem;border:1px solid rgba(42,26,18,.2);border-radius:10px;font:inherit;font-size:14px;background:#fff;resize:vertical}
+.rv-choice{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:14px}
+.rv-choice label{display:flex;gap:.4rem;align-items:center;font-weight:400}
+.rv-consent{display:flex;gap:.6rem;align-items:flex-start;font-size:14px;margin:1.2rem 0 1.6rem}
+.rv-consent input{margin-top:.25rem}
+.rv-msg{background:var(--paper);border-radius:14px;box-shadow:var(--shadow);padding:1.4rem;font-size:15px;line-height:1.6}
+.rv-err{color:#A63B38;font-size:13.5px;margin:.6rem 0 0;min-height:1em}
+#rv-submit[disabled]{opacity:.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="rv-top"><a href="/"><img src="images/logo-gold-v2.png" alt="Munchingo"></a></div>
+<main class="rv-wrap" id="rv-root">
+  <p class="rv-lede">Loading your order…</p>
+</main>
+<script src="js/review.js?v=1"></script>
+</body>
+</html>
