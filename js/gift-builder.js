@@ -33,10 +33,12 @@
 
   function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
   function inr(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+  var SINGLE_MRP = { Original: 300, Kesari: 350, 'Lite-sugar': 350, Ajwain: 300 };
+  // The printed MRP of a single box: the gift set is shown as a discount on this, not on the lower web price.
   function singlePrice(value) {
     var list = window.MUNCHINGO_PRODUCTS || [];
-    for (var i = 0; i < list.length; i++) if (list[i].slug === PRODUCT_SLUG[value]) return list[i].price;
-    return SINGLE_FALLBACK[value];
+    for (var i = 0; i < list.length; i++) if (list[i].slug === PRODUCT_SLUG[value]) return list[i].mrp || SINGLE_MRP[value];
+    return SINGLE_MRP[value];
   }
   function soldOut(value) { return !!(cart() && cart().isFlavourSoldOut && cart().isFlavourSoldOut(value)); }
   function fullRangeSoldOut() { return !!(cart() && cart().isSlugSoldOut && cart().isSlugSoldOut('full-range-set')); }
@@ -75,7 +77,7 @@
         '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every flavor, already in the box.</p>' +
         '<div class="gb-note" data-gb="note"><span>🎁</span><a href="#" data-gb="notelink">Add a gift note</a>' +
           '<textarea rows="3" maxlength="200" placeholder="Happy Diwali! Love, …" aria-label="Gift note"></textarea></div>' +
-        '<div class="gb-row"><span>Bought separately</span><s data-gb="mrp">₹0</s></div>' +
+        '<div class="gb-row"><span>MRP of these boxes</span><s data-gb="mrp">₹0</s></div>' +
         '<div class="gb-row gb-save"><span>You save</span><b data-gb="sv">—</b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
@@ -118,7 +120,7 @@
       $('mrp').textContent = inr(mrp);
       $('tot').textContent = full ? inr(set.price) : inr(mrp);
       var saving = mrp - set.price;
-      $('sv').textContent = full ? (saving > 0 ? inr(saving) + ' off' : '—') : 'Fill it to unlock';
+      $('sv').textContent = full ? (saving > 0 ? 'Save ' + inr(saving) : '—') : 'Fill it to unlock';
 
       var unavailable = size === 4 && fullRangeSoldOut();
       var cta = $('cta');

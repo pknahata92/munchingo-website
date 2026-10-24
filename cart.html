@@ -197,12 +197,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=38"></script>
+<script src="js/cart.js?v=39"></script>
 <script src="js/cart-link.js?v=2"></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
-<script src="js/minicart.js?v=5" defer></script>
+<script src="js/minicart.js?v=6" defer></script>
 <script src="js/cart-bar.js?v=8" defer></script>
 <script>
 var THUMBS = { 'atta-original': 'images/box-original.webp', 'atta-kesari': 'images/box-kesari.webp', 'atta-ajwain': 'images/box-ajwain.webp', 'atta-lite-sugar': 'images/box-lite.webp' };
@@ -227,7 +227,7 @@ function renderCart() {
     var thumb = THUMBS[item.slug];
     row.innerHTML =
       '<div class="thumb">' + (thumb ? '<img src="' + thumb + '" alt="" width="72" height="72" loading="lazy">' : '<img class="mark" src="images/watermark-m.webp" alt="" width="72" height="72">') + '</div>' +
-      '<div class="info"><div class="name">' + item.name + '</div><div class="unit">' + item.unit + ' · ₹' + item.price + (item.mrp && item.mrp > item.price ? ' <s style="color:var(--fg-3);font-weight:400">₹' + item.mrp + '</s>' : '') + ' each</div>' +
+      '<div class="info"><div class="name">' + item.name + '</div><div class="unit">' + item.unit + ' · ₹' + item.price + (MunchingoCart.mrpOf(item) ? ' <s style="color:var(--fg-3);font-weight:400">₹' + MunchingoCart.mrpOf(item) + '</s> <span style="color:var(--terra);font-weight:600">Save ₹' + (MunchingoCart.mrpOf(item) - item.price) + '</span>' : '') + ' each</div>' +
         '<button type="button" class="remove" data-remove>Remove</button></div>' +
       '<div class="qty">' +
         '<button type="button" data-dec aria-label="One less">−</button>' +

@@ -334,12 +334,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=38"></script>
+<script src="js/cart.js?v=39"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
-<script src="js/minicart.js?v=5" defer></script>
+<script src="js/minicart.js?v=6" defer></script>
 <script src="js/cart-bar.js?v=8" defer></script>
 <script>
 // Point this at your Render backend.
@@ -401,7 +401,8 @@ function renderSummary() {
         + '<span class="ck-qty"><button type="button" data-ck-dec="' + item.slug + '" aria-label="One less">−</button><b>' + item.qty + '</b><button type="button" data-ck-inc="' + item.slug + '" aria-label="One more">+</button><button type="button" class="ck-rm" data-ck-rm="' + item.slug + '">Remove</button></span>'
         + '<span>₹' + (item.price * item.qty) + '</span></div>';
     }
-    return '<div class="row"><span>' + item.name + ' (' + item.unit + ') × ' + item.qty + '</span><span>₹' + (item.price * item.qty) + '</span></div>';
+    var mr = MunchingoCart.mrpOf(item);
+    return '<div class="row"><span>' + item.name + ' (' + item.unit + ') × ' + item.qty + '</span><span>' + (mr ? '<s style="opacity:.55;font-weight:400;margin-right:6px">₹' + (mr * item.qty) + '</s>' : '') + '₹' + (item.price * item.qty) + '</span></div>';
   }).join('');
 
   var total = MunchingoCart.cartTotal();

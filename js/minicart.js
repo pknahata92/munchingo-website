@@ -23,7 +23,7 @@
 
   function line(c) {
     var row = el('div', 'mc-line');
-    var info = el('div', 'mc-info'); info.appendChild(el('b', null, c.name)); info.appendChild(el('small', null, c.unit + ' · ' + inr(c.price) + ' each'));
+    var info = el('div', 'mc-info'); info.appendChild(el('b', null, c.name)); var mr = C().mrpOf(c); info.appendChild(el('small', null, c.unit + ' · ' + inr(c.price) + (mr ? ' (MRP ' + inr(mr) + ', save ' + inr(mr - c.price) + ')' : '') + ' each'));
     var step = el('div', 'mc-step');
     var dec = el('button', null, '−'); dec.type = 'button'; dec.setAttribute('aria-label', 'One less');
     var out = el('output', null, String(c.qty));

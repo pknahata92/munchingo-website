@@ -188,8 +188,9 @@
   function cartPayable() { return cartTotal() + cartShipping(); }
   // What the shopper saves against the printed MRP (the MRP stays 300/350; only the selling price is lower). Falls back to the printed MRPs when the live book has none.
   var PRINTED_MRP = { 'atta-original': 300, 'atta-ajwain': 300, 'atta-kesari': 350, 'atta-lite-sugar': 350, 'full-range-set': 1300 };
+  function mrpOf(c) { var m = c.mrp || PRINTED_MRP[c.slug] || 0; return m > c.price ? m : 0; }
   function cartSavings() {
-    return getCart().reduce(function (n, c) { var m = c.mrp || PRINTED_MRP[c.slug] || 0; return n + (m > c.price ? (m - c.price) * c.qty : 0); }, 0);
+    return getCart().reduce(function (n, c) { var m = mrpOf(c); return n + (m > c.price ? (m - c.price) * c.qty : 0); }, 0);
   }
 
   // ---- AOV progress bar (cart.html + checkout.html) ----
@@ -510,6 +511,7 @@
     cartShipping: cartShipping,
     cartPayable: cartPayable,
     cartSavings: cartSavings,
+    mrpOf: mrpOf,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,
