@@ -169,9 +169,11 @@
   }
   function ordersOpen() { return Date.now() >= LAUNCH_AT || !!previewKey(); }
 
-  // ---- Minimum order: Rs 700 of items before any discount (12 Oct 2026; replaced the 3-box minimum) ----
-  // Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js. Box counts below are only used for packing and wording.
-  var MIN_ORDER_VALUE = 700;
+  // ---- Minimum order and shipping (25 Oct 2026, the Pack of 2 flow; replaced the Rs 700 minimum) ----
+  // The minimum is 2 boxes (a Pack of 2, any two Flavors; gift sets count as 3 and 4). Items under FREE_FROM rupees pay SHIPPING_FEE;
+  // from FREE_FROM up, shipping is free (3 boxes at Rs 259 is exactly Rs 777). Must match MIN_BOXES, FREE_FROM and SHIPPING_FEE in
+  // webhook-backend/utils/shipping.js; the server adds the fee as its own order line and re-checks everything.
+  var MIN_BOXES = 2, FREE_FROM = 777, SHIPPING_FEE = 49;
   function boxesFor(slug) {
     if (slug === 'full-range-set') return 4;
     if (typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0) return 3;
@@ -180,6 +182,10 @@
   function cartBoxes() {
     return getCart().reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
   }
+  function boxesShort() { return Math.max(0, MIN_BOXES - cartBoxes()); }
+  // Shipping on the bag as it is now: nothing for an empty or too-small bag (it cannot be ordered yet), otherwise the fee under FREE_FROM.
+  function cartShipping() { var t = cartTotal(); return (cartBoxes() >= MIN_BOXES && t < FREE_FROM) ? SHIPPING_FEE : 0; }
+  function cartPayable() { return cartTotal() + cartShipping(); }
 
   // ---- AOV progress bar (cart.html + checkout.html) ----
   // A visual goal-gradient bar toward two thresholds: the 3-box minimum
@@ -194,7 +200,7 @@
   var livePrice = function (slug, fallback) { return LIVE ? LIVE.price(slug, fallback) : fallback; };
   var AOV_FULL_RANGE_PRICE = livePrice('full-range-set', 999);
   // What buying the four boxes one by one would cost, minus the set price (never negative).
-  var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 300) + livePrice('atta-ajwain', 300) + livePrice('atta-kesari', 350) + livePrice('atta-lite-sugar', 350) - AOV_FULL_RANGE_PRICE);
+  var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 259) + livePrice('atta-ajwain', 259) + livePrice('atta-kesari', 299) + livePrice('atta-lite-sugar', 299) - AOV_FULL_RANGE_PRICE);
 
   var BASE_SLUGS_FOR_UPGRADE = ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'];
 
@@ -230,7 +236,7 @@
     { slug: 'atta-ajwain',     token: 'ajwain',     label: 'Ajwain' }
   ];
   var TRIO_UNIT = '750g, 3 flavors';
-  function trioPrice() { return livePrice('trio-gift-set', 739); }
+  function trioPrice() { return livePrice('trio-gift-set', 799); }
   function isTrioSlug(slug) { return typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0; }
   function distinctSingles(cart) {
     return FLAV_META.filter(function (f) { return cart.some(function (c) { return c.slug === f.slug && c.qty >= 1; }); });
@@ -302,6 +308,7 @@
   function keepSig(sig) { try { var k = keptList(); if (k.indexOf(sig) < 0) k.push(sig); sessionStorage.setItem(KEEP_KEY, JSON.stringify(k)); } catch (e) {} }
   function singlesOf(cart) { return cart.filter(function (c) { return BASE_SLUGS_FOR_UPGRADE.indexOf(c.slug) >= 0; }).reduce(function (n, c) { return n + c.qty * c.price; }, 0); }
   function stockUpOff(singles) {
+    return 0;   // the stock-up percentage offer is retired (25 Oct 2026): Rs 259/299 is already below MRP
     var o = window.MunchingoOffers && window.MunchingoOffers.tier();
     if (!o || !o.pct || singles < o.min) return 0;
     var d = Math.round(singles * o.pct / 100);
@@ -317,6 +324,7 @@
     return out;
   }
   function suggestion() {
+    return null;   // set suggestions are off (25 Oct 2026): at Rs 259/299 a Trio saves Rs 18 and costs far more in margin than it earns; gift sets stay as explicit choices
     var sg = suggestionCore();
     if (sg && stockUpOff(singlesOf(getCart())) > 0) sg.tierNote = true;
     return sg;
@@ -369,61 +377,28 @@
   function renderAovProgressHtml(cart) {
     var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
     var boxes = cart.reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
-    var pendingMin = total < MIN_ORDER_VALUE;
-    // Until the minimum order is met the bar fills toward it; after that it fills toward the Full Range set.
-    var fillPct = pendingMin ? Math.round((total / MIN_ORDER_VALUE) * 100) : Math.min(100, Math.round((total / AOV_FULL_RANGE_PRICE) * 100));
-
-    var hasSet = cart.some(function (c) { return c.slug === 'full-range-set'; });
-    var sg = suggestion();
-
-    var msgClass, msgHtml, upgradeBtnHtml = '';
+    var pendingMin = boxes < MIN_BOXES;
+    var needShip = !pendingMin && total < FREE_FROM;
+    // Until the 2-box minimum is met the bar fills toward it; after that it fills toward free shipping.
+    var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : Math.min(100, Math.round((total / FREE_FROM) * 100));
+    var msgClass, msgHtml;
     if (pendingMin) {
+      var n = MIN_BOXES - boxes;
       msgClass = 'pending';
-      var need = MIN_ORDER_VALUE - total;
-      msgHtml = 'Add <b>\u20B9' + need + '</b> more to unlock delivery (minimum order \u20B9' + MIN_ORDER_VALUE + ').';
-    } else if (sg) {
+      msgHtml = 'Add <b>' + n + ' more box' + (n === 1 ? '' : 'es') + '</b> to check out. Online orders start at ' + MIN_BOXES + ' boxes (a Pack of 2, any two Flavors).';
+    } else if (needShip) {
       msgClass = 'upsell';
-      msgHtml = suggestionHtml(sg);
-      upgradeBtnHtml = '<div class="aov-actions"><button type="button" class="aov-upgrade-btn" data-aov-accept>Switch to ' + (sg.kind === 'trio' ? 'Trio' : 'Full Range') + ' \u00B7 save \u20B9' + sg.saved + '</button>'
-        + '<button type="button" class="aov-keep-btn" data-aov-keep data-sig="' + sg.sig + '">Keep as singles</button></div>';
-    } else if (hasSet) {
-      // Genuinely holds the discounted set — this claim is real.
-      msgClass = 'unlocked';
-      msgHtml = '🎉 Full Range value unlocked — you\'re saving up to ₹' + AOV_FULL_RANGE_SAVING + ' vs buying separately';
-    } else if (cart.some(function (c) { return isTrioSlug(c.slug); }) && !hasSet) {
-      // A Trio is in the bag: the honest next step is the 4th flavor, priced as the difference.
-      var diff = Math.max(0, AOV_FULL_RANGE_PRICE - trioPrice());
-      msgClass = 'upsell';
-      msgHtml = 'Your Trio is saved \u2713 Add the 4th flavor for just <b>\u20B9' + diff + '</b> and it becomes the Full Range set.';
-      upgradeBtnHtml = '<button type="button" class="aov-upgrade-btn" data-aov-trio-upgrade>Make it the Full Range \u00B7 +\u20B9' + diff + '</button>';
-    } else if (total < AOV_FULL_RANGE_PRICE) {
-      // The Full Range set is one of EACH flavor, so only name an upgrade the bag can really become: the missing flavors, and what
-      // it costs on top of the one-of-each singles already here (e.g. Kesari + Sugar-Lite in the bag: add Original and Ajwain, +\u20B9299).
-      var haveF = distinctSingles(cart), missF = FLAV_META.filter(function (f) { return haveF.indexOf(f) < 0; });
-      var haveSum = haveF.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
-      var extraCost = AOV_FULL_RANGE_PRICE - haveSum;
-      if (haveF.length && missF.length && extraCost > 0) {
-        msgClass = 'upsell';
-        msgHtml = 'Free delivery \u2713 Add <b>' + missF.map(function (f) { return f.label; }).join(missF.length > 2 ? ', ' : ' and ') + '</b> for <b>\u20B9' + extraCost + '</b> more and this bag becomes the Full Range Gift Set. You save \u20B9' + AOV_FULL_RANGE_SAVING + '.';
-      } else {
-        msgClass = 'unlocked';
-        msgHtml = 'Free delivery \u2713 you\'re all set';
-      }
+      msgHtml = 'Shipping is \u20B9' + SHIPPING_FEE + ' on this order. Add <b>one more box</b> and it ships free (free shipping from \u20B9' + FREE_FROM + ').';
     } else {
-      // Spent past the Full Range price without actually holding that set
-      // or all 4 flavors (e.g. several units of just 1-2 flavors) — no
-      // specific savings claim applies here, so none is made.
       msgClass = 'unlocked';
-      msgHtml = 'Free delivery ✓ you\'re all set';
+      msgHtml = 'Free shipping \u2713 you\'re all set';
     }
-
     return '' +
       '<div class="aov-progress">' +
         '<div class="aov-progress-track">' +
           '<div class="aov-progress-fill" style="width:' + fillPct + '%"></div>' +
         '</div>' +
         '<p class="aov-progress-msg ' + msgClass + '">' + msgHtml + '</p>' +
-        upgradeBtnHtml +
       '</div>';
   }
 
@@ -452,10 +427,10 @@
   // those are dark patterns, not persuasion, and don't fit how Munchingo
   // talks to people.
   var CROSS_SELL_PRODUCTS = [
-    { slug: 'atta-original',   name: 'Atta Original',    price: 300, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
-    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 350, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
-    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 300, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
-    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 350, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
+    { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
+    { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
+    { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
   ];
   CROSS_SELL_PRODUCTS.forEach(function (p) { p.price = livePrice(p.slug, p.price); var m = LIVE ? LIVE.mrp(p.slug, null) : null; p.mrp = m || p.price; });
 
@@ -523,7 +498,12 @@
     DISPATCH_FROM: DISPATCH_FROM,
     isPreorder: isPreorder,
     applyDispatchCopy: applyDispatchCopy,
-    MIN_ORDER_VALUE: MIN_ORDER_VALUE,
+    MIN_BOXES: MIN_BOXES,
+    FREE_FROM: FREE_FROM,
+    SHIPPING_FEE: SHIPPING_FEE,
+    boxesShort: boxesShort,
+    cartShipping: cartShipping,
+    cartPayable: cartPayable,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,

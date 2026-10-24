@@ -40,43 +40,32 @@
 
   function render() {
     if (!panel || !C()) return;
-    var cart = C().getCart(), n = C().cartCount(), min = C().MIN_ORDER_VALUE;
+    var cart = C().getCart(), n = C().cartCount();
     countEl.textContent = n ? 'Your bag (' + n + ')' : 'Your bag';
     body.textContent = '';
     if (!cart.length) {
-      body.appendChild(el('p', 'mc-empty', 'Your bag is empty. Minimum order ' + inr(min) + '.'));
+      body.appendChild(el('p', 'mc-empty', 'Your bag is empty. Online orders start at ' + C().MIN_BOXES + ' boxes.'));
       var shop = el('a', 'btn solid mc-cta', 'Shop the range'); shop.href = 'index.html#range'; shop.addEventListener('click', close); body.appendChild(shop);
       return;
     }
     var list = el('div', 'mc-lines'); cart.forEach(function (c) { list.appendChild(line(c)); }); body.appendChild(list);
 
-    var sg = C().suggestion && C().suggestion();
-    if (sg) {
-      var card = el('div', 'mc-card'); card.innerHTML = C().suggestionHtml(sg);
-      var acts = el('div', 'mc-acts');
-      var yes = el('button', 'btn solid mc-small', 'Switch · save ' + inr(sg.saved)); yes.type = 'button'; yes.addEventListener('click', function () { C().acceptSuggestion(); });
-      var no = el('button', 'mc-keep', 'Keep as singles'); no.type = 'button'; no.addEventListener('click', function () { C().keepSuggestion(sg.sig); render(); });
-      acts.appendChild(yes); acts.appendChild(no); card.appendChild(acts); body.appendChild(card);
-    }
-
-    var singles = cart.filter(function (c) { return BASE.indexOf(c.slug) >= 0; }).reduce(function (t, c) { return t + c.price * c.qty; }, 0);
-    var o = window.MunchingoOffers && window.MunchingoOffers.tier(), saving = 0;
-    if (o && o.pct && singles) {
-      if (singles >= o.min) { saving = Math.round(singles * o.pct / 100); if (o.cap) saving = Math.min(saving, o.cap); body.appendChild(el('p', 'mc-note ok', o.pct + '% stock-up offer unlocked.')); }
-      else body.appendChild(el('p', 'mc-note', 'Add ' + inr(o.min - singles) + ' more of single boxes for ' + o.pct + '% off' + (o.cap ? ' (up to ' + inr(o.cap) + ')' : '') + '.'));
-    }
     var total = C().cartTotal();
     var sum = el('div', 'mc-sum');
+    var ship = C().cartShipping(), short = C().boxesShort();
     var r1 = el('div', 'mc-row'); r1.appendChild(el('span', null, 'Subtotal')); r1.appendChild(el('b', null, inr(total))); sum.appendChild(r1);
-    if (saving) { var r2 = el('div', 'mc-row ok'); r2.appendChild(el('span', null, 'Stock-up offer')); r2.appendChild(el('b', null, '−' + inr(saving))); sum.appendChild(r2); }
-    sum.appendChild(el('small', null, 'Inclusive of GST. Free delivery. Promo codes are applied at checkout.'));
+    var r2 = el('div', 'mc-row'); r2.appendChild(el('span', null, 'Shipping')); r2.appendChild(el('b', null, short ? '\u2014' : (ship ? inr(ship) : 'Free'))); sum.appendChild(r2);
+    sum.appendChild(el('small', null, 'Inclusive of GST. Free shipping from ' + inr(C().FREE_FROM) + '; ' + inr(C().SHIPPING_FEE) + ' below that.'));
     body.appendChild(sum);
 
-    var short = Math.max(0, min - total), cta;
+    var cta;
     if (short) {
-      body.appendChild(el('p', 'mc-note', 'Add ' + inr(short) + ' more to check out (minimum order ' + inr(min) + ').'));
-      cta = el('a', 'btn solid mc-cta', 'Add ' + inr(short) + ' more'); cta.href = 'index.html#range'; cta.addEventListener('click', close);
-    } else { cta = el('a', 'btn solid mc-cta', 'Checkout \u2192'); cta.href = 'checkout.html'; }
+      body.appendChild(el('p', 'mc-note', 'Add ' + short + ' more box' + (short === 1 ? '' : 'es') + ' to check out (online orders start at ' + C().MIN_BOXES + ' boxes).'));
+      cta = el('a', 'btn solid mc-cta', 'Add ' + short + ' more box' + (short === 1 ? '' : 'es')); cta.href = 'index.html#range'; cta.addEventListener('click', close);
+    } else {
+      if (ship) body.appendChild(el('p', 'mc-note', 'Add one more box and shipping is free.'));
+      cta = el('a', 'btn solid mc-cta', 'Checkout \u2192'); cta.href = 'checkout.html';
+    }
     body.appendChild(cta);
     var full = el('a', 'mc-full', 'View full bag'); full.href = 'cart.html'; body.appendChild(full);
   }

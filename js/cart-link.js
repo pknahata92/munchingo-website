@@ -7,10 +7,10 @@
   'use strict';
   var C = window.MunchingoCart; if (!C || !location.search) return;
   var PRODUCTS = {
-    'atta-original': { name: 'Atta Original', price: 300, unit: '250g', ids: ['MNG-ORIGINAL-250', '91slwpjdqq'] },
-    'atta-ajwain': { name: 'Atta Ajwain', price: 300, unit: '250g', ids: ['MNG-AJWAIN-250', '97q9r5q5q3'] },
-    'atta-kesari': { name: 'Atta Kesari', price: 350, unit: '250g', ids: ['MNG-KESARI-250', 'w2w5ynf2m5'] },
-    'atta-lite-sugar': { name: 'Atta Sugar-Lite', price: 350, unit: '250g', ids: ['MNG-LITE-250', 'vf5p90bcy5'] }
+    'atta-original': { name: 'Atta Original', price: 259, unit: '250g', ids: ['MNG-ORIGINAL-250', '91slwpjdqq'] },
+    'atta-ajwain': { name: 'Atta Ajwain', price: 259, unit: '250g', ids: ['MNG-AJWAIN-250', '97q9r5q5q3'] },
+    'atta-kesari': { name: 'Atta Kesari', price: 299, unit: '250g', ids: ['MNG-KESARI-250', 'w2w5ynf2m5'] },
+    'atta-lite-sugar': { name: 'Atta Sugar-Lite', price: 299, unit: '250g', ids: ['MNG-LITE-250', 'vf5p90bcy5'] }
   };
   function resolve(raw) {
     var k = String(raw || '').trim().toLowerCase(), slug;

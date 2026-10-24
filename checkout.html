@@ -286,7 +286,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         </div>
         <div class="trust-item">
           <svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-          <span data-dispatch-note data-pre="Free shipping · pre-order dispatches 16 Oct" data-post="Free shipping · dispatched in 48 hrs">Free shipping · dispatched in 48 hrs</span>
+          <span data-dispatch-note data-pre="Free shipping from ₹777 · pre-order dispatches 16 Oct" data-post="Free shipping from ₹777 · dispatched in 48 hrs">Free shipping from ₹777 · dispatched in 48 hrs</span>
         </div>
       </div>
       <button type="submit" form="checkout-form" class="btn solid block" id="ck-submit">Pay ₹0</button>
@@ -334,37 +334,28 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=36"></script>
+<script src="js/cart.js?v=37"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
-<script src="js/pincode.js?v=1" defer></script>
+<script src="js/pincode.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
-<script src="js/minicart.js?v=3" defer></script>
-<script src="js/cart-bar.js?v=7" defer></script>
+<script src="js/minicart.js?v=4" defer></script>
+<script src="js/cart-bar.js?v=8" defer></script>
 <script>
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
 var CHECKOUT_UNREACHABLE_MSG = 'We couldn\'t reach our checkout just now. It can take up to a minute to wake up, so please wait a few seconds and try again — or order on WhatsApp: +91 99889 92024.';
 var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/validate-coupon';
-// Must match MIN_ORDER_VALUE in webhook-backend/routes/checkout.js — this is
-// just the UX pre-check; the backend enforces it for real. Orders below this
-// are only fulfilled hyperlocally/manually, not through this checkout.
-var MIN_ORDER_VALUE = MunchingoCart.MIN_ORDER_VALUE; // rupees of items before any discount
+// Minimum 2 boxes, shipping Rs 49 under Rs 777 (free from there). Must match webhook-backend/utils/shipping.js;
+// this is just the UX pre-check, the backend enforces and prices it for real.
+var MIN_BOXES = MunchingoCart.MIN_BOXES;
 // Must match SUBSCRIPTION_DISCOUNT_PCT in webhook-backend/routes/checkout.js.
 var SUBSCRIPTION_DISCOUNT_PCT = 8;
 // The coupon proactively advertised at checkout instead of a blank promo
 // field. Update (or blank out to hide the banner) when this code changes —
 // see coupons_migration_v2.sql for what's actually live in Supabase.
-var FEATURED_COUPON_CODE = 'FOUNDING10';
-// "Founding 100: N left" - read-only count from the backend. If all places are
-// taken the banner is retired; if the backend is asleep or errors, nothing changes.
-var foundingGone = false;
-fetch('https://munchingo-whatsapp-webhook.onrender.com/api/promo/founding').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-  if (!j || typeof j.remaining !== 'number') return;
-  var el = document.getElementById('ck-founding-left');
-  if (j.remaining <= 0) { foundingGone = true; document.getElementById('ck-promo-featured').style.display = 'none'; return; }
-  el.textContent = 'Founding 100: ' + j.remaining + ' left';
-}).catch(function () {});
+var FEATURED_COUPON_CODE = '';   // FOUNDING10 retired 25 Oct 2026 (Rs 259/299 pricing); set a code here to advertise it again
+var foundingGone = true;
 
 // Set once a promo code is successfully applied; cleared if the code is
 // removed or fails re-validation. The backend re-validates this at final
@@ -415,7 +406,9 @@ function renderSummary() {
 
   var total = MunchingoCart.cartTotal();
   var gstAmount = Math.round(total - (total / 1.05));
-  var belowMin = total < MIN_ORDER_VALUE;
+  var boxesNow = MunchingoCart.cartBoxes();
+  var belowMin = boxesNow < MIN_BOXES;
+  var ship = (!belowMin && total < MunchingoCart.FREE_FROM) ? MunchingoCart.SHIPPING_FEE : 0;
   var closed = !MunchingoCart.ordersOpen();
   document.getElementById('ck-closed').hidden = !closed;
 
@@ -438,7 +431,7 @@ function renderSummary() {
     payable = total - subDiscount;
     discountHtml = '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '%)</span><span>−₹' + subDiscount + '</span></div>';
   } else if (!belowMin && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.discount) {
-    payable = lastQuote.finalTotal;
+    payable = lastQuote.finalTotal - (lastQuote.shipping || 0);
     discountHtml = '<div class="row discount-row"><span>' + lastQuote.discount.label + '</span><span>−₹' + lastQuote.discount.amount + '</span></div>';
   } else if (appliedCoupon && !belowMin) {
     payable = appliedCoupon.finalTotal;
@@ -454,15 +447,18 @@ function renderSummary() {
 
   // GST is inclusive, so the breakup must follow what is actually payable
   // (after any subscription or coupon discount), not the pre-discount total.
+  payable += ship;
   gstAmount = Math.round(payable - (payable / 1.05));
 
   summaryEl.innerHTML = rows +
-    '<div class="row total"><span>Total</span><span>₹' + total + '</span></div>' +
+    '<div class="row total"><span>Items</span><span>₹' + total + '</span></div>' +
     discountHtml +
-    (discountHtml ? '<div class="row total"><span>Payable</span><span>₹' + payable + '</span></div>' : '') +
+    (belowMin ? '' : '<div class="row"><span>Shipping</span><span>' + (ship ? '₹' + ship : 'Free') + '</span></div>') +
+    '<div class="row total"><span>' + (belowMin ? 'Total' : 'Payable') + '</span><span>₹' + (belowMin ? total : payable) + '</span></div>' +
+    (ship ? '<div class="tier-nudge">Add <b>one more box</b> and shipping is free (free from ₹' + MunchingoCart.FREE_FROM + ').</div>' : '') +
     '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>' +
     nudgeHtml;
-  submitBtn.textContent = closed ? 'Orders not open yet' : belowMin ? 'Minimum order ₹' + MIN_ORDER_VALUE : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ₹' : 'Pay ₹') + payable);
+  submitBtn.textContent = closed ? 'Orders not open yet' : belowMin ? 'Add ' + (MIN_BOXES - boxesNow) + ' more box' + (MIN_BOXES - boxesNow === 1 ? '' : 'es') : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ₹' : 'Pay ₹') + payable);
   submitBtn.disabled = belowMin || closed;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : (MunchingoCart.isPreorder() ? 'Email (required for your pre-order confirmation)' : 'Email (for your GST invoice)');
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
@@ -762,7 +758,7 @@ document.addEventListener('DOMContentLoaded', function () {
       window.__pinBlocked = r.serviceable === false || r.valid === false;
       if (r.valid === false && !ip.state) { setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e'); return; }
       if (r.serviceable === false) setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e');
-      else if (r.serviceable === true) setStatus('ok', '✓ We deliver to ' + esc(where || v) + '. Free shipping.');
+      else if (r.serviceable === true) setStatus('ok', '✓ We deliver to ' + esc(where || v) + '.');
       else setStatus('ok', '✓ ' + esc(where || v) + '. We confirm delivery when you pay.');
       // The pincode decides the state (it drives the GST on your invoice); the city is filled when empty and otherwise checked against the pincode.
       var city = $('ck-addr-city'), state = $('ck-addr-state');

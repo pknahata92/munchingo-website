@@ -1,5 +1,5 @@
 // "Check delivery" by pincode, answered by Delhivery through the shop's backend (GET /api/pincode/:pin).
-//   - serviceable true  -> delivery available, free shipping
+//   - serviceable true  -> delivery available
 //   - serviceable false -> "we cannot deliver there yet", WhatsApp link
 //   - unknown (backend has no Delhivery answer) -> India Post confirms the pincode is real and we do not block anyone
 // Fills every [data-pincode-check]. Remembers the last good pincode on this phone only. Exposes MunchingoPincode.check(pin).
@@ -36,8 +36,8 @@
     var where = [r.city, r.state].filter(Boolean).join(', ');
     if (r.valid === false) return { cls: 'bad', html: 'That pincode does not look right. Please check the 6 digits.' };
     if (r.serviceable === false) return { cls: 'bad', html: 'We cannot deliver to ' + esc(r.pin) + ' yet. <a href="' + WA + '" target="_blank" rel="noopener">Message us on WhatsApp</a> and we will try to arrange it.' };
-    if (r.serviceable === true) return { cls: 'ok', html: '✓ Delivery available' + (where ? ' to ' + esc(where) : ' to ' + esc(r.pin)) + '. Free shipping.' };
-    if (r.valid === true) return { cls: 'ok', html: '✓ ' + esc(where || r.pin) + '. Free shipping across India. We confirm your pincode again at checkout.' };
+    if (r.serviceable === true) return { cls: 'ok', html: '✓ Delivery available' + (where ? ' to ' + esc(where) : ' to ' + esc(r.pin)) + '.' };
+    if (r.valid === true) return { cls: 'ok', html: '✓ ' + esc(where || r.pin) + '. We confirm your pincode again at checkout.' };
     return { cls: '', html: 'We could not check that just now. You can still order: we confirm delivery at checkout.' };
   }
   function widget(host) {

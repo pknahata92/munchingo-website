@@ -10,7 +10,7 @@
 
   // Same figures as gifting.html's static Add-to-Bag buttons.
   var SETS = {
-    3: { price: 739, name: 'Trio Gift Set', unit: '750g, 3 flavors' },
+    3: { price: 799, name: 'Trio Gift Set', unit: '750g, 3 flavors' },
     4: { slug: 'full-range-set', price: 999, name: 'Full Range Gift Set', unit: '1kg, one of each' }
   };
   // Live prices (js/prices.js) replace the launch figures above when the owner has changed them.
@@ -25,7 +25,7 @@
   ];
   // Selling prices (what the customer would actually pay per box). Taken from
   // data/products.js when that file is on the page, else these mirror it.
-  var SINGLE_FALLBACK = { Original: 300, Kesari: 350, 'Lite-sugar': 350, Ajwain: 300 };
+  var SINGLE_FALLBACK = { Original: 259, Kesari: 299, 'Lite-sugar': 299, Ajwain: 259 };
   var PRODUCT_SLUG = { Original: 'atta-original', Kesari: 'atta-kesari', 'Lite-sugar': 'atta-lite-sugar', Ajwain: 'atta-ajwain' };
 
   var cart = function () { return window.MunchingoCart; };
