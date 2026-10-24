@@ -1,6 +1,6 @@
 // Stall tally (stall.html, munchingo.com/stall): one tap per sale while the buyer pays. Saved on this device only, one
 // list per IST day, so a reload or a dropped connection loses nothing. Contribution uses the v14 pack costs
-// (Munchingo Docs/munchingo_pricing_v14.xlsx): price less 5% GST, less pack costs, less Rs 100 hamper packaging.
+// (Documents/munchingo_pricing_v14.xlsx): price less 5% GST, less pack costs, less Rs 100 hamper packaging.
 (function () {
   'use strict';
   var KEY = 'munchingo-stall-v1';
