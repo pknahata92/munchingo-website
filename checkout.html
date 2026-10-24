@@ -128,7 +128,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=3"></script>
+<script src="js/prices.js?v=4"></script>
 </head>
 <body>
 
@@ -334,12 +334,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=37"></script>
+<script src="js/cart.js?v=38"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
-<script src="js/minicart.js?v=4" defer></script>
+<script src="js/minicart.js?v=5" defer></script>
 <script src="js/cart-bar.js?v=8" defer></script>
 <script>
 // Point this at your Render backend.
@@ -448,10 +448,12 @@ function renderSummary() {
   // GST is inclusive, so the breakup must follow what is actually payable
   // (after any subscription or coupon discount), not the pre-discount total.
   payable += ship;
+  var saved = MunchingoCart.cartSavings();
   gstAmount = Math.round(payable - (payable / 1.05));
 
   summaryEl.innerHTML = rows +
     '<div class="row total"><span>Items</span><span>₹' + total + '</span></div>' +
+    (saved ? '<div class="row discount-row"><span>You save vs MRP</span><span>₹' + saved + '</span></div>' : '') +
     discountHtml +
     (belowMin ? '' : '<div class="row"><span>Shipping</span><span>' + (ship ? '₹' + ship : 'Free') + '</span></div>') +
     '<div class="row total"><span>' + (belowMin ? 'Total' : 'Payable') + '</span><span>₹' + (belowMin ? total : payable) + '</span></div>' +

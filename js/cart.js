@@ -186,6 +186,11 @@
   // Shipping on the bag as it is now: nothing for an empty or too-small bag (it cannot be ordered yet), otherwise the fee under FREE_FROM.
   function cartShipping() { var t = cartTotal(); return (cartBoxes() >= MIN_BOXES && t < FREE_FROM) ? SHIPPING_FEE : 0; }
   function cartPayable() { return cartTotal() + cartShipping(); }
+  // What the shopper saves against the printed MRP (the MRP stays 300/350; only the selling price is lower). Falls back to the printed MRPs when the live book has none.
+  var PRINTED_MRP = { 'atta-original': 300, 'atta-ajwain': 300, 'atta-kesari': 350, 'atta-lite-sugar': 350, 'full-range-set': 1300 };
+  function cartSavings() {
+    return getCart().reduce(function (n, c) { var m = c.mrp || PRINTED_MRP[c.slug] || 0; return n + (m > c.price ? (m - c.price) * c.qty : 0); }, 0);
+  }
 
   // ---- AOV progress bar (cart.html + checkout.html) ----
   // A visual goal-gradient bar toward two thresholds: the 3-box minimum
@@ -504,6 +509,7 @@
     boxesShort: boxesShort,
     cartShipping: cartShipping,
     cartPayable: cartPayable,
+    cartSavings: cartSavings,
     whatsappCheckoutUrl: whatsappCheckoutUrl,
     renderBadge: renderBadge,
     isSlugSoldOut: isSlugSoldOut,

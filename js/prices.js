@@ -39,7 +39,7 @@
       if (m) { el.textContent = inr(m); el.hidden = false; } else { el.hidden = true; }
     });
     Array.prototype.forEach.call(root.querySelectorAll('[data-save-for]'), function (el) {
-      var slug = el.getAttribute('data-save-for'), p = price(slug, null), m = mrp(slug, parseInt(el.getAttribute('data-mrp-static') || '0', 10) || null);
+      var slug = el.getAttribute('data-save-for'), pe = document.querySelector('[data-price-for="' + slug + '"]'), p = price(slug, pe ? (parseInt(pe.textContent.replace(/[^0-9]/g, ''), 10) || null) : null), m = mrp(slug, parseInt(el.getAttribute('data-mrp-static') || '0', 10) || null);
       if (m && p != null && m > p) { el.textContent = 'Save ' + inr(m - p); el.hidden = false; } else { el.hidden = true; }
     });
     // Buy buttons carry price/mrp for the cart.

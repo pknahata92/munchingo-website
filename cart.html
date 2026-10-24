@@ -63,7 +63,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=3"></script>
+<script src="js/prices.js?v=4"></script>
 </head>
 <body>
 
@@ -134,6 +134,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div id="cart-summary" class="cart-summary" style="display:none">
     <h2 class="cart-summary-title">Order summary</h2>
     <div class="total-row" style="font-weight:400"><span>Items</span><span id="cart-items">₹0</span></div>
+    <div class="total-row" id="cart-save-row" style="font-weight:400;color:var(--terra)" hidden><span>You save vs MRP</span><span id="cart-save">₹0</span></div>
     <div class="total-row" style="font-weight:400"><span>Shipping</span><span id="cart-ship">—</span></div>
     <div class="total-row"><span>Total</span><span id="cart-total">₹0</span></div>
     <p class="gst-note">Price inclusive of 5% GST (GSTIN 06AIIPN5005C2ZP)</p>
@@ -196,12 +197,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=37"></script>
+<script src="js/cart.js?v=38"></script>
 <script src="js/cart-link.js?v=2"></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
-<script src="js/minicart.js?v=4" defer></script>
+<script src="js/minicart.js?v=5" defer></script>
 <script src="js/cart-bar.js?v=8" defer></script>
 <script>
 var THUMBS = { 'atta-original': 'images/box-original.webp', 'atta-kesari': 'images/box-kesari.webp', 'atta-ajwain': 'images/box-ajwain.webp', 'atta-lite-sugar': 'images/box-lite.webp' };
@@ -254,6 +255,9 @@ function renderCart() {
   document.getElementById('cart-items').textContent = '₹' + total;
   document.getElementById('cart-ship').textContent = boxShort ? '—' : (shipNow ? '₹' + shipNow : 'Free');
   document.getElementById('cart-total').textContent = '₹' + (total + shipNow);
+  var savedNow = MunchingoCart.cartSavings();
+  document.getElementById('cart-save-row').hidden = !savedNow;
+  document.getElementById('cart-save').textContent = '₹' + savedNow;
   var aovProgressEl = document.getElementById('cart-aov-progress');
   aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
   MunchingoCart.initAovUpgrade(aovProgressEl, renderCart);

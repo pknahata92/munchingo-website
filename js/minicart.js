@@ -54,6 +54,7 @@
     var sum = el('div', 'mc-sum');
     var ship = C().cartShipping(), short = C().boxesShort();
     var r1 = el('div', 'mc-row'); r1.appendChild(el('span', null, 'Subtotal')); r1.appendChild(el('b', null, inr(total))); sum.appendChild(r1);
+    var sv = C().cartSavings(); if (sv) { var rs = el('div', 'mc-row ok'); rs.appendChild(el('span', null, 'You save vs MRP')); rs.appendChild(el('b', null, inr(sv))); sum.appendChild(rs); }
     var r2 = el('div', 'mc-row'); r2.appendChild(el('span', null, 'Shipping')); r2.appendChild(el('b', null, short ? '\u2014' : (ship ? inr(ship) : 'Free'))); sum.appendChild(r2);
     sum.appendChild(el('small', null, 'Inclusive of GST. Free shipping from ' + inr(C().FREE_FROM) + '; ' + inr(C().SHIPPING_FEE) + ' below that.'));
     body.appendChild(sum);
