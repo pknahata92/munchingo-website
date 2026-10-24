@@ -218,5 +218,5 @@
   render();
   if (navigator.serviceWorker && navigator.serviceWorker.register) navigator.serviceWorker.register('/stall-sw.js', { scope: '/stall' }).catch(function () {});
 
-  window.StallTally = { csv: csv };   // for the test and for a manual copy if sharing fails
+  window.StallTally = { csv: csv, version: 2 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
 })();
