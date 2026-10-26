@@ -63,11 +63,20 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
 .mix .act button{flex:1;min-height:54px;border-radius:14px;font-weight:700;font-size:18px;border:2px solid var(--ink);background:transparent}
 .mix .act #st-mix-ok{background:var(--navy);color:#fff;border-color:var(--navy)}
 .mix .act #st-mix-ok:disabled{opacity:.35}
+.buyer{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.buyer summary{font-weight:700;cursor:pointer;font-size:16px}
+.buyer input[type=text],.buyer input[type=tel]{display:block;width:100%;margin-top:8px;font:inherit;font-size:17px;padding:10px;border:1px solid var(--line);border-radius:10px}
+.buyer label{display:flex;gap:10px;align-items:flex-start;margin-top:10px;font-size:14px;line-height:1.35}
+.buyer label input{width:26px;height:26px;flex:none;margin-top:1px}
+#st-b-note{margin:6px 0 0;font-size:13px;color:#B3261E;min-height:16px}
+#st-sync{background:transparent;border:0;color:#fff;font-size:13px;padding:6px 0;text-align:right}
+#st-sync.ok{color:#9FE3B5}#st-sync.warn{color:#FFD27A}#st-sync.bad{color:#FF9C94}
 </style>
 </head>
 <body>
 <header class="top">
   <b>Munchingo stall · <span id="st-day"></span></b>
+  <button type="button" id="st-sync" aria-live="polite">Server backup: checking…</button>
 </header>
 <div id="st-warn" hidden>This tally is not being saved on this iPad (private browsing or storage blocked). Open it in normal Safari before selling.</div>
 <main>
@@ -84,6 +93,13 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
       <h2>This customer · <b id="st-basket-total">₹0</b></h2>
       <p id="st-basket-empty">Tap the packs they're buying, then Paid.</p>
       <ul id="st-basket"></ul>
+      <details class="buyer" id="st-buyer">
+        <summary>Buyer details (optional)</summary>
+        <input type="text" id="st-b-name" placeholder="Name" autocomplete="off" aria-label="Buyer name">
+        <input type="tel" id="st-b-phone" placeholder="Mobile number (10 digits)" inputmode="tel" autocomplete="off" aria-label="Buyer mobile number">
+        <label><input type="checkbox" id="st-b-ok"><span id="st-b-text">OK to send me new Flavors and offers on WhatsApp? A few messages a month at most. Reply STOP any time to stop.</span></label>
+        <p id="st-b-note"></p>
+      </details>
       <div class="paid">
         <button type="button" id="st-paid-upi" disabled>Paid UPI</button>
         <button type="button" id="st-paid-cash" disabled>Paid Cash</button>
@@ -139,6 +155,6 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
   </div>
 </div>
 <div id="st-flash" hidden role="status" aria-live="polite"></div>
-<script src="js/stall.js?v=2"></script>
+<script src="js/stall.js?v=3"></script>
 </body>
 </html>

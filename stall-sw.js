@@ -1,7 +1,7 @@
 // Offline copy of the stall tally only (registered with scope /stall). Network first, cached copy when offline.
 // Bump the version together with stall.js?v= in stall.html and StallTally.version in js/stall.js.
-const CACHE = 'munchingo-stall-v2';
-const FILES = ['/stall', '/js/stall.js?v=2'];
+const CACHE = 'munchingo-stall-v3';
+const FILES = ['/stall', '/js/stall.js?v=3'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('munchingo-stall-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
