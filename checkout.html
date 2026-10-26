@@ -196,6 +196,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         <label for="ck-phone">WhatsApp number</label>
         <div class="ck-phone"><span class="ck-prefix" aria-hidden="true">+91</span><input type="tel" id="ck-phone" placeholder="10-digit mobile number" inputmode="numeric" autocomplete="tel-national" enterkeyhint="next" maxlength="20" required></div>
       </div>
+      <label class="ck-remember" id="ck-whatsapp-optin-label"><input type="checkbox" id="ck-whatsapp-optin"> <span><strong>Send me new Flavors and offers on WhatsApp.</strong> A few messages a month. Reply STOP any time.</span></label>
       <label class="ck-remember" id="ck-recipient-toggle-label"><input type="checkbox" id="ck-is-gift"> 🎁 This is a gift: deliver it to someone else</label>
       <div id="ck-recipient-block" hidden>
         <div class="field">
@@ -660,6 +661,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
           source: (window.MunchingoSource ? window.MunchingoSource.current((document.getElementById('ck-source') || {}).value || '') : undefined),
           addressParts: { state: addrState, city: addrCity, pincode: addrPincode },
           recipient: isGift ? { name: rcpName, phone: rcpPhone } : undefined,
+          marketing: (document.getElementById('ck-whatsapp-optin') || {}).checked === true ? true : undefined,
         }),
       });
       var data = null;
