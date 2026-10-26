@@ -259,7 +259,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div class="ck-offers"><h2 class="ck-offers-h">Offers</h2>
     <label class="subscribe-toggle" id="ck-subscribe-label">
       <input type="checkbox" id="ck-subscribe">
-      <span><strong>Subscribe &amp; Save 8%</strong> — a fresh box every month. Pause or cancel anytime on WhatsApp.</span>
+      <span><strong>Subscribe &amp; Save 8%</strong> on single boxes (not gift boxes) — a fresh box every month. Pause or cancel anytime on WhatsApp.</span>
     </label>
 
     <div class="checkout-promo-featured" id="ck-promo-featured">
@@ -428,9 +428,11 @@ function renderSummary() {
   var payable = total;
   var discountHtml = '';
   if (subscribeChecked && !belowMin) {
-    var subDiscount = Math.round(total * (SUBSCRIPTION_DISCOUNT_PCT / 100));
+    // Gift boxes and hampers are never discounted: Subscribe & Save is on single boxes only (same rule as the server).
+    var singlesNow = cart.filter(function (i) { return ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'].indexOf(i.slug) >= 0; }).reduce(function (n, i) { return n + i.price * i.qty; }, 0);
+    var subDiscount = Math.round(singlesNow * (SUBSCRIPTION_DISCOUNT_PCT / 100));
     payable = total - subDiscount;
-    discountHtml = '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '%)</span><span>−₹' + subDiscount + '</span></div>';
+    discountHtml = subDiscount ? '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '% of single boxes)</span><span>−₹' + subDiscount + '</span></div>' : '';
   } else if (!belowMin && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.discount) {
     payable = lastQuote.finalTotal - (lastQuote.shipping || 0);
     discountHtml = '<div class="row discount-row"><span>' + lastQuote.discount.label + '</span><span>−₹' + lastQuote.discount.amount + '</span></div>';
