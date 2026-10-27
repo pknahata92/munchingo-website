@@ -1,4 +1,4 @@
-// Munchingo gift-set builder — used on index.html (#gifts).
+// Munchingo gift-set builder — used on build-a-box.html.
 // Pages supply the headline copy plus two empty mount points:
 //   <div data-gb-left></div>   (step 1 set choice + step 2 flavor tiles)
 //   <div data-gb-right></div>  (the dark "your gift set" panel)
@@ -83,7 +83,7 @@
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
         '<p class="promo-note" data-gb="promo" hidden></p>' +
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
-        '<a class="gb-singles" data-gb="singles" href="index.html#range" hidden>Order the single boxes that are in stock →</a>' +
+        '<a class="gb-singles" data-gb="singles" href="shop.html" hidden>Order the single boxes that are in stock →</a>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
         '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
       '</aside>';

@@ -1531,3 +1531,28 @@ html.mc-lock{overflow:hidden}
 .p2-ship{font-size:13px;color:#5a4a3e;margin:8px 0 12px}
 .p2-add{width:100%}
 .p2-bag{display:block;text-align:center;margin-top:10px;font-weight:700;color:var(--terra,#A35A34)}
+
+/* Storefront restructure (27 Oct 2026): phone quick links, Shop gift cards, home gift-box doorway */
+.v2-quick{display:none}
+@media(max-width:720px){.v2-quick{display:flex;gap:6px;overflow-x:auto;padding:6px 16px 10px;scrollbar-width:none}.v2-quick::-webkit-scrollbar{display:none}
+.v2-quick a{flex:none;color:#FBF4E6;text-decoration:none;font-size:14px;font-weight:600;padding:7px 14px;border:1px solid rgba(251,244,230,.35);border-radius:999px}}
+.shop-sets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+@media(max-width:720px){.shop-sets{grid-template-columns:1fr}}
+.shop-set{display:grid;grid-template-columns:42% 1fr;background:#fff;border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink,#2A1A12);box-shadow:0 2px 0 rgba(42,26,18,.08)}
+.shop-set img{width:100%;height:100%;object-fit:cover;min-height:180px}
+.shop-set>span{display:flex;flex-direction:column;gap:4px;padding:16px}
+.shop-set b{font-size:20px}.shop-set small{color:#6b5a4e}.shop-price{font-size:22px;font-weight:800}
+.shop-set .btn{margin-top:auto;align-self:flex-start}
+.gb-h1{font-size:inherit;margin:6px 0 10px}
+.v2-door{padding:56px 0}
+.door-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+@media(max-width:720px){.door-cards{grid-template-columns:1fr}}
+.door-card{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:18px;padding:22px;text-decoration:none;color:var(--ink,#2A1A12);border-top:5px solid var(--terra,#A35A34);box-shadow:0 2px 0 rgba(42,26,18,.08)}
+.door-card.dark{background:#2A1A12;color:#fff;border-top-color:var(--marigold,#E3A72F)}.door-card.dark small{color:#e8dccd}.door-card.dark .promo-note{color:var(--marigold,#E3A72F)}
+.door-card b{font-size:22px}.door-price{font-size:26px;font-weight:800}
+.door-trust{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;padding:0;margin:22px 0 0;font-size:14px;font-weight:600}
+.door-trust li::before{content:"✓ ";color:var(--terra,#A35A34)}
+
+.shop-grid .v2-cards{display:grid!important;grid-template-columns:repeat(4,1fr);gap:16px;overflow:visible!important;scroll-snap-type:none!important;padding:0!important;margin:0!important}
+.shop-grid .v2-cards>.v2-card{width:auto!important;min-width:0!important;flex:none!important}
+@media(max-width:900px){.shop-grid .v2-cards{grid-template-columns:repeat(2,1fr);gap:10px}.shop-grid .v2-card .v2-line,.shop-grid .v2-card .v2-fine{display:none}.shop-grid .v2-card h3{font-size:17px}}

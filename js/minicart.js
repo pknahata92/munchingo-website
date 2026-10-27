@@ -45,7 +45,7 @@
     body.textContent = '';
     if (!cart.length) {
       body.appendChild(el('p', 'mc-empty', 'Your bag is empty. Online orders start at ' + C().MIN_BOXES + ' boxes.'));
-      var shop = el('a', 'btn solid mc-cta', 'Shop the range'); shop.href = 'index.html#range'; shop.addEventListener('click', close); body.appendChild(shop);
+      var shop = el('a', 'btn solid mc-cta', 'Shop the range'); shop.href = 'shop.html'; shop.addEventListener('click', close); body.appendChild(shop);
       return;
     }
     var list = el('div', 'mc-lines'); cart.forEach(function (c) { list.appendChild(line(c)); }); body.appendChild(list);
@@ -62,7 +62,7 @@
     var cta;
     if (short) {
       body.appendChild(el('p', 'mc-note', 'Add ' + short + ' more box' + (short === 1 ? '' : 'es') + ' to check out (online orders start at ' + C().MIN_BOXES + ' boxes).'));
-      cta = el('a', 'btn solid mc-cta', 'Add ' + short + ' more box' + (short === 1 ? '' : 'es')); cta.href = 'index.html#range'; cta.addEventListener('click', close);
+      cta = el('a', 'btn solid mc-cta', 'Add ' + short + ' more box' + (short === 1 ? '' : 'es')); cta.href = 'shop.html'; cta.addEventListener('click', close);
     } else {
       if (ship) body.appendChild(el('p', 'mc-note', 'Add one more box and shipping is free.'));
       cta = el('a', 'btn solid mc-cta', 'Checkout \u2192'); cta.href = 'checkout.html';
