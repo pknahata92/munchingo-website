@@ -85,6 +85,9 @@
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
         '<a class="gb-singles" data-gb="singles" href="shop.html" hidden>Order the single boxes that are in stock →</a>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
+        '<div class="gb-paused" data-gb="paused" hidden><b data-gb="pausedTitle">Gift sets are paused for now.</b><p data-gb="pausedText"></p>' +
+          '<a class="btn solid gb-notify" data-gb="notify" href="https://wa.me/919988992024" rel="noopener">Tell me when they\u2019re back</a>' +
+          '<a class="gb-singles gb-paused-shop" href="shop.html">Shop the boxes in stock →</a></div>' +
         '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
       '</aside>';
 
@@ -97,6 +100,22 @@
     $('notelink').addEventListener('click', function (e) {
       e.preventDefault(); noteBox.classList.toggle('open'); if (noteBox.classList.contains('open')) noteArea.focus();
     });
+
+    // The page's Product data for the two sets follows live stock (Trio needs 3 Flavors in stock, Full Range all four).
+    function syncSetSchema(trioOk, fullOk) {
+      [].forEach.call(document.querySelectorAll('script[type="application/ld+json"]'), function (el) {
+        try {
+          var j = JSON.parse(el.textContent), nodes = j['@graph'] || [j], changed = false;
+          nodes.forEach(function (n) {
+            if (!n || n['@type'] !== 'Product' || !n.offers) return;
+            var ok = n.sku === 'trio-gift-set' ? trioOk : n.sku === 'full-range-set' ? fullOk : null;
+            if (ok === null) return;
+            n.offers.availability = ok ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'; changed = true;
+          });
+          if (changed) el.textContent = JSON.stringify(j);
+        } catch (e) { /* leave it */ }
+      });
+    }
 
     function canonical(list) { return FLAVOURS.filter(function (f) { return list.indexOf(f.value) !== -1; }).map(function (f) { return f.value; }); }
 
@@ -145,6 +164,15 @@
       var fullOpt = left.querySelector('.gb-opt[data-size="4"] small');
       if (fullOpt) fullOpt.textContent = outNames.length ? 'Back soon · sold out today' : 'One of each · 1kg';
 
+      // No set can be filled at all (fewer than 3 Flavors in stock): one short card instead of a builder that can't finish.
+      var paused = inNames.length < 3;
+      var panel = right.querySelector('.gb-panel'); if (panel) panel.classList.toggle('gb-is-paused', paused);
+      $('paused').hidden = !paused;
+      if (paused) {
+        $('pausedText').textContent = 'A Trio needs three different Flavors and ' + list(outNames) + (outNames.length > 1 ? ' are' : ' is') + ' sold out until our next bake. ' + (inNames.length ? list(inNames) + (inNames.length > 1 ? ' are' : ' is') + ' in stock as single boxes.' : '');
+        $('notify').href = 'https://wa.me/919988992024?text=' + encodeURIComponent('Hi Munchingo, please tell me when the gift sets are back.');
+      }
+      syncSetSchema(inNames.length >= 3, outNames.length === 0);
       var unavailable = (size === 4 && (fullRangeSoldOut() || outNames.length > 0)) || (size === 3 && inNames.length < 3);
       var cta = $('cta');
       cta.disabled = !full || unavailable;

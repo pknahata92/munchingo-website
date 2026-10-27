@@ -672,7 +672,7 @@
       // Range cards: once the box is in the bag the button becomes  - qty +  (same pattern as every quick-commerce app).
       if (btn.hasAttribute('data-stepper') && staticSlug) {
         var step = document.createElement('div');
-        step.className = 'v2-step'; step.hidden = true;
+        step.className = 'v2-qty'; step.hidden = true;   // own class: .v2-step belongs to the order-steps section and carries a 16px margin
         step.innerHTML = '<button type="button" data-d aria-label="One less">\u2212</button><output aria-live="polite"></output><button type="button" data-i aria-label="One more">+</button>';
         btn.parentNode.insertBefore(step, btn.nextSibling);
         var out = step.querySelector('output');

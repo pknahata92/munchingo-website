@@ -15,6 +15,8 @@
   --f-display:'Monthoers',Georgia,serif; --f-body:'Poppins',-apple-system,system-ui,sans-serif; --f-script:'Dancing Script',cursive;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+/* Native controls don't inherit the page font; without this the Pay, Menu, Search and stepper buttons render in Arial. */
+button,input,select,textarea{font-family:inherit;letter-spacing:inherit}
 html{scroll-behavior:smooth}
 html{max-width:100%}
 body{overflow-x:hidden;max-width:100%}
@@ -1317,10 +1319,15 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 .aov-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .aov-keep-btn{background:none;border:1px solid rgba(42,26,18,.3);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:600 13px/1 Poppins,system-ui,sans-serif;cursor:pointer;min-height:40px}
 /* range-card quantity stepper (js/cart.js) */
-.v2-add[hidden],.v2-step[hidden]{display:none!important}
-.v2-range .v2-card .v2-step{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--marigold);color:var(--ink);border-radius:999px;padding:4px}
-.v2-range .v2-card .v2-step button{width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.6);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;padding:0}
-.v2-range .v2-card .v2-step output{font:700 16px var(--f-body);min-width:2ch;text-align:center}
+.v2-add[hidden],.v2-step[hidden],.v2-qty[hidden]{display:none!important}
+/* Add to bag and the - qty + stepper that replaces it share one 48px box, so nothing on the card moves when a box is added. */
+.v2-range .v2-card .v2-body .v2-add,.v2-range .v2-card .v2-qty{height:48px;margin:6px 0 0;box-sizing:border-box}
+.v2-range .v2-card .v2-body .v2-add{padding:0 14px;display:flex;align-items:center;justify-content:center}
+.v2-range .v2-card .v2-qty{display:flex;align-items:center;justify-content:space-between;width:100%;background:#FFF6EA;color:var(--c);border-radius:999px;padding:4px;border:0}
+.v2-range .v2-card .v2-qty button{width:40px;height:40px;border:0;border-radius:50%;background:var(--c);color:#FFF6EA;font-size:20px;line-height:1;cursor:pointer;padding:0}
+.v2-range .v2-card .v2-qty output{font:700 16px var(--f-body);min-width:2ch;text-align:center}
+/* Sold out reads as a state, not a button */
+.v2-range .v2-card .v2-add.sold-out,body.v2 .v2-range .v2-card .v2-add.sold-out{background:transparent;color:#FFF6EA;border:1.5px dashed rgba(255,246,234,.55);cursor:default;opacity:.85}
 /* compact footer on phones: two link columns side by side, tighter rows and gaps (was about 1,430 px tall) */
 @media (max-width:700px){
   :is(body.v2,body:not(.v2)) .v2-footer{padding-top:36px}
@@ -1556,3 +1563,59 @@ html.mc-lock{overflow:hidden}
 .shop-grid .v2-cards{display:grid!important;grid-template-columns:repeat(4,1fr);gap:16px;overflow:visible!important;scroll-snap-type:none!important;padding:0!important;margin:0!important}
 .shop-grid .v2-cards>.v2-card{width:auto!important;min-width:0!important;flex:none!important}
 @media(max-width:900px){.shop-grid .v2-cards{grid-template-columns:repeat(2,1fr);gap:10px}.shop-grid .v2-card .v2-line,.shop-grid .v2-card .v2-fine{display:none}.shop-grid .v2-card h3{font-size:17px}}
+
+/* ===== Pre-Diwali fixes (28 Oct 2026) ===== */
+/* Product page, sold out: the buy row reads as a state with a way to hear when it's back */
+.v2-qtyrow.v2-soldout .v2-qty{opacity:.4}
+.v2-qtyrow.v2-soldout .btn.sold-out{background:transparent;color:var(--ink-2);border:1.5px dashed rgba(42,26,18,.3);box-shadow:none;cursor:default}
+.v2-soldout-note{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid rgba(42,26,18,.12);font-size:14px;line-height:1.5;color:var(--ink-2)}
+.v2-soldout-note b{color:var(--ink)}
+.v2-soldout-note a{display:inline-block;margin-top:4px;color:var(--terra-deep);font-weight:600}
+.v2-sticky-buy.v2-soldout{display:none!important}
+/* Phone bottom bars: while the product's own bar shows, the bag bar steps aside; the product bar links to the bag */
+.v2-sticky-bag{flex:none;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;padding:12px 4px;white-space:nowrap}
+.v2-sticky-bag[hidden]{display:none}
+@media (max-width:720px){
+  body:has(.v2-sticky-buy.v2-show) .mcb{transform:translateY(110%)}
+  body:has(.v2-sticky-buy.v2-show).has-mcb .wa-float{bottom:calc(84px + env(safe-area-inset-bottom))}
+}
+/* Cart: a sold-out line is marked, and checkout waits until it is removed (the server refuses it at payment anyway) */
+.cart-row.sold-out .thumb,.cart-row.sold-out .price,.cart-row.sold-out .qty{opacity:.45}
+.cart-soldout{font-size:13px;font-weight:600;color:#9A3B1E;margin:4px 0 2px}
+.ck-soldout a{font-weight:600;color:var(--terra-deep)}
+/* Home: gift doorway link readable on the dark Full Range card */
+.door-card.dark .v2-link-arrow{color:#FFF6EA;border-bottom-color:#FFF6EA}
+.door-card .v2-link-arrow{align-self:flex-start;margin-top:auto}
+/* Home hero: gift boxes as a text link next to the one primary button */
+.v2-ctas{align-items:center}
+.v2-hero .v2-ctas .v2-hero-gift{color:inherit;border-bottom-color:currentColor;padding:12px 0}
+@media (max-width:720px){.v2-ctas .v2-hero-gift{flex:0 0 auto}}
+.v2-range .v2-head p a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+/* Footer baseline: keep the page gutter on phones */
+@media (max-width:720px){:is(body.v2,body:not(.v2)) .v2-wrap.v2-baseline{padding-left:16px;padding-right:16px}}
+/* 404 page */
+.nf{padding-block:56px 72px;display:grid;gap:16px;justify-items:start}
+.nf h1{font-size:clamp(40px,7vw,72px);line-height:1}
+.nf p{color:var(--ink-2);max-width:46ch}
+.nf-links{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.nf-links a{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--paper);border:1px solid rgba(42,26,18,.14);color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+/* Build a box page (28 Oct): real H1, names clear of the + button, readable corporate card */
+.gb .gb-h1{font-family:var(--f-display);font-size:clamp(2.8rem,6vw,5rem);line-height:1;margin:16px 0 18px;color:var(--ink);font-weight:400}
+.gb .gb-h1 .gb-l2{display:block;color:var(--terra)}
+@media (max-width:720px){.gb-fl>span:last-child{padding-right:38px}}
+body.v2 .pg-cta h2,.pg-cta h2{color:#FFF6EA}
+/* Builder paused (no set can be filled): the panel shows one card, nothing that can't finish */
+.gb-paused{display:grid;gap:12px}
+.gb-paused[hidden]{display:none}
+.gb-paused b{font-size:20px;color:#FFF6EA;line-height:1.25}
+.gb-paused p{color:#D9C7B4;font-size:14.5px;line-height:1.55;margin:0}
+.gb-paused .gb-notify{justify-content:center}
+.gb-panel.gb-is-paused>*:not(.gb-paused):not(.gb-k){display:none!important}
+/* Phone tiles: "Sold out" sits where the + was, never over the Flavor name */
+@media (max-width:720px){
+  .gb-fl .gb-so{top:50%;left:auto;right:6px;margin:0;padding:3px 7px;font-size:9.5px;letter-spacing:.04em;border-radius:999px;transform:translateY(-50%)}
+  .gb-fl .gb-so small{display:none}
+}
+.wa-float{transition:opacity .25s ease,transform .25s ease,bottom .3s}
+body.wa-later .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)}
+@media (max-width:720px){.gb-fl.gb-out>span:last-child{padding-right:70px}}

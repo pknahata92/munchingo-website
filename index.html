@@ -9,19 +9,21 @@
 <meta name="facebook-domain-verification" content="sqoau3i6nzl9xzx2uctleiq1mjb27s" />
 <meta property="og:title" content="Munchingo — Tiny Treats, Mighty Flavors">
 <meta property="og:description" content="Four atta cookies, made for different moments. Pure desi ghee. No palm oil. No compromise.">
-<meta property="og:image" content="https://munchingo.com/images/box-original.jpg">
+<meta property="og:image" content="https://munchingo.com/images/og-gift-boxes.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://munchingo.com">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Munchingo — Tiny Treats, Mighty Flavors">
 <meta name="twitter:description" content="Four atta cookies, made for different moments. Pure desi ghee. No palm oil. No compromise.">
-<meta name="twitter:image" content="https://munchingo.com/images/box-original.jpg">
+<meta name="twitter:image" content="https://munchingo.com/images/og-gift-boxes.jpg">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=89">
+<link rel="stylesheet" href="css/style.css?v=92">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -87,166 +89,16 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<noscript><style>.v2-countdown{display:none!important}</style></noscript>
 <script src="js/prices.js?v=6"></script>
 </head>
 <body class="v2">
 
-<section class="v2-countdown" id="countdown" data-countdown="2026-10-15T13:00:00+05:30" data-end="2026-10-16T00:00:00+05:30" role="dialog" aria-modal="true" aria-labelledby="cd-title">
-  <span class="cd-arc cd-arc-a" aria-hidden="true"></span><span class="cd-arc cd-arc-b" aria-hidden="true"></span>
-  <div class="v2-wrap cd-inner">
-    <span class="cd-eyebrow" data-cd-eyebrow>Pre-orders are open</span>
-    <h2 id="cd-title"><span data-cd-title>Pre-order now. We dispatch on 16 October.</span></h2>
-    <p class="cd-sub" data-cd-sub>Desi ghee atta cookies, baked in Bikaner and delivered to your doorstep. Order today and yours is in the very first batch out.</p>
-    <div class="cd-tiles" data-cd-tiles role="timer" aria-live="off">
-      <div class="cd-tile"><b data-cd="d">--</b><span>Days</span></div>
-      <div class="cd-tile"><b data-cd="h">--</b><span>Hours</span></div>
-      <div class="cd-tile"><b data-cd="m">--</b><span>Minutes</span></div>
-      <div class="cd-tile"><b data-cd="s">--</b><span>Seconds</span></div>
-    </div>
-    <span class="cd-date">Dispatches &middot; 16 October 2026</span>
-    <div class="cd-scratch" data-cd-scratch hidden>
-      <div class="cd-scratch-head"><b>Today&rsquo;s little clue</b><span data-cd-scratch-day></span></div>
-      <div class="cd-scratch-card">
-        <div class="cd-scratch-reveal"><small data-cd-kicker></small><strong data-cd-clue-title></strong><span data-cd-clue-text></span></div>
-        <canvas class="cd-scratch-foil" data-cd-foil aria-label="Scratch to reveal today's clue"></canvas>
-      </div>
-      <p class="cd-scratch-note" data-cd-scratch-note>Scratch with your finger. A new clue unlocks every day.</p>
-    </div>
-    <button type="button" class="cd-cta" data-cd-enter><span data-cd-cta-label>Pre-order from the lineup</span> <span class="v2-arrow">↗</span></button>
-  </div>
-</section>
-<script>
-// Countdown popup. Shows every time the homepage opens and holds the page until the
-// visitor taps "Peek at the lineup". After launch it removes itself and the pre-launch
-// copy (hero pill, announce bar line) reverts to the regular wording.
-(function(){
-  var sec=document.getElementById('countdown'); if(!sec) return;
-  var target=new Date(sec.getAttribute('data-countdown')).getTime();
-  // data-countdown = launch moment (tiles hit zero, popup switches to launch mode). data-end = popup removed entirely.
-  var end=new Date(sec.getAttribute('data-end')||sec.getAttribute('data-countdown')).getTime();
-  var live=false, LIVE_CTA='Shop the range';
-  var els={}; ['d','h','m','s'].forEach(function(k){els[k]=sec.querySelector('[data-cd="'+k+'"]');});
-  var root=document.documentElement, timer;
-  function pad(n){return n<10?'0'+n:''+n;}
-  function seen(){ try{return sessionStorage.getItem('mngCdSeen')==='1';}catch(e){return false;} }
-  function markSeen(){ try{sessionStorage.setItem('mngCdSeen','1');}catch(e){} }
-  function unlock(){ root.classList.remove('cd-lock'); }
-  function revertCopy(){
-    document.querySelectorAll('[data-pre-launch]').forEach(function(n){if(n.parentNode) n.parentNode.removeChild(n);});
-    var t=document.querySelector('[data-launch-pill-text]'); if(t) t.textContent='Diwali gift sets are here';
-  }
-  function launched(){
-    clearInterval(timer); unlock();
-    if(sec.parentNode) sec.parentNode.removeChild(sec);
-    revertCopy();
-    // On a page load after launch this script runs before the hero and announce bar exist, so run it again once they do.
-    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',revertCopy);
-  }
-  // Launch mode: the countdown is over, the popup stays for launch day with the final scratch card, then goes at data-end.
-  function launchMode(){
-    if(live) return; live=true;
-    var q=function(a){return sec.querySelector('['+a+']');};
-    var tiles=q('data-cd-tiles'); if(tiles) tiles.style.display='none';
-    var e=q('data-cd-eyebrow'); if(e) e.textContent='Launch day';
-    var t=q('data-cd-title'); if(t) t.textContent='Munchingo is here.';
-    var u=q('data-cd-sub'); if(u) u.textContent='Atta cookies made with pure desi ghee, baked in Bikaner and delivered to your doorstep. Pre-orders are open and the first boxes dispatch on 16 October.';
-    var n=q('data-cd-scratch-note'); if(n) n.textContent='Scratch with your finger to reveal.';
-    var l=q('data-cd-cta-label'); if(l) l.textContent=LIVE_CTA;
-    if(typeof fit==='function') fit();
-  }
-  function tick(){
-    var now=Date.now(), left=target-now;
-    if(now>=end){ launched(); return false; }
-    if(left<=0){ launchMode(); return true; }
-    var s=Math.floor(left/1000);
-    els.d.textContent=pad(Math.floor(s/86400)); els.h.textContent=pad(Math.floor(s%86400/3600));
-    els.m.textContent=pad(Math.floor(s%3600/60)); els.s.textContent=pad(s%60);
-    return true;
-  }
-  function enter(){
-    markSeen(); sec.classList.add('cd-hidden'); unlock(); clearInterval(timer);
-    setTimeout(function(){ sec.style.display='none'; },450);
-    // A deep link such as /#gifts should land on that section; otherwise start at the top.
-    var tgt = location.hash && document.getElementById(location.hash.slice(1));
-    if (tgt) tgt.scrollIntoView(); else window.scrollTo(0,0);
-  }
-  if(!tick()) return;
-  // Sent here from the bag bar ("Add more"): the visitor is mid-order, so skip the popup and land on the range.
-  if(/[?&]shop=1(&|$)/.test(location.search)){
-    sec.style.display='none';
-    var go=location.hash&&document.getElementById(location.hash.slice(1)); if(go) setTimeout(function(){go.scrollIntoView();},0);
-    return;
-  }
-  // Shown on EVERY homepage load until dispatch day (the daily scratch-card clue is the reason to come back).
-  // Daily scratch-card clue (11-15 Oct, IST). Scratched state stays on this device.
-  var CLUES={
-    '2026-10-11':['INGREDIENT HINT','Maida? Not invited.','Good cookies, the Munchingo way. No maida.'],
-    '2026-10-12':['A LITTLE GOLDEN CLUE','Desi ghee, the real deal.','Pure desi ghee. Bas, smell says the rest.'],
-    '2026-10-13':['A CHAI-TIME CLUE','Chai\u2019s favourite plus-one.','Crisp, ghee-rich and made for dunking. Put the kettle on.'],
-    '2026-10-14':['WHERE IT BEGAN','A little Bikaner magic.','One week at a cousin\u2019s bakery sparked it all.'],
-    '2026-10-15':['THE BIG REVEAL','Meet Munchingo.','A little taste of home, baked for today.']
-  };
-  function istDay(){ return new Date(Date.now()+19800000).toISOString().slice(0,10); }
-  function scratchInit(){
-    var box=sec.querySelector('[data-cd-scratch]'), day=istDay(), clue=CLUES[day]; if(!box||!clue) return;
-    box.hidden=false;
-    box.querySelector('[data-cd-kicker]').textContent=clue[0];
-    box.querySelector('[data-cd-clue-title]').textContent=clue[1];
-    box.querySelector('[data-cd-clue-text]').textContent=clue[2];
-    box.querySelector('[data-cd-scratch-day]').textContent=new Date(day+'T12:00:00+05:30').toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short'});
-    var note=box.querySelector('[data-cd-scratch-note]'), cv=box.querySelector('[data-cd-foil]'), KEY='munchingo-scratchcard-v2', done;
-    try{ done=(JSON.parse(localStorage.getItem(KEY)||'{}'))[day]; }catch(e){ done=false; }
-    function save(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); o[day]=true; localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
-    function reveal(){ sec.classList.add('cd-revealed'); var l=sec.querySelector('[data-cd-cta-label]'); if(l) l.textContent=live?LIVE_CTA:'Proceed to Pre-Order'; }
-    function doneNote(){ return live?'Revealed. Welcome to Munchingo.':'Revealed. Come back tomorrow for the next clue.'; }
-    function finish(){ cv.style.opacity='0'; setTimeout(function(){ cv.style.display='none'; },500); note.textContent=doneNote(); save(); reveal(); }
-    if(done){ cv.style.display='none'; note.textContent=doneNote(); reveal(); return; }
-    var ctx=cv.getContext('2d',{willReadFrequently:true}), last=null, drawing=false, over=false;
-    function paint(){
-      var r=cv.getBoundingClientRect(); if(!r.width||over) return;
-      var dpr=Math.min(window.devicePixelRatio||1,2); cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
-      var g=ctx.createLinearGradient(0,0,r.width,r.height); g.addColorStop(0,'#ead8ae'); g.addColorStop(.25,'#c9ad70'); g.addColorStop(.5,'#f0e3c1'); g.addColorStop(.75,'#c8a967'); g.addColorStop(1,'#eddfbd');
-      ctx.globalCompositeOperation='source-over'; ctx.fillStyle=g; ctx.fillRect(0,0,r.width,r.height);
-      ctx.fillStyle='rgba(61,53,39,.78)'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='700 11px sans-serif'; ctx.fillText('SCRATCH TO REVEAL',r.width/2,r.height/2+10); ctx.font='18px Georgia,serif'; ctx.fillText('\u2733',r.width/2,r.height/2-14);
-    }
-    function pt(e){ var r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
-    function progress(){ var d=ctx.getImageData(0,0,cv.width,cv.height).data, c=0, n=0; for(var i=3;i<d.length;i+=48){ n++; if(d[i]<60) c++; } return c/n; }
-    function stroke(p){ ctx.globalCompositeOperation='destination-out'; ctx.lineCap='round'; ctx.lineWidth=38; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }
-    cv.addEventListener('pointerdown',function(e){ e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); stroke({x:last.x+.1,y:last.y+.1}); });
-    cv.addEventListener('pointermove',function(e){ if(!drawing||over) return; e.preventDefault(); stroke(pt(e)); });
-    function up(){ if(!drawing) return; drawing=false; last=null; if(!over&&progress()>.3){ over=true; finish(); } }
-    cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',function(){ drawing=false; last=null; });
-    if(window.ResizeObserver) new ResizeObserver(paint).observe(cv); paint();
-  }
-  scratchInit();
-  root.classList.add('cd-lock');
-  // Safety net: if the content is still taller than the screen (very small phones, big text settings), scale it to fit.
-  var inner=sec.querySelector('.cd-inner');
-  function fit(){
-    if(!inner||!sec.parentNode) return;
-    inner.style.transform=''; inner.style.transformOrigin='';
-    var sr=sec.getBoundingClientRect(), r0=inner.getBoundingClientRect(), h=r0.height, avail=sr.height-16;
-    if(avail>0&&h>avail){
-      var k=Math.max(.55,avail/h), dy=(sr.height-h*k)/2-(r0.top-sr.top);
-      inner.style.transformOrigin='50% 0';
-      inner.style.transform='translateY('+dy.toFixed(1)+'px) scale('+k.toFixed(3)+')';
-    }
-  }
-  fit(); setTimeout(fit,300);
-  window.addEventListener('resize',fit); window.addEventListener('orientationchange',function(){ setTimeout(fit,250); });
-  if(window.ResizeObserver) new ResizeObserver(fit).observe(sec);
-  timer=setInterval(tick,1000);
-  var btn=sec.querySelector('[data-cd-enter]');
-  btn.addEventListener('click',enter);
-  btn.focus({preventScroll:true});
-})();
-</script>
+
 
 <div class="announce">
   <div class="announce-track">
-    <span data-pre-launch>Pre-order now · dispatches 16 Oct</span><span>Diwali gift sets are here</span><span data-tier-short hidden></span><span>Secure online checkout</span><span>Free shipping from ₹777</span><span><a href="corporate-gifting.html">Corporate &amp; bulk gifting: ask for a quote</a></span><span>Baked fresh in Bikaner</span>
-    <span aria-hidden="true" data-pre-launch>Pre-order now · dispatches 16 Oct</span><span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true" data-tier-short hidden></span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Free shipping from ₹777</span><span aria-hidden="true"><a href="corporate-gifting.html" tabindex="-1">Corporate &amp; bulk gifting: ask for a quote</a></span><span aria-hidden="true">Baked fresh in Bikaner</span>
+    <span>Diwali gift sets are here</span><span data-tier-short hidden></span><span>Secure online checkout</span><span>Free shipping from ₹777</span><span><a href="corporate-gifting.html">Corporate &amp; bulk gifting: ask for a quote</a></span><span>Baked fresh in Bikaner</span>
+    <span aria-hidden="true">Diwali gift sets are here</span><span aria-hidden="true" data-tier-short hidden></span><span aria-hidden="true">Secure online checkout</span><span aria-hidden="true">Free shipping from ₹777</span><span aria-hidden="true"><a href="corporate-gifting.html" tabindex="-1">Corporate &amp; bulk gifting: ask for a quote</a></span><span aria-hidden="true">Baked fresh in Bikaner</span>
   </div>
 </div>
 
@@ -291,12 +143,12 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <picture class="hb" aria-hidden="true"><source media="(max-width:720px)" srcset="images/hero-banner-v2.webp"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="" width="1080" height="1920" decoding="async"></picture>
   <div class="v2-wrap">
     <div class="v2-copy">
-      <a class="v2-pill" href="build-a-box.html" data-launch-pill><span class="v2-dot"></span><span data-launch-pill-text>Pre-order now · dispatches 16 Oct</span><span class="v2-go">↗</span></a>
+      <a class="v2-pill" href="build-a-box.html" data-launch-pill><span class="v2-dot"></span><span data-launch-pill-text>Diwali gift sets are here</span><span class="v2-go">↗</span></a>
       <h1>Tiny treats,<span class="v2-l2"><span class="script">mighty</span><span class="v2-l3">flavors.</span></span></h1>
       <p class="v2-lede">Whole wheat atta and pure desi ghee, baked in small batches in Bikaner. Four cookies, one for every moment of your day.</p>
       <div class="v2-ctas">
         <a class="btn solid" href="shop.html">Shop the range <span class="v2-arrow">↗</span></a>
-        <a class="btn outline" href="build-a-box.html">Build a box <span class="v2-arrow">↗</span></a>
+        <a class="v2-link-arrow v2-hero-gift" href="build-a-box.html">Diwali gift boxes <span class="v2-arrow">↗</span></a>
       </div>
     </div>
     <div class="v2-proof">
@@ -344,7 +196,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="v2-wrap">
     <div class="v2-head">
       <div><span class="eyebrow">The range</span><h2>Pick your <span class="script">moment.</span></h2></div>
-      <p>Same whole wheat atta and desi ghee in every box. The difference is what we add, or leave out.</p>
+      <p>Same whole wheat atta and desi ghee in every box: <a href="atta-original.html">Original</a>, <a href="atta-ajwain.html">Ajwain</a>, <a href="atta-kesari.html">Kesari</a> and <a href="atta-lite-sugar.html">Sugar-Lite</a>. The difference is what we add, or leave out.</p>
     </div>
     <div class="v2-cards" id="range-cards"></div>
   </div>
@@ -391,6 +243,20 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   </div>
 </section>
 
+<script>
+(function () {
+  // Panel call, 28 Oct 2026: gift boxes second on the home page until 9 Nov, then back under the singles (same switch date as the gift prices).
+  if (Date.now() >= Date.parse('2026-11-09T00:00:00+05:30')) return;
+  var door = document.getElementById('gifts'), range = document.getElementById('range');
+  if (door && range && range.parentNode) range.parentNode.insertBefore(door, range);
+})();
+(function () {
+  // Phone: the WhatsApp bubble waits until the hero has scrolled away, so it never sits on the hero's buttons.
+  if (!window.matchMedia || !matchMedia('(max-width:720px)').matches) return;
+  var b = document.body, f = function () { b.classList.toggle('wa-later', scrollY < innerHeight * 0.6); };
+  f(); addEventListener('scroll', f, { passive: true });
+})();
+</script>
 <section class="v2-compare">
   <div class="v2-wrap">
     <div class="v2-head"><div><span class="eyebrow">The honest comparison</span><h2>Munchingo <span class="v2-vs" aria-label="versus">VS</span> the usual biscuit</h2></div></div>
@@ -480,7 +346,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=41" defer></script>
+<script src="js/cart.js?v=42" defer></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=8" defer></script>
