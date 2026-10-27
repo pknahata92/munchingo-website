@@ -1500,7 +1500,7 @@ html.mc-lock{overflow:hidden}
 }
 
 /* Pre-Diwali gift set offer note (js/prices.js); hidden automatically from 9 Nov */
-.promo-note{display:block;margin:6px 0 0;font-size:13px;font-weight:600;color:var(--terra,#A35A34)}
+.promo-note{display:inline-block;margin:8px 0 0;padding:5px 10px;font-size:13px;font-weight:600;color:var(--terra,#A35A34);background:#FDF6E8;border:1px dashed var(--gold,#CEAD5E);border-radius:6px}
 .promo-note[hidden]{display:none}
 
 /* Pack of 2 picker (js/pack2.js, home page #pack-of-2) */

@@ -18,7 +18,7 @@
   // Gift sets after Diwali (same date and prices as webhook-backend/utils/giftPromo.js). Used only when this browser has no
   // live price list yet, so a sleepy backend can never show the old set price after the switch, and the promo note before it.
   var SET_SWITCH = Date.parse('2026-11-09T00:00:00+05:30'), SET_LIST = { 'trio-gift-set': 949, 'full-range-set': 1199 };
-  var PROMO_LABEL = 'Promotional brand offer until Diwali';
+  var PROMO_LABEL = 'Early-grab price till Diwali';
   function keyFor(slug) { return slug && String(slug).indexOf('trio-gift-set') === 0 ? 'trio-gift-set' : slug; }
   function get(slug) { var b = book && book[keyFor(slug)]; return b && typeof b.price === 'number' ? b : null; }
   function price(slug, fallback) {
@@ -32,7 +32,20 @@
     if (b) return b.promo && b.promo.next ? b.promo : null;
     return SET_LIST[k] && Date.now() < SET_SWITCH ? { label: PROMO_LABEL, next: SET_LIST[k] } : null;
   }
+  // Today's price of a set: the live list, else the price printed on the page (backend asleep), else null.
+  function priceNow(slug) {
+    var p = price(slug, null); if (p != null) return p;
+    var el = document.querySelector('[data-price-for="' + keyFor(slug) + '"]'), n = el ? parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) : NaN;
+    return isNaN(n) ? null : n;
+  }
+  // "Early-grab price till Diwali · ₹949 from 9 Nov". No saving figure here: the gift builder already shows one (against the
+  // boxes' printed MRPs), and two different savings in one panel read as a muddle.
   function promoText(slug) { var p = promo(slug); return p ? p.label + ' · ' + inr(p.next) + ' from 9 Nov' : ''; }
+  // "Trio ₹799 (₹949 from 9 Nov)", or "Trio ₹949 from 9 Nov" when today's price is not known.
+  function promoPart(name, slug, p) {
+    var now = priceNow(slug);
+    return now != null ? name + ' ' + inr(now) + ' (' + inr(p.next) + ' from 9 Nov)' : name + ' ' + inr(p.next) + ' from 9 Nov';
+  }
   // The crossed-out MRP, or null when there is none (MRP equal to the price counts as none).
   function mrp(slug, fallback) {
     var b = get(slug);
@@ -46,15 +59,15 @@
   //   data-save-for="slug"   -> "Save ₹51"    (hidden when there is no saving)
   function apply() {
     var root = document;
-    //   data-promo-for="trio-gift-set" -> "Promotional brand offer until Diwali · ₹949 from 9 Nov" (hidden after the switch)
-    //   data-promo-sets                -> one line naming both sets' coming prices
+    //   data-promo-for="trio-gift-set" -> "Early-grab price till Diwali · ₹949 from 9 Nov" (hidden after the switch)
+    //   data-promo-sets                -> one line naming both sets' prices today and from 9 Nov
     Array.prototype.forEach.call(root.querySelectorAll('[data-promo-for]'), function (el) {
       var t = promoText(el.getAttribute('data-promo-for')); el.textContent = t; el.hidden = !t;
     });
     Array.prototype.forEach.call(root.querySelectorAll('[data-promo-sets]'), function (el) {
       var a = promo('trio-gift-set'), b = promo('full-range-set');
       if (!a && !b) { el.hidden = true; return; }
-      el.textContent = (a || b).label + '. From 9 Nov: ' + [a ? 'Trio ' + inr(a.next) : '', b ? 'Full Range ' + inr(b.next) : ''].filter(Boolean).join(', ') + '.';
+      el.textContent = (a || b).label + ': ' + [a ? promoPart('Trio', 'trio-gift-set', a) : '', b ? promoPart('Full Range', 'full-range-set', b) : ''].filter(Boolean).join(', ') + '.';
       el.hidden = false;
     });
     Array.prototype.forEach.call(root.querySelectorAll('[data-price-for]'), function (el) {
