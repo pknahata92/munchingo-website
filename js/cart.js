@@ -206,7 +206,7 @@
   var livePrice = function (slug, fallback) { return LIVE ? LIVE.price(slug, fallback) : fallback; };
   var AOV_FULL_RANGE_PRICE = livePrice('full-range-set', 999);
   // What buying the four boxes one by one would cost, minus the set price (never negative).
-  var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 259) + livePrice('atta-ajwain', 259) + livePrice('atta-kesari', 299) + livePrice('atta-lite-sugar', 299) - AOV_FULL_RANGE_PRICE);
+  var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 259) + livePrice('atta-ajwain', 259) + livePrice('atta-kesari', 299) + livePrice('atta-lite-sugar', 329) - AOV_FULL_RANGE_PRICE);
 
   var BASE_SLUGS_FOR_UPGRADE = ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'];
 
@@ -436,7 +436,7 @@
     { slug: 'atta-original',   name: 'Atta Original',    price: 259, mrp: 300, unit: '250g', img: 'images/box-original.webp' },
     { slug: 'atta-kesari',     name: 'Atta Kesari',       price: 299, mrp: 350, unit: '250g', img: 'images/box-kesari.webp' },
     { slug: 'atta-ajwain',     name: 'Atta Ajwain',       price: 259, mrp: 300, unit: '250g', img: 'images/box-ajwain.webp' },
-    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 299, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
+    { slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite',   price: 329, mrp: 350, unit: '250g', img: 'images/box-lite.webp' }
   ];
   CROSS_SELL_PRODUCTS.forEach(function (p) { p.price = livePrice(p.slug, p.price); var m = LIVE ? LIVE.mrp(p.slug, null) : null; p.mrp = m || p.price; });
 

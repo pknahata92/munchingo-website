@@ -25,7 +25,7 @@
   ];
   // Selling prices (what the customer would actually pay per box). Taken from
   // data/products.js when that file is on the page, else these mirror it.
-  var SINGLE_FALLBACK = { Original: 259, Kesari: 299, 'Lite-sugar': 299, Ajwain: 259 };
+  var SINGLE_FALLBACK = { Original: 259, Kesari: 299, 'Lite-sugar': 329, Ajwain: 259 };
   var PRODUCT_SLUG = { Original: 'atta-original', Kesari: 'atta-kesari', 'Lite-sugar': 'atta-lite-sugar', Ajwain: 'atta-ajwain' };
 
   var cart = function () { return window.MunchingoCart; };
@@ -124,6 +124,13 @@
       $('tot').textContent = full ? inr(set.price) : inr(mrp);
       var saving = mrp - set.price;
       $('sv').textContent = full ? (saving > 0 ? 'Save ' + inr(saving) : '—') : 'Fill it to unlock';
+      // Hide the MRP comparison when the set price is within 5% of the cheapest boxes' MRP for this size (Trio ₹949 against
+      // ₹950 after 9 Nov would read "Save ₹1"). Decided per set, not per pick, so the rows never vanish mid-fill.
+      var cheapest = FLAVOURS.map(function (f) { return singlePrice(f.value); }).sort(function (a, b) { return a - b; })
+        .slice(0, size).reduce(function (a, n) { return a + n; }, 0);
+      var compare = set.price <= cheapest * 0.95;
+      $('mrp').parentNode.style.display = compare ? '' : 'none';
+      $('sv').parentNode.style.display = compare ? '' : 'none';
 
       // Which Flavors are out right now (live from the stock list). A Trio needs 3 different Flavors, the Full Range needs all four.
       var outNames = FLAVOURS.filter(function (f) { return soldOut(f.value); }).map(function (f) { return f.title.replace(/^Atta /, ''); });

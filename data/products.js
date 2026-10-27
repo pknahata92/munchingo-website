@@ -55,7 +55,7 @@ window.MUNCHINGO_PRODUCTS = [
     slug: 'atta-lite-sugar', name: 'Atta Sugar-Lite', tag: 'No added sugar',
     sub: '95% less sugar than our Original, sweetened with maltitol.',
     notes: ['No added sugar', 'Sweetened with maltitol', 'Desi ghee', 'Whole wheat atta'],
-    price: 299, mrp: 350, save: 51, img: 'images/box-lite.webp',
+    price: 329, mrp: 350, save: 21, img: 'images/box-lite.webp',
     ingredients: 'Whole wheat atta (53.1%), desi cow ghee, sweetener (maltitol, INS 965(i)) (15.9%), milk solids (milk powder), cardamom (elaichi), raising agent (INS 503(ii)).',
     allergen: 'Contains: wheat (gluten), milk. Made in a facility that also processes tree nuts and other spices.',
     polyolWarning: 'Contains polyols (maltitol): excess consumption may have a laxative effect.',
