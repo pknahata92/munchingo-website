@@ -15,9 +15,24 @@
   if (!book || typeof book !== 'object') book = null;
 
   // Trio sets carry their flavors in the slug (trio-gift-set-kesari-original-ajwain) but have one price.
+  // Gift sets after Diwali (same date and prices as webhook-backend/utils/giftPromo.js). Used only when this browser has no
+  // live price list yet, so a sleepy backend can never show the old set price after the switch, and the promo note before it.
+  var SET_SWITCH = Date.parse('2026-11-09T00:00:00+05:30'), SET_LIST = { 'trio-gift-set': 949, 'full-range-set': 1199 };
+  var PROMO_LABEL = 'Promotional brand offer until Diwali';
   function keyFor(slug) { return slug && String(slug).indexOf('trio-gift-set') === 0 ? 'trio-gift-set' : slug; }
   function get(slug) { var b = book && book[keyFor(slug)]; return b && typeof b.price === 'number' ? b : null; }
-  function price(slug, fallback) { var b = get(slug); return b ? b.price : fallback; }
+  function price(slug, fallback) {
+    var b = get(slug); if (b) return b.price;
+    var k = keyFor(slug); if (SET_LIST[k] && Date.now() >= SET_SWITCH) return SET_LIST[k];
+    return fallback;
+  }
+  // The pre-Diwali note for a gift set ({ label, next }), or null once the new price applies.
+  function promo(slug) {
+    var k = keyFor(slug), b = get(slug);
+    if (b) return b.promo && b.promo.next ? b.promo : null;
+    return SET_LIST[k] && Date.now() < SET_SWITCH ? { label: PROMO_LABEL, next: SET_LIST[k] } : null;
+  }
+  function promoText(slug) { var p = promo(slug); return p ? p.label + ' · ' + inr(p.next) + ' from 9 Nov' : ''; }
   // The crossed-out MRP, or null when there is none (MRP equal to the price counts as none).
   function mrp(slug, fallback) {
     var b = get(slug);
@@ -31,6 +46,17 @@
   //   data-save-for="slug"   -> "Save ₹51"    (hidden when there is no saving)
   function apply() {
     var root = document;
+    //   data-promo-for="trio-gift-set" -> "Promotional brand offer until Diwali · ₹949 from 9 Nov" (hidden after the switch)
+    //   data-promo-sets                -> one line naming both sets' coming prices
+    Array.prototype.forEach.call(root.querySelectorAll('[data-promo-for]'), function (el) {
+      var t = promoText(el.getAttribute('data-promo-for')); el.textContent = t; el.hidden = !t;
+    });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-promo-sets]'), function (el) {
+      var a = promo('trio-gift-set'), b = promo('full-range-set');
+      if (!a && !b) { el.hidden = true; return; }
+      el.textContent = (a || b).label + '. From 9 Nov: ' + [a ? 'Trio ' + inr(a.next) : '', b ? 'Full Range ' + inr(b.next) : ''].filter(Boolean).join(', ') + '.';
+      el.hidden = false;
+    });
     Array.prototype.forEach.call(root.querySelectorAll('[data-price-for]'), function (el) {
       var p = price(el.getAttribute('data-price-for'), null); if (p != null) el.textContent = inr(p);
     });
@@ -65,7 +91,7 @@
   }
   function slugFromUrl(u) { var m = String(u).match(/(atta-[a-z-]+?)(?:\.html)?(?:[?#].*)?$/); return m ? m[1] : ''; }
 
-  window.MunchingoPrices = { get: get, price: price, mrp: mrp, inr: inr, apply: apply, ready: !!book };
+  window.MunchingoPrices = { get: get, price: price, mrp: mrp, promo: promo, promoText: promoText, inr: inr, apply: apply, ready: !!book };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
 
   // Ask the backend what prices are right now; if they changed since this page was built, reload once to pick them up.
@@ -73,7 +99,10 @@
     if (typeof fetch !== 'function' || !/(^|\.)munchingo\.com$/.test(location.hostname)) return;
     fetch(API).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.prices || typeof j.prices !== 'object') return;
-      var fresh = JSON.stringify(j.prices, Object.keys(j.prices).sort()), had = JSON.stringify(book || {}, Object.keys(book || {}).sort());
+      // Compare whole entries (price, MRP, promo), not just the list of names: an array replacer in JSON.stringify would also
+      // drop the nested keys, so a changed price used to look unchanged and returning visitors kept the old numbers.
+      var canon = function (o) { return JSON.stringify(Object.keys(o || {}).sort().map(function (k) { return [k, o[k]]; })); };
+      var fresh = canon(j.prices), had = canon(book);
       if (fresh === had) return;
       try {
         localStorage.setItem(KEY, JSON.stringify(j.prices));

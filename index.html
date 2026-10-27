@@ -21,7 +21,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=85">
+<link rel="stylesheet" href="css/style.css?v=86">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -88,7 +88,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <noscript><style>.v2-countdown{display:none!important}</style></noscript>
-<script src="js/prices.js?v=4"></script>
+<script src="js/prices.js?v=5"></script>
 </head>
 <body class="v2">
 
@@ -367,12 +367,24 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 })();
 </script>
 
+<section class="p2" id="pack-of-2" aria-labelledby="p2-title">
+  <div class="p2-wrap">
+    <div class="p2-head">
+      <span class="eyebrow">Start here</span>
+      <h2 id="p2-title">A Pack of 2. Any two Flavors.</h2>
+      <p>Online orders start at two boxes. Pick two different Flavors, or two of the one you already love.</p>
+    </div>
+    <div id="pack2"></div>
+  </div>
+</section>
+
 <section class="gb" id="gifts" aria-labelledby="gb-title">
   <div class="gb-grid">
     <div>
       <span class="eyebrow">Build a box</span>
       <h2 id="gb-title">Your box.<span class="gb-l2">Your people.</span></h2>
       <p class="gb-lede">Any 3 boxes for <b data-price-for="trio-gift-set">₹799</b>, or all 4 for <b data-price-for="full-range-set">₹999</b> <s>MRP ₹1,300</s>. Keep it, or send it as a gift with a note in your own words.</p>
+      <p class="promo-note" data-promo-sets hidden></p>
       <div data-gb-left></div>
       <noscript><p class="gb-lede"><a class="btn solid" href="index.html#gifts">Choose a gift set →</a></p></noscript>
     </div>
@@ -492,7 +504,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 <script src="js/chrome-calm.js?v=3" defer></script>
 <script src="js/minicart.js?v=6" defer></script>
 <script src="js/cart-bar.js?v=8" defer></script>
-<script src="js/gift-builder.js?v=9" defer></script>
+<script src="js/gift-builder.js?v=10" defer></script>
+<script src="js/pack2.js?v=1" defer></script>
 
 </body>
 </html>

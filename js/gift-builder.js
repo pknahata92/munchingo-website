@@ -81,6 +81,7 @@
         '<div class="gb-row"><span>MRP of these boxes</span><s data-gb="mrp">₹0</s></div>' +
         '<div class="gb-row gb-save"><span>You save</span><b data-gb="sv">—</b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
+        '<p class="promo-note" data-gb="promo" hidden></p>' +
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
         '<a class="gb-singles" data-gb="singles" href="index.html#range" hidden>Order the single boxes that are in stock →</a>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
@@ -142,6 +143,8 @@
       cta.disabled = !full || unavailable;
       cta.textContent = unavailable ? (size === 4 ? 'Full Range returns soon' : 'Trio unavailable today') : (full ? 'Add gift set to bag →' : 'Pick ' + (size - picks.length) + ' more to unlock');
       $('singles').hidden = !unavailable;
+      var pt = window.MunchingoPrices && window.MunchingoPrices.promoText ? window.MunchingoPrices.promoText(size === 4 ? 'full-range-set' : 'trio-gift-set') : '';
+      $('promo').textContent = pt; $('promo').hidden = !pt;
 
       Array.prototype.forEach.call(left.querySelectorAll('.gb-fl'), function (b) {
         var v = b.getAttribute('data-f'), on = picks.indexOf(v) !== -1, out = soldOut(v);
