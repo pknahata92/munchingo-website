@@ -60,10 +60,11 @@
         '<button type="button" class="gb-opt" data-size="4" role="radio" aria-checked="false"><span class="gb-flag">BEST VALUE</span><span class="n">4</span><span><b>Full Range Gift Set</b><small>One of each · 1kg</small></span></button>' +
       '</div>' +
       '<p class="gb-step"><i>2</i><span data-gb-step2>Fill it with any 3 flavors</span></p>' +
+      '<p class="gb-stock" data-gb-stock role="status" hidden></p>' +
       '<div class="gb-flavours">' +
         FLAVOURS.map(function (f) {
           return '<button type="button" class="gb-fl" style="--c:' + f.color + '" data-f="' + f.value + '">' +
-                 '<span class="gb-plus">+</span><img src="' + f.img + '" alt="" loading="lazy"><span>' + f.title + '</span></button>';
+                 '<span class="gb-plus">+</span><em class="gb-so" hidden>Sold out<small>Back soon</small></em><img src="' + f.img + '" alt="" loading="lazy"><span>' + f.title + '</span></button>';
         }).join('') +
       '</div>';
 
@@ -81,6 +82,7 @@
         '<div class="gb-row gb-save"><span>You save</span><b data-gb="sv">—</b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
         '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Pick 3 flavors to start</button>' +
+        '<a class="gb-singles" data-gb="singles" href="index.html#range" hidden>Order the single boxes that are in stock →</a>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
         '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
       '</aside>';
@@ -122,10 +124,24 @@
       var saving = mrp - set.price;
       $('sv').textContent = full ? (saving > 0 ? 'Save ' + inr(saving) : '—') : 'Fill it to unlock';
 
-      var unavailable = size === 4 && fullRangeSoldOut();
+      // Which Flavors are out right now (live from the stock list). A Trio needs 3 different Flavors, the Full Range needs all four.
+      var outNames = FLAVOURS.filter(function (f) { return soldOut(f.value); }).map(function (f) { return f.title.replace(/^Atta /, ''); });
+      var inNames = FLAVOURS.filter(function (f) { return !soldOut(f.value); }).map(function (f) { return f.title.replace(/^Atta /, ''); });
+      var list = function (a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0]; };
+      var stockMsg = left.querySelector('[data-gb-stock]');
+      if (outNames.length) {
+        stockMsg.textContent = list(outNames) + (outNames.length > 1 ? ' are' : ' is') + ' sold out for now' + (inNames.length ? '. ' + list(inNames) + (inNames.length > 1 ? ' are' : ' is') + ' available.' : '.') +
+          (inNames.length < 3 ? ' A Trio needs 3 different flavors and the Full Range needs all four, so both are unavailable until we restock.' : size === 4 ? ' The Full Range needs all four flavors, so it returns when we restock.' : '');
+        stockMsg.hidden = false;
+      } else stockMsg.hidden = true;
+      var fullOpt = left.querySelector('.gb-opt[data-size="4"] small');
+      if (fullOpt) fullOpt.textContent = outNames.length ? 'Back soon · sold out today' : 'One of each · 1kg';
+
+      var unavailable = (size === 4 && (fullRangeSoldOut() || outNames.length > 0)) || (size === 3 && inNames.length < 3);
       var cta = $('cta');
       cta.disabled = !full || unavailable;
-      cta.textContent = unavailable ? 'Sold out' : (full ? 'Add gift set to bag →' : 'Pick ' + (size - picks.length) + ' more to unlock');
+      cta.textContent = unavailable ? (size === 4 ? 'Full Range returns soon' : 'Trio unavailable today') : (full ? 'Add gift set to bag →' : 'Pick ' + (size - picks.length) + ' more to unlock');
+      $('singles').hidden = !unavailable;
 
       Array.prototype.forEach.call(left.querySelectorAll('.gb-fl'), function (b) {
         var v = b.getAttribute('data-f'), on = picks.indexOf(v) !== -1, out = soldOut(v);
@@ -133,6 +149,8 @@
         b.querySelector('.gb-plus').textContent = on ? '✓' : (out ? '–' : '+');
         b.classList.toggle('picked', on);
         b.title = out ? (byValue(v).title + ' is currently sold out') : '';
+        b.classList.toggle('gb-out', out);
+        b.querySelector('.gb-so').hidden = !out;
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
       left.querySelector('[data-gb-step2]').textContent = size === 4 ? 'Filled with all four flavors' : 'Fill it with any 3 flavors';

@@ -937,6 +937,12 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .gb-fl>span:last-child{display:block;padding:10px 12px 12px;font-weight:600;font-size:13px}
 .gb-plus{position:absolute;top:8px;right:8px;min-width:30px;height:30px;padding:0 8px;border-radius:999px;background:#FFF6EA;color:var(--c);display:grid!important;place-items:center;font-weight:700;font-size:13px;line-height:30px}
 .gb-fl[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.gb-fl.gb-out{opacity:1}.gb-fl.gb-out img{filter:grayscale(1) brightness(.75)}.gb-fl.gb-out .gb-plus{display:none}
+.gb-so{position:absolute;left:0;right:0;top:34%;transform:translateY(-50%);margin:0 8px;background:rgba(42,26,18,.92);color:#fff;font-style:normal;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:7px 6px;border-radius:10px;line-height:1.2;z-index:2}
+.gb-so small{display:block;font-weight:600;letter-spacing:.02em;text-transform:none;font-size:11px;opacity:.85;margin-top:2px}
+.gb-stock{margin:6px 0 12px;padding:10px 14px;border-radius:12px;background:#FBEBC5;color:#5a3a12;font-size:14px;line-height:1.4;font-weight:600}
+.gb-stock[hidden],.gb-so[hidden],.gb-singles[hidden]{display:none}
+.gb-singles{display:block;margin-top:10px;text-align:center;font-weight:700;font-size:14px;color:var(--terra)}
 .gb-fl.picked{box-shadow:0 0 0 3px var(--marigold)}
 .gb-panel{position:sticky;top:110px;background:#231510;color:#F6EADA;border-radius:28px;padding:30px;box-shadow:0 30px 60px -30px rgba(42,26,18,.8)}
 .gb-k{font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
