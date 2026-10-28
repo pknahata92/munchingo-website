@@ -23,6 +23,7 @@
       '<div class="p2-slots"><span data-slot="0">Pick a Flavor</span><span class="p2-plus">+</span><span data-slot="1">Pick a Flavor</span></div>' +
       '<div class="p2-sum"><span data-p2-total>₹0</span> <s data-p2-mrp hidden></s> <i data-p2-save hidden></i></div>' +
       '<p class="p2-ship">+ ' + inr(C.SHIPPING_FEE) + ' shipping on a Pack of 2. Add a third box and shipping is free (from ' + inr(C.FREE_FROM) + ').</p>' +
+      '<p class="p2-have" data-p2-have hidden></p>' +
       '<button type="button" class="btn solid p2-add" data-p2-add disabled>Pick 2 Flavors</button>' +
       '<a class="p2-bag" href="cart.html" data-p2-bag hidden>View your bag →</a>' +
     '</div>';
@@ -50,6 +51,12 @@
     var add = root.querySelector('[data-p2-add]');
     add.disabled = picks.length !== 2;
     add.textContent = picks.length === 2 ? 'Add Pack of 2 to bag · ' + inr(total) : 'Pick ' + (2 - picks.length) + ' more Flavor' + (picks.length === 1 ? '' : 's');
+    // The Flavor cards just above add to the same bag; say what is already in it so "Pick 2 Flavors" never reads as "start again".
+    var boxes = C.cartBoxes ? C.cartBoxes() : C.cartCount(), have = root.querySelector('[data-p2-have]');
+    have.hidden = !boxes || picks.length > 0 || !root.querySelector('[data-p2-bag]').hidden;
+    have.innerHTML = boxes >= C.MIN_BOXES
+      ? 'Your bag already has ' + boxes + ' boxes, enough to check out. <a href="checkout.html">Check out →</a>'
+      : 'Your bag has ' + boxes + ' box. Add one more and you can check out.';
   }
 
   root.addEventListener('click', function (e) {
@@ -66,7 +73,10 @@
       if (C.track) C.track('add_to_cart', 'AddToCart', { currency: 'INR', value: picks.reduce(function (n, s) { return n + bySlug(s).price; }, 0), items: picks.map(function (s) { return { item_id: s, quantity: 1 }; }) });
       picks = []; render();
       var add = root.querySelector('[data-p2-add]'); add.textContent = 'Added ✓'; root.querySelector('[data-p2-bag]').hidden = false;
+      root.querySelector('[data-p2-have]').hidden = true;
     }
   });
+  document.addEventListener('munchingo:cart', render);
+  window.addEventListener('pageshow', render);
   render();
 })();

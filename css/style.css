@@ -1528,7 +1528,7 @@ html.mc-lock{overflow:hidden}
 .p2-tile[disabled]{cursor:not-allowed;opacity:.5}
 .p2-tile.is-out{opacity:1}.p2-tile.is-out img{filter:grayscale(1) brightness(.8)}
 .p2-out{position:absolute;left:10px;right:10px;top:38%;background:rgba(42,26,18,.92);color:#fff;font-style:normal;font-weight:800;font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:6px;border-radius:8px}
-.p2-out[hidden],.p2-bag[hidden]{display:none}
+.p2-out[hidden],.p2-bag[hidden],.p2-have[hidden]{display:none}
 .p2-panel{background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 0 rgba(42,26,18,.08)}
 .p2-slots{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .p2-slots [data-slot]{flex:1;border:2px dashed rgba(42,26,18,.25);border-radius:12px;padding:12px 6px;text-align:center;font-size:14px;color:#8a7a6e}
@@ -1619,3 +1619,6 @@ body.v2 .pg-cta h2,.pg-cta h2{color:#FFF6EA}
 .wa-float{transition:opacity .25s ease,transform .25s ease,bottom .3s}
 body.wa-later .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)}
 @media (max-width:720px){.gb-fl.gb-out>span:last-child{padding-right:70px}}
+
+.p2-have{font-size:13px;color:#2A1A12;background:#FFF6EA;border-radius:10px;padding:8px 12px;margin:0 0 12px}
+.p2-have a{font-weight:700;color:#A35A34;white-space:nowrap}
