@@ -36,7 +36,7 @@ window.MUNCHINGO_PRODUCTS = [
     faqA1: 'No, it is warm and aromatic rather than hot: whole carom seed and salt, no chilli. It is less sweet than our other flavors, but it does contain sugar (19 g per 100 g).',
   },
   {
-    slug: 'atta-kesari', name: 'Atta Kesari', tag: 'Saffron sweet',
+    slug: 'atta-kesari', name: 'Atta Kesari', tag: 'Royally sweet',
     sub: 'Saffron whole wheat cookies, baked in pure desi ghee.',
     notes: ['Real saffron', 'Cardamom', 'Desi ghee', 'Crumbly, short bite'],
     price: 299, mrp: 350, save: 51, img: 'images/box-kesari.webp',
