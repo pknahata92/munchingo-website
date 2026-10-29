@@ -38,14 +38,9 @@
     var el = document.querySelector('[data-price-for="' + keyFor(slug) + '"]'), n = el ? parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) : NaN;
     return isNaN(n) ? null : n;
   }
-  // "Early-grab price till Diwali · ₹949 from 9 Nov". No saving figure here: the gift builder already shows one (against the
-  // boxes' printed MRPs), and two different savings in one panel read as a muddle.
-  function promoText(slug) { var p = promo(slug); return p ? p.label + ' · ' + inr(p.next) + ' from 9 Nov' : ''; }
-  // "Trio ₹799 (₹949 from 9 Nov)", or "Trio ₹949 from 9 Nov" when today's price is not known.
-  function promoPart(name, slug, p) {
-    var now = priceNow(slug);
-    return now != null ? name + ' ' + inr(now) + ' (' + inr(p.next) + ' from 9 Nov)' : name + ' ' + inr(p.next) + ' from 9 Nov';
-  }
+  // Before 9 Nov a set shows a short tag and its 9 Nov price struck through, nothing else (Prashant, 29 Oct). Both vanish on
+  // their own when the new price applies, so the struck figure is always the price the set really goes to.
+  function promoText(slug) { return promo(slug) ? 'Promotional brand pricing' : ''; }
   // The crossed-out MRP, or null when there is none (MRP equal to the price counts as none).
   function mrp(slug, fallback) {
     var b = get(slug);
@@ -59,16 +54,14 @@
   //   data-save-for="slug"   -> "Save ₹51"    (hidden when there is no saving)
   function apply() {
     var root = document;
-    //   data-promo-for="trio-gift-set" -> "Early-grab price till Diwali · ₹949 from 9 Nov" (hidden after the switch)
-    //   data-promo-sets                -> one line naming both sets' prices today and from 9 Nov
+    //   data-promo-for="trio-gift-set" -> "Promotional brand pricing" (hidden after the switch)
+    //   data-was-for="trio-gift-set"   -> struck "₹949", the 9 Nov price (hidden after the switch)
     Array.prototype.forEach.call(root.querySelectorAll('[data-promo-for]'), function (el) {
       var t = promoText(el.getAttribute('data-promo-for')); el.textContent = t; el.hidden = !t;
     });
-    Array.prototype.forEach.call(root.querySelectorAll('[data-promo-sets]'), function (el) {
-      var a = promo('trio-gift-set'), b = promo('full-range-set');
-      if (!a && !b) { el.hidden = true; return; }
-      el.textContent = (a || b).label + ': ' + [a ? promoPart('Trio', 'trio-gift-set', a) : '', b ? promoPart('Full Range', 'full-range-set', b) : ''].filter(Boolean).join(', ') + '.';
-      el.hidden = false;
+    Array.prototype.forEach.call(root.querySelectorAll('[data-was-for]'), function (el) {
+      var p = promo(el.getAttribute('data-was-for'));
+      el.innerHTML = p ? '<span class="sr-only">Price from 9 Nov </span>' + inr(p.next) : ''; el.hidden = !p;
     });
     Array.prototype.forEach.call(root.querySelectorAll('[data-price-for]'), function (el) {
       var p = price(el.getAttribute('data-price-for'), null); if (p != null) el.textContent = inr(p);

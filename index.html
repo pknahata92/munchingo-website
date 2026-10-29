@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/hero-banner-v2.webp" media="(max-width:720px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/box-original.webp" media="(min-width:721px)" fetchpriority="high">
-<link rel="stylesheet" href="css/style.css?v=94">
+<link rel="stylesheet" href="css/style.css?v=96">
 <style>
 /* Page-specific shim for the v2 header ported in Task 4.
    The mobile-menu open/close rule now lives in shared css/style.css,
@@ -89,7 +89,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=6"></script>
+<script src="js/prices.js?v=7"></script>
 </head>
 <body class="v2">
 
@@ -213,7 +213,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
         '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800">' + (p.save > 0 ? '<span class="v2-save">Save ₹' + p.save + '</span>' : '') + '</a>' +
         '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
-          '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span>· 250g</span></div>' +
+          '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span class="v2-unit">250g</span></div>' +
           '<button class="btn solid v2-add" data-add-to-cart data-stepper data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + (p.mrp > p.price ? p.mrp : '') + '" data-unit="250g">Add to bag</button></div>' +
       '</article>';
   }).join('');
@@ -235,8 +235,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="v2-wrap">
     <div class="v2-head"><div><span class="eyebrow">Gift boxes</span><h2 id="door-title">Build a box for <span class="script">your people.</span></h2></div><p>Gift-boxed together with a note in your own words. A box never repeats a Flavor.</p></div>
     <div class="door-cards">
-      <a class="door-card" href="build-a-box.html"><b>The Trio</b><small>Any 3 different Flavors · 750g</small><span class="door-price" data-price-for="trio-gift-set">₹799</span><small class="promo-note" data-promo-for="trio-gift-set" hidden></small><span class="v2-link-arrow">Build your Trio ↗</span></a>
-      <a class="door-card dark" href="build-a-box.html"><b>The Full Range</b><small>All four Flavors · 1kg</small><span class="door-price" data-price-for="full-range-set">₹999</span><small class="promo-note" data-promo-for="full-range-set" hidden></small><span class="v2-link-arrow">Build your Full Range ↗</span></a>
+      <a class="door-card" href="build-a-box.html"><b>The Trio</b><small>Any 3 different Flavors · 750g</small><span class="set-price"><s class="was-price" data-was-for="trio-gift-set" hidden></s><span class="door-price" data-price-for="trio-gift-set">₹799</span></span><small class="promo-note" data-promo-for="trio-gift-set" hidden></small><span class="v2-link-arrow">Build your Trio ↗</span></a>
+      <a class="door-card dark" href="build-a-box.html"><b>The Full Range</b><small>All four Flavors · 1kg</small><span class="set-price"><s class="was-price" data-was-for="full-range-set" hidden></s><span class="door-price" data-price-for="full-range-set">₹999</span></span><small class="promo-note" data-promo-for="full-range-set" hidden></small><span class="v2-link-arrow">Build your Full Range ↗</span></a>
     </div>
     <ul class="door-trust"><li>Pure desi ghee</li><li>Whole wheat atta, no maida</li><li>No palm oil</li><li>Baked in Bikaner</li><li>Free shipping from ₹777</li><li>Secure payment by Razorpay</li><li>Dispatched within 48 hours of payment</li></ul>
   </div>
@@ -331,7 +331,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 <script src="js/source-tag.js?v=1"></script>
 <script src="js/cart.js?v=42" defer></script>
 <script src="js/offers.js?v=2" defer></script>
-<script src="js/chrome-calm.js?v=3" defer></script>
+<script src="js/chrome-calm.js?v=4" defer></script>
 <script src="js/minicart.js?v=8" defer></script>
 <script src="js/cart-bar.js?v=10" defer></script>
 <script src="js/pack2.js?v=2" defer></script>

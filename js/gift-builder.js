@@ -64,7 +64,7 @@
       '<div class="gb-flavours">' +
         FLAVOURS.map(function (f) {
           return '<button type="button" class="gb-fl" style="--c:' + f.color + '" data-f="' + f.value + '">' +
-                 '<span class="gb-plus">+</span><em class="gb-so" hidden>Sold out<small>Back soon</small></em><img src="' + f.img + '" alt="" loading="lazy"><span>' + f.title + '</span></button>';
+                 '<span class="gb-plus">+</span><em class="gb-so" hidden>Sold out<small>Back soon</small></em><img src="' + f.img + '" alt="" loading="lazy"><span>' + f.title.replace(/^Atta /, '') + '</span></button>';
         }).join('') +
       '</div>';
 

@@ -1,5 +1,7 @@
 // Calmer page chrome. (1) The announce bar shows ONE short message at a time (no scrolling marquee), rotating gently.
-// (2) On phones the footer link columns fold into tap-to-open sections. Both degrade to the old layout if this script does not run.
+// (2) On phones the footer link columns fold into tap-to-open sections. (3) On phones the header and the WhatsApp button slide
+// away while you scroll down, so they stop covering prices and buttons, and come back on any scroll up. All degrade to the old layout
+// if this script does not run.
 (function () {
   'use strict';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,6 +39,20 @@
     });
   }
 
-  function start() { announce(); foldFooter(); }
+  function calmOnScroll() {
+    var phone = window.matchMedia && window.matchMedia('(max-width:720px)'), b = document.body, last = window.scrollY || 0, ticking = false;
+    if (!phone) return;
+    function busy() { return !!document.querySelector('.nav-open, .search-open'); }
+    function update() {
+      ticking = false;
+      var y = window.scrollY || 0, d = y - last;
+      if (!phone.matches || y < 160 || busy()) { b.classList.remove('chrome-away'); last = y; return; }
+      if (Math.abs(d) < 8) return;                                       // ignore finger jitter
+      b.classList.toggle('chrome-away', d > 0); last = y;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; (window.requestAnimationFrame || setTimeout)(update); } }, { passive: true });
+  }
+
+  function start() { announce(); foldFooter(); calmOnScroll(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

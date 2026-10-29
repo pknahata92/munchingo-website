@@ -1506,6 +1506,12 @@ html.mc-lock{overflow:hidden}
 /* Pre-Diwali gift set offer note (js/prices.js); hidden automatically from 9 Nov */
 .promo-note{display:inline-block;margin:8px 0 0;padding:5px 10px;font-size:13px;font-weight:600;color:var(--terra,#A35A34);background:#FDF6E8;border:1px dashed var(--gold,#CEAD5E);border-radius:6px}
 .promo-note[hidden]{display:none}
+/* Gift sets before 9 Nov: the 9 Nov price struck through beside today's (prices.js data-was-for) */
+.was-price{font-size:16px;font-weight:600;color:#7a6658;margin-right:8px;text-decoration-thickness:1.5px}
+.gb-lede .was-price{font-size:inherit;font-weight:500;margin-right:2px}
+.was-price[hidden]{display:none}
+.door-card.dark .was-price{color:#cbb9a6}
+.set-price{display:block;white-space:nowrap}
 
 /* Pack of 2 picker (js/pack2.js, home page #pack-of-2) */
 .p2{padding:56px 20px;background:var(--cream-2,#F3E6CC)}
@@ -1552,7 +1558,7 @@ html.mc-lock{overflow:hidden}
 .door-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
 @media(max-width:720px){.door-cards{grid-template-columns:1fr}}
 .door-card{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:18px;padding:22px;text-decoration:none;color:var(--ink,#2A1A12);border-top:5px solid var(--terra,#A35A34);box-shadow:0 2px 0 rgba(42,26,18,.08)}
-.door-card.dark{background:#2A1A12;color:#fff;border-top-color:var(--marigold,#E3A72F)}.door-card.dark small{color:#e8dccd}.door-card.dark .promo-note{color:var(--marigold,#E3A72F)}
+.door-card.dark{background:#2A1A12;color:#fff;border-top-color:var(--marigold,#E3A72F)}.door-card.dark small{color:#e8dccd}.door-card.dark .promo-note{color:var(--marigold,#E3A72F);background:transparent}
 .door-card b{font-size:22px}.door-price{font-size:26px;font-weight:800}
 .door-trust{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;padding:0;margin:22px 0 0;font-size:14px;font-weight:600}
 .door-trust li::before{content:"✓ ";color:var(--terra,#A35A34)}
@@ -1619,3 +1625,27 @@ body.wa-later .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)
 
 .p2-have{font-size:13px;color:#2A1A12;background:#FFF6EA;border-radius:10px;padding:8px 12px;margin:0 0 12px}
 .p2-have a{font-weight:700;color:#A35A34;white-space:nowrap}
+
+/* ── Phone fixes, 29 Oct ── */
+/* Header and WhatsApp button step aside while scrolling down (js/chrome-calm.js adds body.chrome-away) */
+@media (max-width:720px){
+  .v2-header{transition:transform .25s ease}
+  body.chrome-away .v2-header{transform:translateY(-100%)}
+  body.chrome-away .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)}
+}
+@media (max-width:720px) and (prefers-reduced-motion:reduce){.v2-header{transition:none}}
+/* Price row on two-up phone cards: keep "· 250g" in one piece */
+.v2-range .v2-card .v2-price span{white-space:nowrap}
+.v2-unit::before{content:'· '}
+@media (max-width:480px){
+  .v2-range .v2-card .v2-price{gap:2px 8px;flex-wrap:wrap}
+  .v2-range .v2-card .v2-unit{flex-basis:100%;font-size:13px;opacity:.85}
+  .v2-range .v2-card .v2-unit::before{content:none}
+  .shop-set .btn{white-space:nowrap;padding-left:16px;padding-right:16px}
+  .shop-set .promo-note{font-size:12px;white-space:nowrap}
+}
+/* Builder tiles show the Flavor name only, on one line */
+.gb-fl>span:last-child{white-space:nowrap}
+/* Brand colour for in-text links and ticks (were browser blue) */
+.v2-compare .v2-src a,#checkout-empty a{color:var(--terra,#A35A34);font-weight:600}
+input[type=checkbox],input[type=radio]{accent-color:var(--terra,#A35A34)}

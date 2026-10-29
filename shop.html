@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=94">
+<link rel="stylesheet" href="css/style.css?v=96">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's / atta-kesari.html's
    (Task 4 / Task 5) — duplicated here rather than touching those files, which
@@ -46,10 +46,10 @@
 <script src="js/source-tag.js?v=1"></script>
 <script src="js/cart.js?v=42"></script>
 <script src="js/offers.js?v=2" defer></script>
-<script src="js/chrome-calm.js?v=3" defer></script>
+<script src="js/chrome-calm.js?v=4" defer></script>
 <script src="js/minicart.js?v=8" defer></script>
 <script src="js/cart-bar.js?v=10" defer></script>
-<script src="js/gift-builder.js?v=13" defer></script>
+<script src="js/gift-builder.js?v=14" defer></script>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -132,7 +132,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=6"></script>
+<script src="js/prices.js?v=7"></script>
 </head>
 <body class="v2">
 
@@ -193,8 +193,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="v2-wrap">
     <div class="v2-cards" id="range-cards"></div>
     <div class="shop-sets">
-      <a class="shop-set" href="build-a-box.html"><img src="images/hero-stack.jpg" alt="" loading="lazy"><span><span class="v2-tag">Gift box</span><b>The Trio</b><small>Any 3 different Flavors · 750g</small><span class="shop-price" data-price-for="trio-gift-set">₹799</span><small class="promo-note" data-promo-for="trio-gift-set" hidden></small><span class="btn solid">Build your box →</span></span></a>
-      <a class="shop-set" href="build-a-box.html"><img src="images/hero-desktop-warm.webp" alt="" loading="lazy"><span><span class="v2-tag">Gift box</span><b>The Full Range</b><small>One of each Flavor · 1kg</small><span class="shop-price" data-price-for="full-range-set">₹999</span><small class="promo-note" data-promo-for="full-range-set" hidden></small><span class="btn solid">Build your box →</span></span></a>
+      <a class="shop-set" href="build-a-box.html"><img src="images/hero-stack.jpg" alt="" loading="lazy"><span><span class="v2-tag">Gift box</span><b>The Trio</b><small>Any 3 different Flavors · 750g</small><span class="set-price"><s class="was-price" data-was-for="trio-gift-set" hidden></s><span class="shop-price" data-price-for="trio-gift-set">₹799</span></span><small class="promo-note" data-promo-for="trio-gift-set" hidden></small><span class="btn solid">Build your box →</span></span></a>
+      <a class="shop-set" href="build-a-box.html"><img src="images/hero-desktop-warm.webp" alt="" loading="lazy"><span><span class="v2-tag">Gift box</span><b>The Full Range</b><small>One of each Flavor · 1kg</small><span class="set-price"><s class="was-price" data-was-for="full-range-set" hidden></s><span class="shop-price" data-price-for="full-range-set">₹999</span></span><small class="promo-note" data-promo-for="full-range-set" hidden></small><span class="btn solid">Build your box →</span></span></a>
     </div>
   </div>
 </section>
@@ -217,7 +217,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       '<article class="v2-card ' + PAT_BY_SLUG[p.slug] + '" style="--c:var(--' + COLOR_BY_SLUG[p.slug] + ')">' +
         '<a class="v2-img" href="' + href + '"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" decoding="async" width="800" height="800">' + (p.save > 0 ? '<span class="v2-save">Save ₹' + p.save + '</span>' : '') + '</a>' +
         '<div class="v2-body"><span class="v2-tag">' + p.tag + '</span><h3><a href="' + href + '">' + p.name + '</a></h3><p class="v2-line">' + p.sub + '</p>' + fine +
-          '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span>· 250g</span></div>' +
+          '<div class="v2-price"><b>₹' + p.price + '</b>' + (p.mrp > p.price ? '<s>₹' + p.mrp + '</s>' : '') + '<span class="v2-unit">250g</span></div>' +
           '<button class="btn solid v2-add" data-add-to-cart data-stepper data-slug="' + p.slug + '" data-name="' + p.name + '" data-price="' + p.price + '" data-mrp="' + (p.mrp > p.price ? p.mrp : '') + '" data-unit="250g">Add to bag</button></div>' +
       '</article>';
   }).join('');

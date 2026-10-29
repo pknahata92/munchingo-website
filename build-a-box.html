@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=94">
+<link rel="stylesheet" href="css/style.css?v=96">
 <style>
 /* Page-specific shim for the v2 header, same as index.html's / atta-kesari.html's
    (Task 4 / Task 5) — duplicated here rather than touching those files, which
@@ -46,10 +46,10 @@
 <script src="js/source-tag.js?v=1"></script>
 <script src="js/cart.js?v=42"></script>
 <script src="js/offers.js?v=2" defer></script>
-<script src="js/chrome-calm.js?v=3" defer></script>
+<script src="js/chrome-calm.js?v=4" defer></script>
 <script src="js/minicart.js?v=8" defer></script>
 <script src="js/cart-bar.js?v=10" defer></script>
-<script src="js/gift-builder.js?v=13" defer></script>
+<script src="js/gift-builder.js?v=14" defer></script>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -131,7 +131,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=6"></script>
+<script src="js/prices.js?v=7"></script>
 </head>
 <body class="v2">
 
@@ -186,8 +186,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div>
       <span class="eyebrow">Build a box</span>
       <h1 id="gb-title" class="gb-h1">Your box.<span class="gb-l2">Your people.</span></h1>
-      <p class="gb-lede">The Trio: any 3 different Flavors for <b data-price-for="trio-gift-set">₹799</b>. The Full Range: all 4 for <b data-price-for="full-range-set">₹999</b>. Gift-boxed together, with a note in your own words. We leave prices off the box.</p>
-      <p class="promo-note" data-promo-sets hidden></p>
+      <p class="gb-lede">The Trio: any 3 different Flavors for <s class="was-price" data-was-for="trio-gift-set" hidden></s> <b data-price-for="trio-gift-set">₹799</b>. The Full Range: all 4 for <s class="was-price" data-was-for="full-range-set" hidden></s> <b data-price-for="full-range-set">₹999</b>. Gift-boxed together, with a note in your own words. We leave prices off the box.</p>
       <div data-gb-left></div>
       <noscript><p class="gb-lede">Please turn on JavaScript to build a box, or order on WhatsApp: +91 99889 92024.</p></noscript>
     </div>
