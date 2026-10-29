@@ -1508,7 +1508,7 @@ html.mc-lock{overflow:hidden}
 .promo-note[hidden]{display:none}
 /* Gift sets before 9 Nov: the 9 Nov price struck through beside today's (prices.js data-was-for) */
 .was-price{font-size:16px;font-weight:600;color:#7a6658;margin-right:8px;text-decoration-thickness:1.5px}
-.gb-lede .was-price{font-size:inherit;font-weight:500;margin-right:2px}
+.gb-lede .was-price,.v2-bundle .was-price,.v2-giftlink .was-price,.pg-card .was-price{font-size:inherit;font-weight:500;margin-right:2px}
 .was-price[hidden]{display:none}
 .door-card.dark .was-price{color:#cbb9a6}
 .set-price{display:block;white-space:nowrap}
