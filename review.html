@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=96">
+<link rel="preload" href="display-font.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css?v=97">
 <style>
 /* Focused page: no menu, like checkout. Star rows are real radio buttons (keyboard and screen-reader friendly). */
 .rv-top{background:#0E1F3F;padding:12px 20px;display:flex;justify-content:center}
@@ -22,7 +23,7 @@
 .rv-stars{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px;clear:both}
 .rv-stars input{position:absolute;opacity:0;width:1px;height:1px}
 .rv-stars label{font-size:34px;line-height:1;color:#D9CBB0;cursor:pointer;padding:2px}
-.rv-stars input:checked ~ label,.rv-stars label:hover,.rv-stars label:hover ~ label{color:#E3A72F}
+.rv-stars input:checked ~ label{color:#E3A72F}@media (hover:hover){.rv-stars label:hover,.rv-stars label:hover ~ label{color:#E3A72F}}
 .rv-stars input:focus-visible + label{outline:2px solid var(--terra);border-radius:6px}
 .rv-field{margin:1.2rem 0}
 .rv-field > label,.rv-field > span{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.4rem}

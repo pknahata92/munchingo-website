@@ -18,14 +18,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=96">
+<link rel="preload" href="display-font.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css?v=97">
 <style>
 /* v2 header shim — same as cart.html / checkout.html (Task 10) */
 .v2-header .nav-toggle{display:none;color:#FBF4E6}
 .v2-header .nav-icons a,
 .v2-header .nav-icons .search-toggle{color:#FBF4E6}
-.v2-header .nav-icons a:hover,
-.v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}
+@media (hover:hover){.v2-header .nav-icons a:hover,
+.v2-header .nav-icons .search-toggle:hover{background:rgba(251,244,230,.12)}}
 @media (max-width:720px){
   .v2-header .nav-toggle{display:flex;align-items:center;justify-content:center}
 }
