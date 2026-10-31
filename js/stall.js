@@ -1,7 +1,8 @@
 // Stall tally (stall.html, munchingo.com/stall). One entry per CUSTOMER: tap the packs into the basket, then Paid UPI or
 // Paid Cash, so each entry matches one UPI payment in the Eazypay report. Saved on this device only, one list per IST day
-// (the basket in progress too), so a reload or a dropped connection loses nothing. Contribution uses the v14 pack costs
-// (Documents/munchingo_pricing_v14.xlsx): price less 5% GST, less pack costs, less Rs 100 hamper packaging.
+// (the basket in progress too), so a reload or a dropped connection loses nothing. Discount box (1 Nov 2026): the seller taps a
+// tier the customer has reached; only loose boxes count and only loose boxes are discounted (no discount on gift boxes or
+// hampers). Margin and the stall fee are deliberately not on this page (customers can see the iPad).
 (function () {
   'use strict';
   var KEY = 'munchingo-stall-v1';
@@ -10,20 +11,20 @@
   var KEY_STORE = 'munchingo-stall-key', SYNC_URL = 'https://munchingo-whatsapp-webhook.onrender.com/api/stall/sync';
   var CONSENT = 'OK to send me new Flavors and offers on WhatsApp? A few messages a month at most. Reply STOP any time to stop.';   // must match the box on the page
   var FLAV = [
-    { id: 'original', name: 'Original', cost: 119 },
-    { id: 'ajwain', name: 'Ajwain', cost: 119 },
-    { id: 'kesari', name: 'Kesari', cost: 133 },
-    { id: 'lite', name: 'Sugar-Lite', cost: 156 },
+    { id: 'original', name: 'Original' },
+    { id: 'ajwain', name: 'Ajwain' },
+    { id: 'kesari', name: 'Kesari' },
+    { id: 'lite', name: 'Sugar-Lite' },
   ];
   var ITEMS = {
-    original: { name: 'Original', price: 200, mix: { original: 1 } },
-    ajwain: { name: 'Ajwain', price: 200, mix: { ajwain: 1 } },
-    kesari: { name: 'Kesari', price: 250, mix: { kesari: 1 } },
-    lite: { name: 'Sugar-Lite', price: 250, mix: { lite: 1 } },
+    original: { name: 'Original', price: 250, mix: { original: 1 } },
+    ajwain: { name: 'Ajwain', price: 250, mix: { ajwain: 1 } },
+    kesari: { name: 'Kesari', price: 300, mix: { kesari: 1 } },
+    lite: { name: 'Sugar-Lite', price: 300, mix: { lite: 1 } },
     h3: { name: 'Hamper of 3', price: 799, hamper: true, pick: 3 },
     h4: { name: 'Hamper of 4', price: 999, hamper: true, pick: 4 },
   };
-  var HAMPER_PACKAGING = 100, GST = 0.05, STALL_FEE = 10000;
+  var TIERS = [{ min: 500, off: 50 }, { min: 1000, off: 100 }, { min: 2000, off: 250 }];   // loose-box total -> rupees off
   var $ = function (id) { return document.getElementById(id); };
   var rupees = function (n) { return '₹' + Math.round(n).toLocaleString('en-IN'); };
 
@@ -56,19 +57,32 @@
   function dayData(day) { if (!mem.days[day]) mem.days[day] = normalise({}); return mem.days[day]; }
   function niceDay(day) { var p = day.split('-'); return Number(p[2]) + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(p[1]) - 1] + ' ' + p[0]; }
 
-  function lineContribution(l) {
-    var c = l.price / (1 + GST);
-    FLAV.forEach(function (f) { c -= (l.mix[f.id] || 0) * f.cost; });
-    if (l.hamper) c -= HAMPER_PACKAGING;
-    return c;
+  var looseTotal = function (lines) { return lines.reduce(function (a, l) { return a + (l.hamper ? 0 : l.price); }, 0); };
+  // The tapped discount, dropped automatically if packs come out and the customer falls below that tier.
+  function chosenOff(dd) {
+    var off = dd.off || 0, t = TIERS.filter(function (x) { return x.off === off; })[0];
+    return t && looseTotal(dd.basket) >= t.min ? off : 0;
+  }
+  // At Paid the discount is spread over the loose lines (each keeps its list price), so every line carries what was actually
+  // charged and the server's total (the sum of line prices) matches the UPI or cash received.
+  function applyOffer(basket, off) {
+    var lines = basket.map(function (l) { var c = {}; for (var k in l) c[k] = l[k]; return c; });
+    var loose = looseTotal(lines), left = off;
+    if (!off) return { lines: lines, off: 0 };
+    var idx = []; lines.forEach(function (l, i) { if (!l.hamper) idx.push(i); });
+    idx.forEach(function (i, k) {
+      var l = lines[i], share = k === idx.length - 1 ? left : Math.round(off * l.price / loose);
+      left -= share; l.list = l.price; l.price -= share;
+    });
+    return { lines: lines, off: off };
   }
   var orderTotal = function (o) { return o.lines.reduce(function (a, l) { return a + l.price; }, 0); };
   function totals(orders) {
-    var t = { total: 0, upi: 0, cash: 0, contrib: 0, n: {}, customers: orders.length };
+    var t = { total: 0, upi: 0, cash: 0, n: {}, customers: orders.length };
     FLAV.forEach(function (f) { t.n[f.id] = 0; });
     orders.forEach(function (o) {
       var ot = orderTotal(o); t.total += ot; t[o.pay] += ot;
-      o.lines.forEach(function (l) { t.contrib += lineContribution(l); FLAV.forEach(function (f) { t.n[f.id] += l.mix[f.id] || 0; }); });
+      o.lines.forEach(function (l) { FLAV.forEach(function (f) { t.n[f.id] += l.mix[f.id] || 0; }); });
     });
     return t;
   }
@@ -84,7 +98,8 @@
     persist(); render();
   }
   function removeLine(i) { dayData(today).basket.splice(i, 1); persist(); render(); }
-  function clearBasket() { dayData(today).basket = []; persist(); render(); }
+  function clearBasket() { var dd = dayData(today); dd.basket = []; dd.off = 0; persist(); render(); }
+  function setOff(off) { var dd = dayData(today); dd.off = dd.off === off ? 0 : off; persist(); render(); }
   // Buyer details: kept ONLY with a valid 10-digit mobile AND the ticked marketing box. No tick, nothing about the buyer is stored.
   function tenDigits(v) { var d = String(v || '').replace(/\D/g, ''); if (d.length === 12 && d.indexOf('91') === 0) d = d.slice(2); if (d.length === 11 && d[0] === '0') d = d.slice(1); return /^[6-9]\d{9}$/.test(d) ? d : null; }
   function readBuyer() {
@@ -100,9 +115,11 @@
     var dd = dayData(today); if (!dd.basket.length) return;
     var rb = readBuyer();
     var now = Date.now(); dd.seq += 1;
-    var o = { id: now + '-' + Math.random().toString(36).slice(2, 6), n: dd.seq, t: now, pay: pay, lines: dd.basket };
+    var ap = applyOffer(dd.basket, chosenOff(dd));
+    var o = { id: now + '-' + Math.random().toString(36).slice(2, 6), n: dd.seq, t: now, pay: pay, lines: ap.lines };
+    if (ap.off) o.offer = ap.off;
     if (rb.buyer) o.buyer = rb.buyer;
-    dd.orders.push(o); dd.basket = [];
+    dd.orders.push(o); dd.basket = []; dd.off = 0;
     clearBuyer();
     persist(); render(); flash('#' + o.n + ' ' + rupees(orderTotal(o)) + (pay === 'cash' ? ' cash' : ' UPI') + (rb.buyer ? ' · buyer saved' : '') + (rb.note ? ' · ' + rb.note : ''));
   }
@@ -140,12 +157,9 @@
     $('st-total').textContent = rupees(t.total);
     $('st-upi').textContent = rupees(t.upi);
     $('st-cash').textContent = rupees(t.cash);
-    $('st-contrib').textContent = rupees(t.contrib);
     $('st-sales').textContent = t.customers;
     $('st-sales-word').textContent = t.customers === 1 ? 'customer' : 'customers';
     $('st-avg').textContent = rupees(t.customers ? t.total / t.customers : 0);
-    var allContrib = Object.keys(mem.days).reduce(function (a, k) { return a + totals(mem.days[k].orders).contrib; }, 0);
-    $('st-fee').textContent = rupees(allContrib) + ' of ' + rupees(STALL_FEE) + ' stall fee covered (all days on this iPad)';
     FLAV.forEach(function (f) {
       $('st-n-' + f.id).textContent = t.n[f.id];
       var open = dd.opening[f.id], input = $('st-open-' + f.id);
@@ -153,7 +167,7 @@
       $('st-left-' + f.id).textContent = open == null ? '–' : (open - t.n[f.id]);
     });
 
-    var b = $('st-basket'), bt = dd.basket.reduce(function (a, l) { return a + l.price; }, 0); b.textContent = '';
+    var b = $('st-basket'), off = chosenOff(dd), bt = dd.basket.reduce(function (a, l) { return a + l.price; }, 0) - off, loose = looseTotal(dd.basket); b.textContent = '';
     dd.basket.forEach(function (l, i) {
       var li = document.createElement('li');
       li.appendChild(document.createTextNode(lineText(l) + '  ' + rupees(l.price)));
@@ -161,6 +175,15 @@
       li.appendChild(x); b.appendChild(li);
     });
     $('st-basket-empty').hidden = dd.basket.length > 0;
+    var opts = $('st-disc-opts'); opts.textContent = '';
+    TIERS.forEach(function (t) {
+      var x = document.createElement('button'); x.type = 'button'; x.setAttribute('data-off', String(t.off));
+      x.disabled = loose < t.min; x.className = off === t.off ? 'on' : ''; x.setAttribute('aria-pressed', off === t.off ? 'true' : 'false');
+      x.innerHTML = rupees(t.off) + ' off<small>' + rupees(t.min) + '+</small>'; opts.appendChild(x);
+    });
+    var next = TIERS.filter(function (t) { return loose < t.min; })[0];
+    $('st-disc-note').textContent = off ? rupees(off) + ' off applied (loose boxes ' + rupees(loose) + ')'
+      : next && loose ? 'Loose boxes ' + rupees(loose) + ' · ' + rupees(next.min - loose) + ' more unlocks ' + rupees(next.off) + ' off' : 'Loose boxes only. Hampers are never discounted.';
     $('st-basket-total').textContent = rupees(bt);
     $('st-paid-upi').textContent = 'Paid UPI' + (bt ? ' ' + rupees(bt) : '');
     $('st-paid-cash').textContent = 'Paid Cash' + (bt ? ' ' + rupees(bt) : '');
@@ -169,7 +192,7 @@
     var log = $('st-log'); log.textContent = '';
     dd.orders.slice().reverse().slice(0, 30).forEach(function (o) {
       var li = document.createElement('li');
-      li.appendChild(document.createTextNode('#' + o.n + '  ' + istParts(o.t).time + '  ' + o.lines.map(lineText).join(' + ') + '  ' + rupees(orderTotal(o)) + (o.pay === 'cash' ? ' · cash' : ' · UPI') + (o.buyer ? ' · 📱 ' + (o.buyer.name || o.buyer.phone) : '')));
+      li.appendChild(document.createTextNode('#' + o.n + '  ' + istParts(o.t).time + '  ' + o.lines.map(lineText).join(' + ') + '  ' + rupees(orderTotal(o)) + (o.offer ? ' (' + rupees(o.offer) + ' off)' : '') + (o.pay === 'cash' ? ' · cash' : ' · UPI') + (o.buyer ? ' · 📱 ' + (o.buyer.name || o.buyer.phone) : '')));
       var x = document.createElement('button'); x.type = 'button'; x.setAttribute('data-del', o.id); x.setAttribute('aria-label', 'Delete customer #' + o.n); x.textContent = '×';
       li.appendChild(x); log.appendChild(li);
     });
@@ -184,13 +207,13 @@
 
   // ── export: one row per pack line, with the customer number and total to match a UPI payment ──
   function csv() {
-    var rows = ['date,time,customer,item,original,ajwain,kesari,sugar_lite,price,payment,customer_total,buyer_name,buyer_phone,marketing_ok'];
+    var rows = ['date,time,customer,item,original,ajwain,kesari,sugar_lite,price,payment,customer_total,buyer_name,buyer_phone,marketing_ok,list_price,offer_off'];
     Object.keys(mem.days).sort().forEach(function (k) {
       mem.days[k].orders.forEach(function (o) {
         var ot = orderTotal(o);
         o.lines.forEach(function (l) {
           rows.push([k, istParts(o.t).time, o.n, l.name, l.mix.original || 0, l.mix.ajwain || 0, l.mix.kesari || 0, l.mix.lite || 0, l.price, o.pay, ot,
-            o.buyer ? '"' + String(o.buyer.name || '').replace(/"/g, '""') + '"' : '', o.buyer ? o.buyer.phone : '', o.buyer ? 'yes' : ''].join(','));
+            o.buyer ? '"' + String(o.buyer.name || '').replace(/"/g, '""') + '"' : '', o.buyer ? o.buyer.phone : '', o.buyer ? 'yes' : '', l.list || l.price, o.offer || 0].join(','));
         });
       });
     });
@@ -256,6 +279,7 @@
     if (b.dataset.item) { var it = ITEMS[b.dataset.item]; return it.pick ? openMix(b.dataset.item) : addLine(b.dataset.item, it.mix); }
     if (b.dataset.plus) { if (mixCount() < need()) pick[b.dataset.plus] += 1; return renderMix(); }
     if (b.dataset.minus) { if (pick[b.dataset.minus] > 0) pick[b.dataset.minus] -= 1; return renderMix(); }
+    if (b.dataset.off != null) return setOff(Number(b.dataset.off));
     if (b.dataset.remove != null) return removeLine(Number(b.dataset.remove));
     if (b.dataset.del) return del(b.dataset.del);
     switch (b.id) {
@@ -281,5 +305,5 @@
   if (navigator.serviceWorker && navigator.serviceWorker.register) navigator.serviceWorker.register('/stall-sw.js', { scope: '/stall' }).catch(function () {});
 
   syncNow();
-  window.StallTally = { csv: csv, version: 3 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
+  window.StallTally = { csv: csv, version: 4 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
 })();

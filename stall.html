@@ -31,6 +31,14 @@ main{max-width:1100px;margin:0 auto;padding:14px 16px 40px;display:grid;grid-tem
 #st-basket{list-style:none;margin:0;padding:0;font-size:17px;min-height:30px}
 #st-basket li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
 #st-basket li button{border:0;background:#F3E9D2;border-radius:8px;width:38px;height:34px;font-size:20px}
+.disc{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.disc h3{margin:0 0 8px;font-size:16px}
+#st-disc-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#st-disc-opts button{min-height:58px;border-radius:12px;border:2px solid var(--ink);background:transparent;font-weight:800;font-size:17px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink)}
+#st-disc-opts button small{font-weight:600;font-size:13px;opacity:.75}
+#st-disc-opts button.on{background:var(--ok);border-color:var(--ok);color:#fff}
+#st-disc-opts button:disabled{opacity:.3}
+#st-disc-note{margin:6px 0 0;font-size:14px;color:#6b5a4e}
 #st-basket-empty{color:#6b5a4e;font-size:15px;margin:4px 0}
 .paid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .paid button{min-height:64px;border:0;border-radius:14px;font-weight:800;font-size:19px;color:#fff;background:var(--ok)}
@@ -82,10 +90,10 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
 <main>
   <section>
     <div class="grid">
-      <button type="button" class="f-original" data-item="original">Original<span>₹200</span></button>
-      <button type="button" class="f-ajwain" data-item="ajwain">Ajwain<span>₹200</span></button>
-      <button type="button" class="f-kesari" data-item="kesari">Kesari<span>₹250</span></button>
-      <button type="button" class="f-lite" data-item="lite">Sugar-Lite<span>₹250</span></button>
+      <button type="button" class="f-original" data-item="original">Original<span>₹250</span></button>
+      <button type="button" class="f-ajwain" data-item="ajwain">Ajwain<span>₹250</span></button>
+      <button type="button" class="f-kesari" data-item="kesari">Kesari<span>₹300</span></button>
+      <button type="button" class="f-lite" data-item="lite">Sugar-Lite<span>₹300</span></button>
       <button type="button" class="h" data-item="h3">Hamper of 3<span>₹799</span></button>
       <button type="button" class="h" data-item="h4">Hamper of 4<span>₹999</span></button>
     </div>
@@ -93,6 +101,11 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
       <h2>This customer · <b id="st-basket-total">₹0</b></h2>
       <p id="st-basket-empty">Tap the packs they're buying, then Paid.</p>
       <ul id="st-basket"></ul>
+      <div class="disc" id="st-disc">
+        <h3>Discount</h3>
+        <div id="st-disc-opts"></div>
+        <p id="st-disc-note"></p>
+      </div>
       <details class="buyer" id="st-buyer">
         <summary>Buyer details (optional)</summary>
         <input type="text" id="st-b-name" placeholder="Name" autocomplete="off" aria-label="Buyer name">
@@ -116,8 +129,7 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
       <h2>Today</h2>
       <p class="big" id="st-total">₹0</p>
       <div class="sub"><span>UPI <b id="st-upi">₹0</b></span><span>Cash <b id="st-cash">₹0</b></span><span><b id="st-sales">0</b> <span id="st-sales-word">customers</span></span></div>
-      <div class="sub"><span>Avg per customer <b id="st-avg">₹0</b></span><span>Contribution <b id="st-contrib">₹0</b></span></div>
-      <div class="fee" id="st-fee"></div>
+      <div class="sub"><span>Avg per customer <b id="st-avg">₹0</b></span></div>
     </div>
     <div class="card">
       <h2>Packs by flavor</h2>
@@ -155,6 +167,6 @@ td input{width:64px;font:inherit;padding:4px 6px;border:1px solid var(--line);bo
   </div>
 </div>
 <div id="st-flash" hidden role="status" aria-live="polite"></div>
-<script src="js/stall.js?v=3"></script>
+<script src="js/stall.js?v=4"></script>
 </body>
 </html>
