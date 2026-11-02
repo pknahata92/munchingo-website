@@ -1,6 +1,7 @@
 // "Check delivery" by pincode, answered by Delhivery through the shop's backend (GET /api/pincode/:pin).
 //   - serviceable true  -> delivery available
 //   - serviceable false -> "we cannot deliver there yet", WhatsApp link
+//   - outside      -> outside the delivery area (Delhi NCR only for now): the backend's message
 //   - unknown (backend has no Delhivery answer) -> India Post confirms the pincode is real and we do not block anyone
 // Fills every [data-pincode-check]. Remembers the last good pincode on this phone only. Exposes MunchingoPincode.check(pin).
 (function () {
@@ -25,7 +26,7 @@
     if (!/^[1-9][0-9]{5}$/.test(pin)) return Promise.resolve({ pin: pin, valid: false, serviceable: false });
     if (memo[pin]) return memo[pin];
     memo[pin] = timed(API + pin, 7000).then(function (r) {
-      if (r && r.ok && r.serviceable !== null && r.serviceable !== undefined) return { pin: pin, valid: !!r.valid, serviceable: r.serviceable, city: r.city || r.district || '', state: r.state || '' };
+      if (r && r.ok && r.serviceable !== null && r.serviceable !== undefined) return { pin: pin, valid: !!r.valid, serviceable: r.serviceable, outside: !!r.outside, note: r.message || '', city: r.city || r.district || '', state: r.state || '' };
       return indiaPost(pin).then(function (p) { return { pin: pin, valid: p.valid, serviceable: null, city: p.city || '', state: p.state || '' }; });
     }).catch(function () {
       return indiaPost(pin).then(function (p) { return { pin: pin, valid: p.valid, serviceable: null, city: p.city || '', state: p.state || '' }; });
@@ -35,6 +36,7 @@
   function message(r) {
     var where = [r.city, r.state].filter(Boolean).join(', ');
     if (r.valid === false) return { cls: 'bad', html: 'That pincode does not look right. Please check the 6 digits.' };
+    if (r.outside) return { cls: 'bad', html: esc(r.note || 'We’re delivering in Delhi NCR only.') };   // outside the delivery area (Delhi NCR only, 2 Nov 2026)
     if (r.serviceable === false) return { cls: 'bad', html: 'We cannot deliver to ' + esc(r.pin) + ' yet. <a href="' + WA + '" target="_blank" rel="noopener">Message us on WhatsApp</a> and we will try to arrange it.' };
     if (r.serviceable === true) return { cls: 'ok', html: '✓ Delivery available' + (where ? ' to ' + esc(where) : ' to ' + esc(r.pin)) + '.' };
     if (r.valid === true) return { cls: 'ok', html: '✓ ' + esc(where || r.pin) + '. We confirm your pincode again at checkout.' };

@@ -341,7 +341,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <script src="js/cart.js?v=42"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
-<script src="js/pincode.js?v=2" defer></script>
+<script src="js/pincode.js?v=3" defer></script>
 <script src="js/chrome-calm.js?v=4" defer></script>
 <script src="js/minicart.js?v=8" defer></script>
 <script src="js/cart-bar.js?v=10" defer></script>
@@ -620,7 +620,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
 
     if (!name || !phone || !addrLine1 || !addrCity || !addrState || !addrPincode) { showError('Please fill in all fields.'); return; }
     if (!/^[0-9]{6}$/.test(addrPincode)) { showError('Pincode should be exactly 6 digits.'); return; }
-    if (window.__pinBlocked) { showError('Sorry, we cannot deliver to this pincode yet. Please message us on WhatsApp (+91 99889 92024) and we will try to arrange it.'); return; }
+    if (window.__pinBlocked) { showError(window.__pinNote || 'Sorry, we cannot deliver to this pincode yet. Please message us on WhatsApp (+91 99889 92024) and we will try to arrange it.'); return; }
     var phoneDigits = phone.replace(/\D/g, '');
     var phoneOk = /^[6-9][0-9]{9}$/.test(phoneDigits) || /^91[6-9][0-9]{9}$/.test(phoneDigits) || /^0[6-9][0-9]{9}$/.test(phoneDigits);
     phoneOk = phoneOk && /^[+0-9\s\-().]+$/.test(phone);
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var r = res[0] || {}, ip = res[1] || {};
       var area = r.city || r.district || ip.district || '', st = r.state || ip.state || '';
       var where = [area, st].filter(Boolean).join(', ');
-      window.__pinBlocked = r.serviceable === false || r.valid === false;
+      window.__pinBlocked = r.serviceable === false || r.valid === false; window.__pinNote = r.outside ? window.MunchingoPincode.message(r).html : '';
       if (r.valid === false && !ip.state) { setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e'); return; }
       if (r.serviceable === false) setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e');
       else if (r.serviceable === true) setStatus('ok', '✓ We deliver to ' + esc(where || v) + '.');
