@@ -2,13 +2,16 @@
 // Paid Cash, so each entry matches one UPI payment in the Eazypay report. Saved on this device only, one list per IST day
 // (the basket in progress too), so a reload or a dropped connection loses nothing. Discount box (1 Nov 2026): the seller taps a
 // tier the customer has reached; only loose boxes count and only loose boxes are discounted (no discount on gift boxes or
-// hampers). Margin and the stall fee are deliberately not on this page (customers can see the iPad).
+// hampers). Customers can see the iPad, so every dashboard card starts hidden and the gear ticks each one on for this iPad (6 Nov
+// 2026). Contribution uses costs typed on the iPad: this file is public, so no cost is ever written here.
 (function () {
   'use strict';
   var KEY = 'munchingo-stall-v1';
   // Saving to the server (backend routes/stall.js): the whole day goes after every change and again every 30 s until it is
   // accepted, so offline selling just catches up later. The key is typed on the iPad once (never in this file).
   var KEY_STORE = 'munchingo-stall-key', SYNC_URL = 'https://munchingo-whatsapp-webhook.onrender.com/api/stall/sync';
+  var VIEW_STORE = 'munchingo-stall-view', COST_STORE = 'munchingo-stall-costs', GST = 0.05;
+  var CARDS = ['today', 'contrib', 'packs', 'log', 'days'], COSTS = ['original', 'ajwain', 'kesari', 'lite', 'h3', 'h4'];
   var CONSENT = 'OK to send me new Flavors and offers on WhatsApp? A few messages a month at most. Reply STOP any time to stop.';   // must match the box on the page
   var FLAV = [
     { id: 'original', name: 'Original' },
@@ -151,9 +154,39 @@
     $('st-mix-each').hidden = need() !== FLAV.length;
   }
 
+  // ── what the iPad shows: both saved on this device only, never sent to the server ──
+  function readStore(key) { try { return JSON.parse(window.localStorage.getItem(key)) || {}; } catch (e) { return {}; } }
+  function writeStore(key, v) { try { window.localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* storage blocked: lasts until reload */ } }
+  var view = readStore(VIEW_STORE), costs = readStore(COST_STORE);
+  function applyView() {
+    var any = false;
+    CARDS.forEach(function (c) {
+      var on = view[c] === true; any = any || on;
+      document.querySelector('[data-card="' + c + '"]').hidden = !on;
+      document.querySelector('input[data-view="' + c + '"]').checked = on;
+    });
+    $('st-aside').hidden = !any;
+    document.querySelector('main').classList.toggle('solo', !any);
+  }
+  // Price less GST, less the boxes sold, less the hamper's outer box. Null until every cost is typed: never a guess.
+  function contribution(orders) {
+    if (!COSTS.every(function (k) { return costs[k] != null; })) return null;
+    return orders.reduce(function (a, o) {
+      return a + o.lines.reduce(function (b, l) {
+        var c = l.price / (1 + GST) - (l.hamper ? costs[l.item] : 0);
+        FLAV.forEach(function (f) { c -= (l.mix[f.id] || 0) * costs[f.id]; });
+        return b + c;
+      }, 0);
+    }, 0);
+  }
+  function openView() { COSTS.forEach(function (k) { $('st-cost-' + k).value = costs[k] == null ? '' : costs[k]; }); $('st-view').hidden = false; }
+  function hideAll() { view = {}; writeStore(VIEW_STORE, view); applyView(); $('st-view').hidden = true; }
+
   // ── view ──
   function render() {
-    var dd = dayData(today), t = totals(dd.orders);
+    var dd = dayData(today), t = totals(dd.orders), contrib = contribution(dd.orders);
+    $('st-contrib').textContent = contrib == null ? '–' : rupees(contrib);
+    $('st-contrib-note').textContent = contrib == null ? 'Type the box costs under the gear to see this.' : 'After GST and box costs, before the stall fee and travel.';
     $('st-total').textContent = rupees(t.total);
     $('st-upi').textContent = rupees(t.upi);
     $('st-cash').textContent = rupees(t.cash);
@@ -292,18 +325,29 @@
       case 'st-mix-cancel': $('st-mix').hidden = true; return;
       case 'st-export': return exportCsv();
       case 'st-sync': return askKey();
+      case 'st-view-open': return openView();
+      case 'st-view-close': $('st-view').hidden = true; return;
+      case 'st-view-hide': return hideAll();
     }
   });
   document.addEventListener('change', function (e) {
+    if (e.target.dataset.view) { view[e.target.dataset.view] = e.target.checked; writeStore(VIEW_STORE, view); return applyView(); }
+    var c = e.target.id && e.target.id.match(/^st-cost-(\w+)$/);
+    if (c) {
+      var n = e.target.value.trim();
+      if (n === '' || isNaN(Number(n))) delete costs[c[1]]; else costs[c[1]] = Math.max(0, Number(n));
+      writeStore(COST_STORE, costs); return render();
+    }
     var m = e.target.id && e.target.id.match(/^st-open-(\w+)$/); if (!m) return;
     var v = e.target.value.trim(), dd = dayData(today);
     if (v === '' || isNaN(Number(v))) delete dd.opening[m[1]]; else dd.opening[m[1]] = Math.max(0, Math.round(Number(v)));
     persist(); render();
   });
   persist();
+  applyView();
   render();
   if (navigator.serviceWorker && navigator.serviceWorker.register) navigator.serviceWorker.register('/stall-sw.js', { scope: '/stall' }).catch(function () {});
 
   syncNow();
-  window.StallTally = { csv: csv, version: 4 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
+  window.StallTally = { csv: csv, version: 5 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
 })();
