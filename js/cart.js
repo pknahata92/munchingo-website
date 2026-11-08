@@ -190,8 +190,8 @@
   function cartShipping() { return cartBoxes() >= MIN_BOXES ? shippingFor(cartTotal(), hasGiftBox()) : 0; }
   function cartPayable() { return cartTotal() + cartShipping(); }
   // What the shopper saves against the printed MRP (the MRP stays 300/350; only the selling price is lower). Falls back to the printed MRPs when the live book has none.
-  var PRINTED_MRP = { 'atta-original': 300, 'atta-ajwain': 300, 'atta-kesari': 350, 'atta-lite-sugar': 350, 'full-range-set': 1300 };
-  function mrpOf(c) { var m = c.mrp || PRINTED_MRP[c.slug] || 0; return m > c.price ? m : 0; }
+  var PRINTED_MRP = { 'atta-original': 300, 'atta-ajwain': 300, 'atta-kesari': 350, 'atta-lite-sugar': 350 };   // gift boxes never carry an MRP
+  function mrpOf(c) { if (boxesFor(c.slug) > 1) return 0; var m = c.mrp || PRINTED_MRP[c.slug] || 0; return m > c.price ? m : 0; }
   function cartSavings() {
     return getCart().reduce(function (n, c) { var m = mrpOf(c); return n + (m > c.price ? (m - c.price) * c.qty : 0); }, 0);
   }
@@ -340,7 +340,7 @@
     return out;
   }
   function suggestion() {
-    return null;   // set suggestions are off (25 Oct 2026): at Rs 259/299 a Trio saves Rs 18 and costs far more in margin than it earns; gift sets stay as explicit choices
+    // On again (9 Nov 2026): the box rule makes every Trio and Full Range a real saving. Suggestions only, never automatic swaps.
     var sg = suggestionCore();
     if (sg && stockUpOff(singlesOf(getCart())) > 0) sg.tierNote = true;
     return sg;
