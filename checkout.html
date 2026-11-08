@@ -129,7 +129,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-<script src="js/prices.js?v=8"></script>
+<script src="js/prices.js?v=9"></script>
 </head>
 <body>
 
@@ -338,7 +338,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 </script>
 
 <script src="js/source-tag.js?v=1"></script>
-<script src="js/cart.js?v=42"></script>
+<script src="js/cart.js?v=43"></script>
 <script src="js/checkout-fields.js?v=1" defer></script>
 <script src="js/offers.js?v=2" defer></script>
 <script src="js/pincode.js?v=3" defer></script>
@@ -413,7 +413,7 @@ function renderSummary() {
   var gstAmount = Math.round(total - (total / 1.05));
   var boxesNow = MunchingoCart.cartBoxes();
   var belowMin = boxesNow < MIN_BOXES;
-  var ship = (!belowMin && total < MunchingoCart.FREE_FROM) ? MunchingoCart.SHIPPING_FEE : 0;
+  var ship = !belowMin ? MunchingoCart.shippingFor(total, MunchingoCart.hasGiftBox()) : 0;   // a gift box ships free
   var closed = !MunchingoCart.ordersOpen();
   document.getElementById('ck-closed').hidden = !closed;
 

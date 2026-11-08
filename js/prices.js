@@ -14,35 +14,50 @@
   try { book = JSON.parse(localStorage.getItem(KEY)); } catch (e) { book = null; }
   if (!book || typeof book !== 'object') book = null;
 
-  // Trio sets carry their flavors in the slug (trio-gift-set-kesari-original-ajwain) but have one price.
-  // Gift sets after Diwali (same date and prices as webhook-backend/utils/giftPromo.js). Used only when this browser has no
-  // live price list yet, so a sleepy backend can never show the old set price after the switch, and the promo note before it.
-  var SET_SWITCH = Date.parse('2026-11-09T00:00:00+05:30'), SET_LIST = { 'trio-gift-set': 799, 'full-range-set': 999 };   // 9 Nov: the backend keeps 799 / 999 (no rise)
-  var PROMO_LABEL = 'Early-grab price till Diwali';
-  function keyFor(slug) { return slug && String(slug).indexOf('trio-gift-set') === 0 ? 'trio-gift-set' : slug; }
-  function get(slug) { var b = book && book[keyFor(slug)]; return b && typeof b.price === 'number' ? b : null; }
-  function price(slug, fallback) {
-    var b = get(slug); if (b) return b.price;
-    var k = keyFor(slug); if (SET_LIST[k] && Date.now() >= SET_SWITCH) return SET_LIST[k];
-    return fallback;
+  // The box rule (9 Nov 2026): a gift box costs the sum of its singles minus 8% (3 boxes) or 12.5% (4 boxes), rounded to a price
+  // ending in 9. Same formula as webhook-backend/utils/boxPricing.js, so a set price is never stored: it is worked out from the
+  // single-box prices and the rule. The rule lives under its own key so the price book stays a plain slug -> price map.
+  var RULE_KEY = 'munchingo_box_rule';
+  var DEFAULT_RULE = { 3: 8, 4: 12.5 };
+  var DEFAULT_SINGLES = { 'atta-original': 259, 'atta-ajwain': 259, 'atta-kesari': 299, 'atta-lite-sugar': 329 };
+  var TOKENS = ['ajwain', 'kesari', 'lite-sugar', 'original'];   // alphabetical, as in a Trio slug
+  var rule = null;
+  try { rule = JSON.parse(localStorage.getItem(RULE_KEY)); } catch (e) { rule = null; }
+  function validRule(r) { return !!r && typeof r === 'object' && [3, 4].every(function (n) { return typeof r[n] === 'number' && isFinite(r[n]) && r[n] >= 0 && r[n] < 100; }); }
+  if (!validRule(rule)) rule = null;
+  function boxRule() { var r = rule || DEFAULT_RULE; return { 3: r[3], 4: r[4] }; }
+  function singlePrice(slug) { var b = book && book[slug]; return b && typeof b.price === 'number' ? b.price : DEFAULT_SINGLES[slug]; }
+  // Price of a gift box made of these single slugs (['atta-original', ...]); one or two boxes are just the sum.
+  function boxPrice(slugs) {
+    var sum = 0; (slugs || []).forEach(function (s) { sum += singlePrice(s) || 0; });
+    var pct = (rule || DEFAULT_RULE)[(slugs || []).length];
+    if (typeof pct !== 'number') return sum;
+    return Math.floor((sum * (1 - pct / 100) + 1) / 10) * 10 - 1;
   }
-  // The pre-Diwali note for a gift set ({ label, next }), or null once the new price applies.
-  function promo(slug) {
-    var k = keyFor(slug), b = get(slug);
-    if (b) return b.promo && b.promo.next ? b.promo : null;
-    return SET_LIST[k] && Date.now() < SET_SWITCH ? { label: PROMO_LABEL, next: SET_LIST[k] } : null;
+  function trioTokens(slug) {
+    var padded = '-' + String(slug).slice('trio-gift-set'.length) + '-', out = [];
+    TOKENS.forEach(function (t) { if (padded.indexOf('-' + t + '-') >= 0) out.push(t); });
+    return out.length === 3 ? out : null;
   }
-  // Today's price of a set: the live list, else the price printed on the page (backend asleep), else null.
-  function priceNow(slug) {
-    var p = price(slug, null); if (p != null) return p;
-    var el = document.querySelector('[data-price-for="' + keyFor(slug) + '"]'), n = el ? parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) : NaN;
-    return isNaN(n) ? null : n;
+  function trioPrices() {   // the four possible Trios
+    return TOKENS.map(function (skip) { return boxPrice(TOKENS.filter(function (t) { return t !== skip; }).map(function (t) { return 'atta-' + t; })); });
   }
-  // Before 9 Nov a set shows a short tag and its 9 Nov price struck through, nothing else (Prashant, 29 Oct). Both vanish on
-  // their own when the new price applies, so the struck figure is always the price the set really goes to.
-  function promoText(slug) { return promo(slug) ? 'Promotional brand pricing' : ''; }
-  // The crossed-out MRP, or null when there is none (MRP equal to the price counts as none).
+  function isSet(slug) { return slug === 'full-range-set' || (typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0); }
+  // The price of a set from the rule, or null if the slug is not a set. A bare 'trio-gift-set' is the lowest Trio ("from").
+  function setPrice(slug) {
+    if (slug === 'full-range-set') return boxPrice(TOKENS.map(function (t) { return 'atta-' + t; }));
+    if (!isSet(slug)) return null;
+    var t = slug === 'trio-gift-set' ? null : trioTokens(slug);
+    return t ? boxPrice(t.map(function (x) { return 'atta-' + x; })) : Math.min.apply(null, trioPrices());
+  }
+  function get(slug) {
+    if (isSet(slug)) return { price: setPrice(slug), mrp: null };
+    var b = book && book[slug]; return b && typeof b.price === 'number' ? b : null;
+  }
+  function price(slug, fallback) { var b = get(slug); return b ? b.price : fallback; }
+  // The crossed-out MRP, or null when there is none (MRP equal to the price counts as none). Sets never have one.
   function mrp(slug, fallback) {
+    if (isSet(slug)) return null;
     var b = get(slug);
     if (!b) return fallback == null ? null : fallback;
     return b.mrp != null && b.mrp > b.price ? b.mrp : null;
@@ -54,15 +69,6 @@
   //   data-save-for="slug"   -> "Save ₹51"    (hidden when there is no saving)
   function apply() {
     var root = document;
-    //   data-promo-for="trio-gift-set" -> "Promotional brand pricing" (hidden after the switch)
-    //   data-was-for="trio-gift-set"   -> struck "₹949", the 9 Nov price (hidden after the switch)
-    Array.prototype.forEach.call(root.querySelectorAll('[data-promo-for]'), function (el) {
-      var t = promoText(el.getAttribute('data-promo-for')); el.textContent = t; el.hidden = !t;
-    });
-    Array.prototype.forEach.call(root.querySelectorAll('[data-was-for]'), function (el) {
-      var p = promo(el.getAttribute('data-was-for'));
-      el.innerHTML = p ? '<span class="sr-only">Price from 9 Nov </span>' + inr(p.next) : ''; el.hidden = !p;
-    });
     Array.prototype.forEach.call(root.querySelectorAll('[data-price-for]'), function (el) {
       var p = price(el.getAttribute('data-price-for'), null); if (p != null) el.textContent = inr(p);
     });
@@ -97,7 +103,7 @@
   }
   function slugFromUrl(u) { var m = String(u).match(/(atta-[a-z-]+?)(?:\.html)?(?:[?#].*)?$/); return m ? m[1] : ''; }
 
-  window.MunchingoPrices = { get: get, price: price, mrp: mrp, promo: promo, promoText: promoText, inr: inr, apply: apply, ready: !!book };
+  window.MunchingoPrices = { get: get, price: price, mrp: mrp, boxPrice: boxPrice, boxRule: boxRule, inr: inr, apply: apply, ready: !!book };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
 
   // Ask the backend what prices are right now; if they changed since this page was built, reload once to pick them up.
@@ -108,15 +114,17 @@
       // Compare whole entries (price, MRP, promo), not just the list of names: an array replacer in JSON.stringify would also
       // drop the nested keys, so a changed price used to look unchanged and returning visitors kept the old numbers.
       var canon = function (o) { return JSON.stringify(Object.keys(o || {}).sort().map(function (k) { return [k, o[k]]; })); };
-      var fresh = canon(j.prices), had = canon(book);
+      var freshRule = validRule(j.boxRule) ? { 3: j.boxRule[3], 4: j.boxRule[4] } : null;
+      var fresh = canon(j.prices) + JSON.stringify(freshRule), had = canon(book) + JSON.stringify(rule);
       if (fresh === had) return;
       try {
         localStorage.setItem(KEY, JSON.stringify(j.prices));
+        if (freshRule) localStorage.setItem(RULE_KEY, JSON.stringify(freshRule)); else localStorage.removeItem(RULE_KEY);
         // One reload per tab per price list. With storage blocked we cannot remember, so we just update what is on screen.
         if (sessionStorage.getItem('munchingo_prices_reload') === fresh) return;
         sessionStorage.setItem('munchingo_prices_reload', fresh);
         location.reload();
-      } catch (e) { book = j.prices; apply(); }
+      } catch (e) { book = j.prices; rule = freshRule; apply(); }
     }).catch(function () { /* backend asleep or offline: keep what we have */ });
   }
   if (document.readyState === 'complete') sync(); else window.addEventListener('load', sync);

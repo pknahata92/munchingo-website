@@ -58,7 +58,7 @@
     try { cart = JSON.parse(localStorage.getItem(KEY)) || []; }
     catch (e) { return []; }
     var P = window.MunchingoPrices;
-    if (P && P.ready) cart.forEach(function (c) {
+    if (P) cart.forEach(function (c) {
       var b = P.get(c.slug); if (!b) return;
       c.price = b.price; var m = P.mrp(c.slug, null); if (m) c.mrp = m; else delete c.mrp;
     });
@@ -184,7 +184,10 @@
   }
   function boxesShort() { return Math.max(0, MIN_BOXES - cartBoxes()); }
   // Shipping on the bag as it is now: nothing for an empty or too-small bag (it cannot be ordered yet), otherwise the fee under FREE_FROM.
-  function cartShipping() { var t = cartTotal(); return (cartBoxes() >= MIN_BOXES && t < FREE_FROM) ? SHIPPING_FEE : 0; }
+  // An order with a gift box (a Trio or the Full Range) ships free (9 Nov 2026). Mirror of shippingFor in webhook-backend/utils/shipping.js.
+  function shippingFor(total, hasGiftBox) { return (hasGiftBox || total >= FREE_FROM) ? 0 : SHIPPING_FEE; }
+  function hasGiftBox(cart) { return (cart || getCart()).some(function (c) { return boxesFor(c.slug) > 1; }); }
+  function cartShipping() { return cartBoxes() >= MIN_BOXES ? shippingFor(cartTotal(), hasGiftBox()) : 0; }
   function cartPayable() { return cartTotal() + cartShipping(); }
   // What the shopper saves against the printed MRP (the MRP stays 300/350; only the selling price is lower). Falls back to the printed MRPs when the live book has none.
   var PRINTED_MRP = { 'atta-original': 300, 'atta-ajwain': 300, 'atta-kesari': 350, 'atta-lite-sugar': 350, 'full-range-set': 1300 };
@@ -204,7 +207,7 @@
   // of two hand-maintained copies.
   var LIVE = window.MunchingoPrices;
   var livePrice = function (slug, fallback) { return LIVE ? LIVE.price(slug, fallback) : fallback; };
-  var AOV_FULL_RANGE_PRICE = livePrice('full-range-set', 999);
+  var AOV_FULL_RANGE_PRICE = livePrice('full-range-set', 999);   // the rule price (999 on today's singles)
   // What buying the four boxes one by one would cost, minus the set price (never negative).
   var AOV_FULL_RANGE_SAVING = Math.max(0, livePrice('atta-original', 259) + livePrice('atta-ajwain', 259) + livePrice('atta-kesari', 299) + livePrice('atta-lite-sugar', 329) - AOV_FULL_RANGE_PRICE);
 
@@ -242,7 +245,14 @@
     { slug: 'atta-ajwain',     token: 'ajwain',     label: 'Ajwain' }
   ];
   var TRIO_UNIT = '750g, 3 flavors';
-  function trioPrice() { return livePrice('trio-gift-set', 799); }
+  // Price of the Trio made of these Flavor tokens (the rule, per mix). Without prices.js, the same rule on the launch prices.
+  var LAUNCH_SINGLES = { original: 259, ajwain: 259, kesari: 299, 'lite-sugar': 329 };
+  function trioPriceFor(tokens) {
+    var slugs = tokens.map(function (t) { return 'atta-' + t; });
+    if (LIVE && LIVE.boxPrice) return LIVE.boxPrice(slugs);
+    var sum = tokens.reduce(function (n, t) { return n + LAUNCH_SINGLES[t]; }, 0);
+    return Math.floor((sum * (1 - (tokens.length === 4 ? 12.5 : 8) / 100) + 1) / 10) * 10 - 1;
+  }
   function isTrioSlug(slug) { return typeof slug === 'string' && slug.indexOf('trio-gift-set') === 0; }
   function distinctSingles(cart) {
     return FLAV_META.filter(function (f) { return cart.some(function (c) { return c.slug === f.slug && c.qty >= 1; }); });
@@ -251,7 +261,7 @@
   function swapToTrio() {
     var cart = getCart(), d = distinctSingles(cart);
     if (d.length < 3) return null;
-    var picks = d.slice(0, 3), tp = trioPrice();
+    var picks = d.slice(0, 3), tp = trioPriceFor(picks.map(function (f) { return f.token; }));
     var sum = picks.reduce(function (n, f) { return n + cart.find(function (c) { return c.slug === f.slug; }).price; }, 0);
     if (sum <= tp) return null;                         // never "upgrade" into a dearer set
     var slug = 'trio-gift-set-' + picks.map(function (f) { return f.token; }).sort().join('-');
@@ -357,7 +367,7 @@
       }
     }
     if (d.length >= 3) {
-      var picks = d.slice(0, 3), tp = trioPrice(), tsig = 'trio:' + picks.map(function (f) { return f.token; }).sort().join('-');
+      var picks = d.slice(0, 3), tp = trioPriceFor(picks.map(function (f) { return f.token; })), tsig = 'trio:' + picks.map(function (f) { return f.token; }).sort().join('-');
       if (kept.indexOf(tsig) >= 0) return null;
       var tslug = 'trio-gift-set-' + picks.map(function (f) { return f.token; }).sort().join('-');
       if (isSlugSoldOut(tslug)) return null;
@@ -372,10 +382,9 @@
     if (sg.kind === 'full') upgradeToFullRange(); else if (sg.kind === 'merge') mergeTrioAndFourth(); else swapToTrio();
     return 1;
   }
+  // The approved wording (spec section 5): one short line, the saving in rupees.
   function suggestionHtml(sg) {
-    var what = sg.kind === 'trio' ? 'Trio Gift Set' : 'Full Range Gift Set';
-    var lead = sg.kind === 'trio' ? 'Your 3 flavors (' + sg.labels + ')' : sg.kind === 'full' ? 'All 4 flavors' : 'Your Trio and a box of ' + sg.extra;
-    return lead + ' come to <b>\u20B9' + sg.singles + '</b> as separate boxes. As the ' + what + ' they are <b>\u20B9' + sg.setPrice + '</b>. Save <b>\u20B9' + sg.saved + '</b> if you like' + (sg.tierNote ? ' (counting the 10% stock-up offer you would otherwise get)' : '') + '.';
+    return 'Make it ' + (sg.kind === 'trio' ? 'a Trio' : 'the Full Range') + ' and save \u20B9' + sg.saved;
   }
 
   // total is derived from cart, not passed separately, so this can never
@@ -384,9 +393,9 @@
     var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
     var boxes = cart.reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
     var pendingMin = boxes < MIN_BOXES;
-    var needShip = !pendingMin && total < FREE_FROM;
+    var gift = hasGiftBox(cart), needShip = !pendingMin && !gift && total < FREE_FROM;
     // Until the 2-box minimum is met the bar fills toward it; after that it fills toward free shipping.
-    var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : Math.min(100, Math.round((total / FREE_FROM) * 100));
+    var fillPct = pendingMin ? Math.round((boxes / MIN_BOXES) * 100) : gift ? 100 : Math.min(100, Math.round((total / FREE_FROM) * 100));
     var msgClass, msgHtml;
     if (pendingMin) {
       var n = MIN_BOXES - boxes;
@@ -395,6 +404,9 @@
     } else if (needShip) {
       msgClass = 'upsell';
       msgHtml = 'Shipping is \u20B9' + SHIPPING_FEE + ' on this order. Add <b>one more box</b> and it ships free (free shipping from \u20B9' + FREE_FROM + ').';
+    } else if (gift && total < FREE_FROM) {
+      msgClass = 'unlocked';
+      msgHtml = 'Gift boxes ship free \u2713 you\'re all set';
     } else {
       msgClass = 'unlocked';
       msgHtml = 'Free shipping \u2713 you\'re all set';
@@ -509,6 +521,8 @@
     SHIPPING_FEE: SHIPPING_FEE,
     boxesShort: boxesShort,
     cartShipping: cartShipping,
+    shippingFor: shippingFor,
+    hasGiftBox: hasGiftBox,
     cartPayable: cartPayable,
     cartSavings: cartSavings,
     mrpOf: mrpOf,
@@ -519,6 +533,7 @@
     track: track,
     metaId: metaId,
     suggestion: suggestion,
+    suggestionCore: suggestionCore,
     suggestionHtml: suggestionHtml,
     acceptSuggestion: acceptSuggestion,
     keepSuggestion: keepSig,
