@@ -17,7 +17,7 @@
   // Trio sets carry their flavors in the slug (trio-gift-set-kesari-original-ajwain) but have one price.
   // Gift sets after Diwali (same date and prices as webhook-backend/utils/giftPromo.js). Used only when this browser has no
   // live price list yet, so a sleepy backend can never show the old set price after the switch, and the promo note before it.
-  var SET_SWITCH = Date.parse('2026-11-09T00:00:00+05:30'), SET_LIST = { 'trio-gift-set': 949, 'full-range-set': 1199 };
+  var SET_SWITCH = Date.parse('2026-11-09T00:00:00+05:30'), SET_LIST = { 'trio-gift-set': 799, 'full-range-set': 999 };   // 9 Nov: the backend keeps 799 / 999 (no rise)
   var PROMO_LABEL = 'Early-grab price till Diwali';
   function keyFor(slug) { return slug && String(slug).indexOf('trio-gift-set') === 0 ? 'trio-gift-set' : slug; }
   function get(slug) { var b = book && book[keyFor(slug)]; return b && typeof b.price === 'number' ? b : null; }
