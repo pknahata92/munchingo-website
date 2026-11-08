@@ -154,7 +154,8 @@
       var full = picks.length === size;
       var price = full ? setPrice(picks) : 0;
       var singles = picks.reduce(function (acc, v) { return acc + singlePrice(v); }, 0);
-      $('tot').textContent = full ? inr(price) : '—';
+      $('tot').textContent = full ? inr(price) : '';
+      $('tot').parentNode.style.display = full ? '' : 'none';
       // The comparison is with the same boxes bought as singles at today's website prices (never an MRP), shown once the set is full.
       var saving = singles - price, compare = full && saving > 0;
       $('cmp').textContent = compare ? 'Same boxes as singles ' + inr(singles) : '';
@@ -260,6 +261,8 @@
       setTimeout(function () { if (picks.length === size) c.textContent = 'Add gift set to bag →'; }, 1600);
     });
 
+    // "Full Range first" applies only when it can be bought: if it can't, open on the Trio.
+    if (fullRangeSoldOut() || FLAVOURS.some(function (f) { return soldOut(f.value); })) { size = 3; picks = []; }
     render();
   }
 
