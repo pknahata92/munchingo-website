@@ -346,6 +346,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
 <script src="js/minicart.js?v=8" defer></script>
 <script src="js/cart-bar.js?v=11" defer></script>
 <script>
+function inr(n) { return '\u20B9' + Number(n).toLocaleString('en-IN'); }
 // Point this at your Render backend.
 var CHECKOUT_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/checkout';
 var CHECKOUT_UNREACHABLE_MSG = 'We couldn\'t reach our checkout just now. It can take up to a minute to wake up, so please wait a few seconds and try again — or order on WhatsApp: +91 99889 92024.';
@@ -403,10 +404,10 @@ function renderSummary() {
     if (editingBag) {
       return '<div class="row ck-editrow"><span>' + item.name + ' (' + item.unit + ')</span>'
         + '<span class="ck-qty"><button type="button" data-ck-dec="' + item.slug + '" aria-label="One less">−</button><b>' + item.qty + '</b><button type="button" data-ck-inc="' + item.slug + '" aria-label="One more">+</button><button type="button" class="ck-rm" data-ck-rm="' + item.slug + '">Remove</button></span>'
-        + '<span>₹' + (item.price * item.qty) + '</span></div>';
+        + '<span>' + inr(item.price * item.qty) + '</span></div>';
     }
     var mr = MunchingoCart.mrpOf(item);
-    return '<div class="row"><span>' + item.name + ' (' + item.unit + ') × ' + item.qty + '</span><span>' + (mr ? '<s style="opacity:.55;font-weight:400;margin-right:6px">₹' + (mr * item.qty) + '</s>' : '') + '₹' + (item.price * item.qty) + '</span></div>';
+    return '<div class="row"><span>' + item.name + ' (' + item.unit + ') × ' + item.qty + '</span><span>' + (mr ? '<s style="opacity:.55;font-weight:400;margin-right:6px">' + inr(mr * item.qty) + '</s>' : '') + inr(item.price * item.qty) + '</span></div>';
   }).join('');
 
   var total = MunchingoCart.cartTotal();
@@ -436,18 +437,18 @@ function renderSummary() {
     var singlesNow = cart.filter(function (i) { return ['atta-original', 'atta-kesari', 'atta-ajwain', 'atta-lite-sugar'].indexOf(i.slug) >= 0; }).reduce(function (n, i) { return n + i.price * i.qty; }, 0);
     var subDiscount = Math.round(singlesNow * (SUBSCRIPTION_DISCOUNT_PCT / 100));
     payable = total - subDiscount;
-    discountHtml = subDiscount ? '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '% of single boxes)</span><span>−₹' + subDiscount + '</span></div>' : '';
+    discountHtml = subDiscount ? '<div class="row discount-row"><span>Subscribe &amp; Save (' + SUBSCRIPTION_DISCOUNT_PCT + '% of single boxes)</span><span>−' + inr(subDiscount) + '</span></div>' : '';
   } else if (!belowMin && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.discount) {
     payable = lastQuote.finalTotal - (lastQuote.shipping || 0);
-    discountHtml = '<div class="row discount-row"><span>' + lastQuote.discount.label + '</span><span>−₹' + lastQuote.discount.amount + '</span></div>';
+    discountHtml = '<div class="row discount-row"><span>' + lastQuote.discount.label + '</span><span>−' + inr(lastQuote.discount.amount) + '</span></div>';
   } else if (appliedCoupon && !belowMin) {
     payable = appliedCoupon.finalTotal;
-    discountHtml = '<div class="row discount-row"><span>Promo (' + appliedCoupon.code + ')</span><span>−₹' + appliedCoupon.discountAmount + '</span></div>';
+    discountHtml = '<div class="row discount-row"><span>Promo (' + appliedCoupon.code + ')</span><span>−' + inr(appliedCoupon.discountAmount) + '</span></div>';
   }
   var nudgeHtml = '';
   if (!subscribeChecked && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.next) {
     var np = lastQuote.next.pct ? (lastQuote.tiers || []).filter(function (t) { return t.pct; })[0] : null;
-    nudgeHtml = '<div class="tier-nudge">Add <b>₹' + lastQuote.next.need + '</b> more in single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ₹' + np.cap + ')' : '') : 'save <b>₹' + lastQuote.next.off + '</b>') + '.'
+    nudgeHtml = '<div class="tier-nudge">Add <b>' + inr(lastQuote.next.need) + '</b> more in single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ' + inr(np.cap) + ')' : '') : 'save <b>' + inr(lastQuote.next.off) + '</b>') + '.'
       + '<small>More of a flavor you already have counts too. Gift sets are already priced below singles, so this offer is for single boxes.</small></div>';
   }
   if (!subscribeChecked && (!lastQuote || lastQuote.key !== quoteKey(cart))) refreshQuote(cart, quoteKey(cart));
@@ -459,19 +460,19 @@ function renderSummary() {
   gstAmount = Math.round(payable - (payable / 1.05));
 
   summaryEl.innerHTML = rows +
-    '<div class="row total"><span>Items</span><span>₹' + total + '</span></div>' +
-    (saved ? '<div class="row discount-row"><span>You save vs MRP</span><span>₹' + saved + '</span></div>' : '') +
+    '<div class="row total"><span>Items</span><span>' + inr(total) + '</span></div>' +
+    (saved ? '<div class="row discount-row"><span>You save vs MRP</span><span>' + inr(saved) + '</span></div>' : '') +
     discountHtml +
-    (belowMin ? '' : '<div class="row"><span>Shipping</span><span>' + (ship ? '₹' + ship : 'Free') + '</span></div>') +
-    '<div class="row total"><span>' + (belowMin ? 'Total' : 'Payable') + '</span><span>₹' + (belowMin ? total : payable) + '</span></div>' +
-    (ship ? '<div class="tier-nudge">Add <b>one more box</b> and shipping is free (free from ₹' + MunchingoCart.FREE_FROM + ').</div>' : '') +
-    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ₹' + gstAmount + '</span></div>' +
+    (belowMin ? '' : '<div class="row"><span>Shipping</span><span>' + (ship ? inr(ship) : 'Free') + '</span></div>') +
+    '<div class="row total"><span>' + (belowMin ? 'Total' : 'Payable') + '</span><span>' + inr(belowMin ? total : payable) + '</span></div>' +
+    (ship ? '<div class="tier-nudge">Add <b>one more box</b> and shipping is free (free from ' + inr(MunchingoCart.FREE_FROM) + ').</div>' : '') +
+    '<div class="row gst-note"><span>Price inclusive of GST</span><span>GST (5%): ' + inr(gstAmount) + '</span></div>' +
     nudgeHtml;
   var soldOutNow = cart.filter(function (i) { return MunchingoCart.isSlugSoldOut && MunchingoCart.isSlugSoldOut(i.slug); });
   if (soldOutNow.length) {
     summaryEl.innerHTML += '<div class="tier-nudge ck-soldout"><b>' + soldOutNow.map(function (i) { return i.name; }).join(', ') + (soldOutNow.length === 1 ? ' is' : ' are') + ' sold out for now.</b> <a href="cart.html">Edit bag</a> to remove ' + (soldOutNow.length === 1 ? 'it' : 'them') + ' before you pay.</div>';
   }
-  submitBtn.textContent = soldOutNow.length ? 'Remove sold-out boxes to pay' : closed ? 'Orders not open yet' : belowMin ? 'Add ' + (MIN_BOXES - boxesNow) + ' more box' + (MIN_BOXES - boxesNow === 1 ? '' : 'es') : (subscribeChecked ? 'Subscribe & Pay ₹' + payable : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ₹' : 'Pay ₹') + payable);
+  submitBtn.textContent = soldOutNow.length ? 'Remove sold-out boxes to pay' : closed ? 'Orders not open yet' : belowMin ? 'Add ' + (MIN_BOXES - boxesNow) + ' more box' + (MIN_BOXES - boxesNow === 1 ? '' : 'es') : (subscribeChecked ? 'Subscribe & Pay ' + inr(payable) : (MunchingoCart.isPreorder() ? 'Pre-order · Pay ' : 'Pay ') + inr(payable));
   submitBtn.disabled = belowMin || closed || soldOutNow.length > 0;
   document.getElementById('ck-email-label').textContent = subscribeChecked ? 'Email (required to subscribe)' : (MunchingoCart.isPreorder() ? 'Email (required for your pre-order confirmation)' : 'Email (for your GST invoice)');
   if (subscribeChecked) document.getElementById('ck-email-field').hidden = false;
@@ -547,7 +548,7 @@ async function applyPromoCode() {
       showPromoMsg((data.error || 'That code is not valid.') + (/gift sets/i.test(data.error || '') ? '' : giftSetNote()), true);
     } else {
       appliedCoupon = { code: code.toUpperCase(), discountAmount: data.discountAmount, finalTotal: data.finalTotal };
-      showPromoMsg('Applied — you saved ₹' + data.discountAmount + '.' + giftSetNote(), false);
+      showPromoMsg('Applied — you saved ' + inr(data.discountAmount) + '.' + giftSetNote(), false);
     }
   } catch (err) {
     appliedCoupon = null;

@@ -419,6 +419,8 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .aov-progress-msg.upsell{color:var(--ink)}
 .aov-progress-msg.unlocked{color:#2f6b4f;font-weight:600}
 .aov-upgrade-btn{margin-top:.6rem;padding:.5rem 1rem;border-radius:5px;border:none;background:var(--ink);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer}
+.aov-actions .aov-upgrade-btn,.aov-actions .aov-keep-btn{margin:0;box-sizing:border-box;min-height:44px;padding:0 20px;border-radius:999px;font:600 14px/1.2 Poppins,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.aov-actions .aov-upgrade-btn{border:1px solid var(--ink)}
 @media (hover:hover){.aov-upgrade-btn:hover{opacity:.85}}
 
 /* "Complete your box" cross-sell strip (cart.html, checkout.html) —
@@ -1317,8 +1319,9 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 /* stock-up offer line (js/offers.js) */
 .v2-tierline[hidden]{display:none}
 .v2-tierline b{color:var(--terra-deep,#86482A)}
-.aov-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.aov-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .aov-keep-btn{background:none;border:1px solid rgba(42,26,18,.3);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:600 13px/1 Poppins,system-ui,sans-serif;cursor:pointer;min-height:40px}
+@media (max-width:480px){.aov-actions{flex-direction:column;align-items:stretch}.aov-actions .aov-upgrade-btn,.aov-actions .aov-keep-btn{width:100%}}
 /* range-card quantity stepper (js/cart.js) */
 .v2-add[hidden],.v2-step[hidden],.v2-qty[hidden]{display:none!important}
 /* Add to bag and the - qty + stepper that replaces it share one 48px box, so nothing on the card moves when a box is added. */
@@ -1621,8 +1624,9 @@ body.v2 .pg-cta h2,.pg-cta h2{color:#FFF6EA}
 .gb-panel.gb-is-paused>*:not(.gb-paused):not(.gb-k){display:none!important}
 /* Phone tiles: "Sold out" sits where the + was, never over the Flavor name */
 @media (max-width:700px){
-  .gb-fl.gb-out{padding-bottom:28px}
-  .gb-fl .gb-so{top:auto;bottom:6px;left:auto;right:8px;margin:0;padding:3px 7px;font-size:9.5px;letter-spacing:.04em;border-radius:999px;transform:none}
+  .gb-fl.gb-out .gb-plus{display:none!important}
+  .gb-fl.gb-out>span:last-child{align-self:flex-start;margin-top:4px}
+  .gb-fl .gb-so{top:auto;bottom:6px;left:60px;right:auto;margin:0;padding:3px 7px;font-size:9.5px;letter-spacing:.04em;border-radius:999px;transform:none}
   .gb-fl .gb-so small{display:none}
 }
 .wa-float{transition:opacity .25s ease,transform .25s ease,bottom .3s}
