@@ -10,8 +10,8 @@
 
   // Same figures as gifting.html's static Add-to-Bag buttons.
   var SETS = {
-    3: { price: 749, name: 'Trio Gift Set', unit: '750g, 3 flavors' },
-    4: { slug: 'full-range-set', price: 999, name: 'Full Range Gift Set', unit: '1kg, one of each' }
+    3: { price: 749, name: 'Trio Set', unit: '750g, 3 Flavors' },
+    4: { slug: 'full-range-set', price: 999, name: 'Full Range Set', unit: '1kg, one of each' }
   };
   // Live prices (js/prices.js) replace the launch figures above when the owner has changed them.
   // The Trio has one price per mix (the lowest is the "from" price); the Full Range has one price.
@@ -51,6 +51,14 @@
     return { lo: lo, hi: hi };
   }
   function soldOut(value) { return !!(cart() && cart().isFlavourSoldOut && cart().isFlavourSoldOut(value)); }
+  // The Trio card's "from" price: the lowest mix that can be built from the Flavors in stock (Ajwain out: only O+K+SL, so from 809).
+  // With fewer than 3 in stock no Trio can be built and the builder shows its paused card; the price falls back to the lowest mix.
+  function fromPrice() {
+    var inStock = FLAVOURS.map(function (f) { return f.value; }).filter(function (v) { return !soldOut(v); });
+    if (inStock.length < 3) return SETS[3].price;
+    var mixes = inStock.length === 3 ? [inStock] : inStock.map(function (skip) { return inStock.filter(function (v) { return v !== skip; }); });
+    return Math.min.apply(null, mixes.map(setPrice));
+  }
   function fullRangeSoldOut() { return !!(cart() && cart().isSlugSoldOut && cart().isSlugSoldOut('full-range-set')); }
   function byValue(v) { for (var i = 0; i < FLAVOURS.length; i++) if (FLAVOURS[i].value === v) return FLAVOURS[i]; }
   function el(html) { var d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; }
@@ -65,11 +73,11 @@
 
     left.innerHTML =
       '<p class="gb-step"><i>1</i>Choose your set</p>' +
-      '<div class="gb-opts" role="radiogroup" aria-label="Gift set size">' +
-        '<button type="button" class="gb-opt on" data-size="4" role="radio" aria-checked="true"><span class="gb-flag">BEST VALUE</span><span class="n">4</span><span><b>Full Range Gift Set</b><small>Try all four<br><span data-gb-fullsub>One of each · 1kg</span></small></span></button>' +
-        '<button type="button" class="gb-opt" data-size="3" role="radio" aria-checked="false"><span class="gb-flag">PICK &amp; MIX</span><span class="n">3</span><span><b>Trio Gift Set</b><small>Pick any 3<br>from <span data-gb-from></span></small></span></button>' +
+      '<div class="gb-opts" role="radiogroup" aria-label="Set size">' +
+        '<button type="button" class="gb-opt on" data-size="4" role="radio" aria-checked="true"><span class="gb-flag">BEST VALUE</span><span class="n">4</span><span><b>Full Range Set</b><small>Try all four<br><span data-gb-fullsub>One of each · 1kg</span></small></span></button>' +
+        '<button type="button" class="gb-opt" data-size="3" role="radio" aria-checked="false"><span class="gb-flag">PICK &amp; MIX</span><span class="n">3</span><span><b>Trio Set</b><small>Pick any 3<br>from <span data-gb-from></span></small></span></button>' +
       '</div>' +
-      '<p class="gb-step"><i>2</i><span data-gb-step2>Filled with all four flavors</span></p>' +
+      '<p class="gb-step"><i>2</i><span data-gb-step2>Filled with all four Flavors</span></p>' +
       '<p class="gb-stock" data-gb-stock role="status" hidden></p>' +
       '<div class="gb-flavours">' +
         FLAVOURS.map(function (f) {
@@ -80,23 +88,23 @@
 
     right.innerHTML =
       '<aside class="gb-panel" aria-live="polite">' +
-        '<div class="gb-k">Your gift set</div>' +
+        '<div class="gb-k">Your set</div>' +
         '<div class="gb-count"><span data-gb="filled">0</span> <small>/ <span data-gb="size">4</span> boxes</small></div>' +
         '<div class="gb-slots" data-gb="slots"></div>' +
         '<div class="gb-bar"><i data-gb="barfill"></i></div>' +
         '<button type="button" class="gb-btn-dark" data-gb="surprise">✦ Surprise me</button>' +
-        '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every flavor, already in the box.</p>' +
-        '<div class="gb-note" data-gb="note"><span>🎁</span><a href="#" data-gb="notelink">Add a gift note</a>' +
-          '<textarea rows="3" maxlength="200" placeholder="Happy Diwali! Love, …" aria-label="Gift note"></textarea></div>' +
+        '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every Flavor, already in the box.</p>' +
+        '<div class="gb-note" data-gb="note"><span>🎁</span><a href="#" data-gb="notelink">Add a note</a>' +
+          '<textarea rows="3" maxlength="200" placeholder="e.g. Happy birthday, love Priya" aria-label="Note"></textarea></div>' +
         '<div class="gb-row" data-gb="cmprow"><span>Same boxes as singles</span><span data-gb="cmp"></span></div>' +
         '<div class="gb-row gb-save" data-gb="svrow"><span>You save</span><b data-gb="sv"></b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
-        '<p class="gb-ship" data-gb="ship">Gift boxes ship free</p>' +
+        '<p class="gb-ship" data-gb="ship">Trio and Full Range ship free</p>' +
         '<div class="gb-stepup" data-gb="stepup" hidden><p data-gb="stepuptext"></p><button type="button" class="gb-btn-dark" data-gb="makefull">Make it the Full Range</button></div>' +
-        '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Add gift set to bag →</button>' +
+        '<button type="button" class="btn solid gb-cta" data-gb="cta" disabled>Add set to bag →</button>' +
         '<a class="gb-singles" data-gb="singles" href="shop.html" hidden>Order the single boxes that are in stock →</a>' +
         '<a class="gb-viewbag" data-gb="viewbag" href="cart.html" hidden>View your bag →</a>' +
-        '<div class="gb-paused" data-gb="paused" hidden><b data-gb="pausedTitle">Gift sets are paused for now.</b><p data-gb="pausedText"></p>' +
+        '<div class="gb-paused" data-gb="paused" hidden><b data-gb="pausedTitle">Sets are paused for now.</b><p data-gb="pausedText"></p>' +
           '<a class="btn solid gb-notify" data-gb="notify" href="https://wa.me/919988992024" rel="noopener">Tell me when they\u2019re back</a>' +
           '<a class="gb-singles gb-paused-shop" href="shop.html">Shop the boxes in stock →</a></div>' +
         '<p class="gb-fine">Pure desi ghee · No maida · ' + (cart() && cart().isPreorder && cart().isPreorder() ? 'Pre-order: dispatches 16 Oct' : 'Packed and dispatched within 48 hours') + '</p>' +
@@ -162,7 +170,7 @@
       $('sv').textContent = compare ? inr(saving) : '';
       $('cmprow').style.display = compare ? '' : 'none';
       $('svrow').style.display = compare ? '' : 'none';
-      var from = left.querySelector('[data-gb-from]'); if (from) from.textContent = inr(SETS[3].price);
+      var from = left.querySelector('[data-gb-from]'); if (from) from.textContent = inr(fromPrice());
 
       // Which Flavors are out right now (live from the stock list). A Trio needs 3 different Flavors, the Full Range needs all four.
       var outNames = FLAVOURS.filter(function (f) { return soldOut(f.value); }).map(function (f) { return f.title.replace(/^Atta /, ''); });
@@ -171,7 +179,7 @@
       var stockMsg = left.querySelector('[data-gb-stock]');
       if (outNames.length) {
         stockMsg.textContent = list(outNames) + (outNames.length > 1 ? ' are' : ' is') + ' sold out for now' + (inNames.length ? '. ' + list(inNames) + (inNames.length > 1 ? ' are' : ' is') + ' available.' : '.') +
-          (inNames.length < 3 ? ' A Trio needs 3 different flavors and the Full Range needs all four, so both are unavailable until we restock.' : size === 4 ? ' The Full Range needs all four flavors, so it returns when we restock.' : '');
+          (inNames.length < 3 ? ' A Trio needs 3 different Flavors and the Full Range needs all four, so both are unavailable until we restock.' : size === 4 ? ' The Full Range needs all four Flavors, so it returns when we restock.' : '');
         stockMsg.hidden = false;
       } else stockMsg.hidden = true;
       var fullOpt = left.querySelector('[data-gb-fullsub]');
@@ -183,13 +191,13 @@
       $('paused').hidden = !paused;
       if (paused) {
         $('pausedText').textContent = 'A Trio needs three different Flavors and ' + list(outNames) + (outNames.length > 1 ? ' are' : ' is') + ' sold out until our next bake. ' + (inNames.length ? list(inNames) + (inNames.length > 1 ? ' are' : ' is') + ' in stock as single boxes.' : '');
-        $('notify').href = 'https://wa.me/919988992024?text=' + encodeURIComponent('Hi Munchingo, please tell me when the gift sets are back.');
+        $('notify').href = 'https://wa.me/919988992024?text=' + encodeURIComponent('Hi Munchingo, please tell me when the sets are back.');
       }
       syncSetSchema(inNames.length >= 3, outNames.length === 0);
       var unavailable = (size === 4 && (fullRangeSoldOut() || outNames.length > 0)) || (size === 3 && inNames.length < 3);
       var cta = $('cta');
       cta.disabled = !full || unavailable;
-      cta.textContent = unavailable ? (size === 4 ? 'Full Range returns soon' : 'Trio unavailable today') : (full ? 'Add gift set to bag →' : 'Pick ' + (size - picks.length) + ' more to unlock');
+      cta.textContent = unavailable ? (size === 4 ? 'Full Range returns soon' : 'Trio unavailable today') : (full ? 'Add set to bag →' : 'Pick ' + (size - picks.length) + ' more to unlock');
       $('singles').hidden = !unavailable;
       // A filled Trio can step up to the Full Range for the difference (hidden when the Full Range cannot be bought).
       var step = size === 3 && full && !unavailable && !fullRangeSoldOut() && outNames.length === 0;
@@ -206,7 +214,7 @@
         b.querySelector('.gb-so').hidden = !out;
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
-      left.querySelector('[data-gb-step2]').textContent = size === 4 ? 'Filled with all four flavors' : 'Fill it with any 3 flavors';
+      left.querySelector('[data-gb-step2]').textContent = size === 4 ? 'Filled with all four Flavors' : 'Fill it with any 3 Flavors';
       $('surprise').hidden = size === 4; $('great').hidden = size !== 4;
       Array.prototype.forEach.call(left.querySelectorAll('.gb-opt'), function (o) { var on = +o.getAttribute('data-size') === size; o.classList.toggle('on', on); o.setAttribute('aria-checked', on ? 'true' : 'false'); });
       $('viewbag').hidden = true;
@@ -249,7 +257,7 @@
         var vals = canonical(picks);
         item = {
           slug: 'trio-gift-set-' + vals.map(slugify).sort().join('-'),
-          name: 'Trio Gift Set (' + vals.map(function (v) { return byValue(v).label; }).join(', ') + ')',
+          name: 'Trio Set (' + vals.map(function (v) { return byValue(v).label; }).join(', ') + ')',
           price: setPrice(vals), unit: set.unit
         };
       }
@@ -258,7 +266,7 @@
       if (cart().renderBadge) cart().renderBadge();
       var c = $('cta'); c.textContent = 'Added to bag ✓';
       $('viewbag').hidden = false;
-      setTimeout(function () { if (picks.length === size) c.textContent = 'Add gift set to bag →'; }, 1600);
+      setTimeout(function () { if (picks.length === size) c.textContent = 'Add set to bag →'; }, 1600);
     });
 
     // "Full Range first" applies only when it can be bought: if it can't, open on the Trio.

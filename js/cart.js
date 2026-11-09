@@ -62,7 +62,14 @@
       var b = P.get(c.slug); if (!b) return;
       c.price = b.price; var m = P.mrp(c.slug, null); if (m) c.mrp = m; else delete c.mrp;
     });
+    cart.forEach(relabelSet);
     return cart;
+  }
+  // Set lines saved before 9 Nov 2026 carry the old names ("Trio Gift Set (…)", "Full Range Gift Set") and unit: show today's.
+  function relabelSet(c) {
+    if (!c || boxesFor(c.slug) < 2) return;
+    if (typeof c.name === 'string') c.name = c.name.replace(/^Trio Gift Set\b/, 'Trio Set').replace(/^Full Range Gift Set$/, 'Full Range Set');
+    if (c.unit === '750g, 3 flavors') c.unit = '750g, 3 Flavors';
   }
   function saveCart(cart) {
     localStorage.setItem(KEY, JSON.stringify(cart));
@@ -233,7 +240,7 @@
       if (item.qty > 1) setQty(slug, item.qty - 1, { silent: true });
       else removeFromCart(slug);
     });
-    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+    addToCart({ slug: 'full-range-set', name: 'Full Range Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
   }
 
   // Any three different flavors are exactly the Trio, and all four are exactly the Full Range set. Both cost less than
@@ -244,7 +251,7 @@
     { slug: 'atta-lite-sugar', token: 'lite-sugar', label: 'Sugar-Lite' },
     { slug: 'atta-ajwain',     token: 'ajwain',     label: 'Ajwain' }
   ];
-  var TRIO_UNIT = '750g, 3 flavors';
+  var TRIO_UNIT = '750g, 3 Flavors';
   // Price of the Trio made of these Flavor tokens (the rule, per mix). Without prices.js, the same rule on the launch prices.
   var LAUNCH_SINGLES = { original: 259, ajwain: 259, kesari: 299, 'lite-sugar': 329 };
   function trioPriceFor(tokens) {
@@ -271,7 +278,7 @@
       if (item.qty > 1) setQty(f.slug, item.qty - 1, { silent: true }); else removeFromCart(f.slug);
     });
     var labels = picks.map(function (f) { return f.label; }).join(', ');
-    addToCart({ slug: slug, name: 'Trio Gift Set (' + labels + ')', price: tp, unit: TRIO_UNIT }, { silent: true });
+    addToCart({ slug: slug, name: 'Trio Set (' + labels + ')', price: tp, unit: TRIO_UNIT }, { silent: true });
     return { saved: sum - tp, labels: labels };
   }
   // A Trio in the bag can become the Full Range set by adding the 4th flavor: replaces one Trio with one Full Range set.
@@ -279,7 +286,7 @@
     var t = getCart().filter(function (c) { return isTrioSlug(c.slug); })[0];
     if (!t) return;
     if (t.qty > 1) setQty(t.slug, t.qty - 1, { silent: true }); else removeFromCart(t.slug);
-    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+    addToCart({ slug: 'full-range-set', name: 'Full Range Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
     autoPackOfFour();
   }
   // A Trio plus a loose box of the 4th flavor is the Full Range set for less money: merge them.
@@ -296,7 +303,7 @@
     if (saved <= 0) return null;
     if (t.qty > 1) setQty(t.slug, t.qty - 1, { silent: true }); else removeFromCart(t.slug);
     if (single.qty > 1) setQty(single.slug, single.qty - 1, { silent: true }); else removeFromCart(single.slug);
-    addToCart({ slug: 'full-range-set', name: 'Full Range Gift Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
+    addToCart({ slug: 'full-range-set', name: 'Full Range Set', price: AOV_FULL_RANGE_PRICE, unit: '1kg, one of each' }, { silent: true });
     return { saved: saved };
   }
   // The bag no longer changes itself. A cheaper set is SUGGESTED (see suggestion()) and the customer chooses; kept as a no-op
@@ -387,9 +394,26 @@
     return 'Make it ' + (sg.kind === 'trio' ? 'a Trio' : 'the Full Range') + ' and save \u20B9' + sg.saved;
   }
 
+  // A Trio alone can step up to the Full Range for the difference (spec 4.3; approved wording, spec 5 item 3). Not when the bag
+  // also holds the missing 4th Flavor (that is the merge suggestion's case) or when the Full Range cannot be bought.
+  function stepUpOf(cart) {
+    var t = cart.filter(function (c) { return isTrioSlug(c.slug) && c.qty >= 1; })[0];
+    if (!t || isSlugSoldOut('full-range-set')) return null;
+    var padded = '-' + t.slug + '-';
+    var have = FLAV_META.filter(function (f) { return padded.indexOf('-' + f.token + '-') >= 0; });
+    if (have.length !== 3) return null;
+    var miss = FLAV_META.filter(function (f) { return have.indexOf(f) < 0; })[0];
+    if (cart.some(function (c) { return c.slug === miss.slug && c.qty >= 1; })) return null;
+    var more = AOV_FULL_RANGE_PRICE - t.price;
+    return more > 0 ? { more: more, extra: miss.label } : null;
+  }
+
   // total is derived from cart, not passed separately, so this can never
   // drift out of sync with what's actually in the cart.
-  function renderAovProgressHtml(cart) {
+  // opts.subscribe (checkout): Subscribe & Save is ticked, so no box suggestion and no step-up (a set cannot be subscribed to yet,
+  // and the saving shown would leave out the subscriber discount).
+  function renderAovProgressHtml(cart, opts) {
+    var subscribing = !!(opts && opts.subscribe);
     var total = cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
     var boxes = cart.reduce(function (n, c) { return n + c.qty * boxesFor(c.slug); }, 0);
     var pendingMin = boxes < MIN_BOXES;
@@ -406,16 +430,20 @@
       msgHtml = 'Shipping is \u20B9' + SHIPPING_FEE + ' on this order. Add <b>one more box</b> and it ships free (free shipping from \u20B9' + FREE_FROM + ').';
     } else if (gift && total < FREE_FROM) {
       msgClass = 'unlocked';
-      msgHtml = 'Gift boxes ship free \u2713 you\'re all set';
+      msgHtml = 'Trio and Full Range ship free \u2713 you\'re all set';
     } else {
       msgClass = 'unlocked';
       msgHtml = 'Free shipping \u2713 you\'re all set';
     }
     // The box suggestion sits beside the shipping line, never instead of it (approved wording only, spec section 5).
-    var sg = pendingMin ? null : suggestion(), cardHtml = '';
+    var sg = (pendingMin || subscribing) ? null : suggestion(), cardHtml = '';
     if (sg) {
       cardHtml = '<div class="aov-actions"><button type="button" class="aov-upgrade-btn" data-aov-accept>' + suggestionHtml(sg) + '</button>' +
         '<button type="button" class="aov-keep-btn" data-aov-keep data-sig="' + sg.sig + '">Keep as singles</button></div>';
+    } else if (!pendingMin && !subscribing) {
+      var up = stepUpOf(cart);
+      if (up) cardHtml = '<p class="aov-stepup">Add the 4th Flavor for \u20B9' + Number(up.more).toLocaleString('en-IN') + ' more</p>' +
+        '<div class="aov-actions"><button type="button" class="aov-upgrade-btn" data-aov-trio-upgrade>Make it the Full Range</button></div>';
     }
     return '' +
       '<div class="aov-progress">' +
@@ -743,8 +771,8 @@
       { title: 'Atta Kesari', desc: 'Real saffron, mixed into every batch. 250g.', type: 'Product', url: 'atta-kesari.html' },
       { title: 'Atta Sugar-Lite', desc: '95% less sugar than Original, sweetened with maltitol. 250g.', type: 'Product', url: 'atta-lite-sugar.html' },
       { title: 'Atta Ajwain', desc: 'Spiced with ajwain, less sweet than the others. 250g.', type: 'Product', url: 'atta-ajwain.html' },
-      { title: 'The Trio Gift Set', desc: 'Choose any 3 of 4 flavors, 250g each.', type: 'Gift Set', url: 'build-a-box.html' },
-      { title: 'The Full Range Gift Set', desc: 'One of each flavor, 1kg total, 4 boxes.', type: 'Gift Set', url: 'build-a-box.html' },
+      { title: 'The Trio Set', desc: 'Choose any 3 of 4 Flavors, 250g each.', type: 'Set', url: 'build-a-box.html' },
+      { title: 'The Full Range Set', desc: 'One of each Flavor, 1kg total, 4 boxes.', type: 'Set', url: 'build-a-box.html' },
       { title: 'Corporate Gifting', desc: 'Bulk and corporate orders from 20 boxes, quoted on WhatsApp.', type: 'Page', url: 'corporate-gifting.html' },
       { title: 'Maida-free cookies: how to read a label', desc: 'A plain guide to maida, atta, fats and sugar on biscuit labels.', type: 'Page', url: 'maida-free-cookies-guide.html' },
       { title: 'About Us', desc: 'Our story — baked in Bikaner by Krazy Bakers.', type: 'Page', url: 'about.html' },
@@ -773,14 +801,14 @@
       function renderResults(query) {
         var q = query.trim().toLowerCase();
         if (!q) {
-          searchResults.innerHTML = '<div class="search-hint">Try "kesari", "gift set", "diabetic", or "shelf life".</div>';
+          searchResults.innerHTML = '<div class="search-hint">Try "kesari", "set", "diabetic", or "shelf life".</div>';
           return;
         }
         var matches = SEARCH_INDEX.filter(function (item) {
           return item.title.toLowerCase().indexOf(q) !== -1 || item.desc.toLowerCase().indexOf(q) !== -1;
         }).slice(0, 8);
         if (!matches.length) {
-          searchResults.innerHTML = '<div class="search-empty">No results for "' + escapeHtml(query) + '". Try a flavor name, "gift set", or a question about shipping/payment.</div>';
+          searchResults.innerHTML = '<div class="search-empty">No results for "' + escapeHtml(query) + '". Try a Flavor name, "set", or a question about shipping/payment.</div>';
           return;
         }
         searchResults.innerHTML = matches.map(function (item) {

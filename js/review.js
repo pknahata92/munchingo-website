@@ -32,7 +32,7 @@
   function form(data) {
     root.textContent = '';
     root.appendChild(el('h1', { text: 'Hi ' + data.first + ', how was your box?' }));
-    root.appendChild(el('p', { 'class': 'rv-lede', text: 'Rate each flavor. Honest is more useful to us than nice.' }));
+    root.appendChild(el('p', { 'class': 'rv-lede', text: 'Rate each Flavor. Honest is more useful to us than nice.' }));
     var f = el('form', { id: 'rv-form', novalidate: '' });
     data.flavours.forEach(function (fl) {
       var stars = el('div', { 'class': 'rv-stars' });

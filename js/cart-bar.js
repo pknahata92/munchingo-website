@@ -44,7 +44,8 @@
     var short = c.boxesShort(), ship = c.cartShipping();
     q('count').textContent = n + (n === 1 ? ' item' : ' items');
     q('total').textContent = inr(total + ship);
-    q('fill').style.width = (short ? Math.round(c.cartBoxes() / c.MIN_BOXES * 100) : Math.min(100, Math.round(total / c.FREE_FROM * 100))) + '%';
+    // Full once shipping is free, including when a set makes it free below FREE_FROM (a ₹749 Trio is not "96% there").
+    q('fill').style.width = (short ? Math.round(c.cartBoxes() / c.MIN_BOXES * 100) : (ship ? Math.min(100, Math.round(total / c.FREE_FROM * 100)) : 100)) + '%';
     q('hint').textContent = short ? 'Minimum ' + c.MIN_BOXES + ' boxes' : (ship ? 'Shipping ' + inr(ship) + ' \u00B7 free from ' + inr(c.FREE_FROM) : 'Free shipping');
     var cta = q('cta');
     if (short) { cta.textContent = 'Add ' + short + ' more box' + (short === 1 ? '' : 'es'); cta.setAttribute('href', 'shop.html'); }

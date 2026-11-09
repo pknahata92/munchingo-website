@@ -154,7 +154,7 @@
   var pick = {}, pickItem = null;
   function openMix(itemId) {
     pickItem = itemId; pick = {}; FLAV.forEach(function (f) { pick[f.id] = 0; });
-    $('st-mix-title').textContent = ITEMS[itemId].name + ': which flavors?';
+    $('st-mix-title').textContent = ITEMS[itemId].name + ': which Flavors?';
     $('st-mix-ok').textContent = 'Add ' + rupees(priceOf(itemId));
     renderMix(); $('st-mix').hidden = false;
   }

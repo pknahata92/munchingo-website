@@ -1322,6 +1322,9 @@ body.v2 .v2-band .v2-band-eyebrow{opacity:.95}
 .aov-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .aov-keep-btn{background:none;border:1px solid rgba(42,26,18,.3);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:600 13px/1 Poppins,system-ui,sans-serif;cursor:pointer;min-height:40px}
 @media (max-width:480px){.aov-actions{flex-direction:column;align-items:stretch}.aov-actions .aov-upgrade-btn,.aov-actions .aov-keep-btn{width:100%}}
+/* Bag step-up for a Trio alone (js/cart.js): the line above the card button */
+.aov-stepup{margin:10px 0 0;font-size:.8rem;font-weight:600;color:var(--ink)}
+.aov-stepup+.aov-actions{margin-top:8px}
 /* range-card quantity stepper (js/cart.js) */
 .v2-add[hidden],.v2-step[hidden],.v2-qty[hidden]{display:none!important}
 /* Add to bag and the - qty + stepper that replaces it share one 48px box, so nothing on the card moves when a box is added. */
@@ -1512,14 +1515,6 @@ html.mc-lock{overflow:hidden}
   .v2-hero-art{aspect-ratio:1.4/1}
 }
 
-/* Pre-Diwali gift set offer note (js/prices.js); hidden automatically from 9 Nov */
-.promo-note{display:inline-block;margin:8px 0 0;padding:5px 10px;font-size:13px;font-weight:600;color:var(--terra,#A35A34);background:#FDF6E8;border:1px dashed var(--gold,#CEAD5E);border-radius:6px}
-.promo-note[hidden]{display:none}
-/* Gift sets before 9 Nov: the 9 Nov price struck through beside today's (prices.js data-was-for) */
-.was-price{font-size:16px;font-weight:600;color:#7a6658;margin-right:8px;text-decoration-thickness:1.5px}
-.gb-lede .was-price,.v2-bundle .was-price,.v2-giftlink .was-price,.pg-card .was-price{font-size:inherit;font-weight:500;margin-right:2px}
-.was-price[hidden]{display:none}
-.door-card.dark .was-price{color:#cbb9a6}
 .set-price{display:block;white-space:nowrap}
 
 /* Pack of 2 picker (js/pack2.js, home page #pack-of-2) */
@@ -1567,7 +1562,7 @@ html.mc-lock{overflow:hidden}
 .door-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
 @media(max-width:720px){.door-cards{grid-template-columns:1fr}}
 .door-card{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:18px;padding:22px;text-decoration:none;color:var(--ink,#2A1A12);border-top:5px solid var(--terra,#A35A34);box-shadow:0 2px 0 rgba(42,26,18,.08)}
-.door-card.dark{background:#2A1A12;color:#fff;border-top-color:var(--marigold,#E3A72F)}.door-card.dark small{color:#e8dccd}.door-card.dark .promo-note{color:var(--marigold,#E3A72F);background:transparent}
+.door-card.dark{background:#2A1A12;color:#fff;border-top-color:var(--marigold,#E3A72F)}.door-card.dark small{color:#e8dccd}
 .door-card b{font-size:22px}.door-price{font-size:26px;font-weight:800}
 .door-trust{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;padding:0;margin:22px 0 0;font-size:14px;font-weight:600}
 .door-trust li::before{content:"✓ ";color:var(--terra,#A35A34)}
@@ -1651,7 +1646,6 @@ body.wa-later .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)
   .v2-range .v2-card .v2-unit{flex-basis:100%;font-size:13px;opacity:.85}
   .v2-range .v2-card .v2-unit::before{content:none}
   .shop-set .btn{white-space:nowrap;padding-left:16px;padding-right:16px}
-  .shop-set .promo-note{font-size:12px;white-space:nowrap}
 }
 /* Builder tiles show the Flavor name only, on one line */
 .gb-fl>span:last-child{white-space:nowrap}

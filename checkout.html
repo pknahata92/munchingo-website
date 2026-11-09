@@ -163,7 +163,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
   <div class="search-panel-inner">
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-      <input type="text" placeholder="Search flavors, boxes, FAQs..." data-search-input autocomplete="off">
+      <input type="text" placeholder="Search Flavors, boxes, FAQs..." data-search-input autocomplete="off">
       <button class="search-close" aria-label="Close search" data-search-close>&times;</button>
     </div>
     <div class="search-results" data-search-results></div>
@@ -235,7 +235,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
       </div>
       <div class="ck-more">
         <button type="button" class="ck-link" id="ck-email-toggle" hidden>+ Add email for a receipt</button>
-        <button type="button" class="ck-link" id="ck-gift-toggle">🎁 Add a gift note</button>
+        <button type="button" class="ck-link" id="ck-gift-toggle">🎁 Add a note</button>
       </div>
       <div class="field" id="ck-email-field">
         <label for="ck-email" id="ck-email-label">Email (for your GST invoice)</label>
@@ -254,8 +254,8 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
         </select>
       </div>
       <div class="field" id="ck-gift-field" hidden>
-        <label for="ck-gift-note">Gift note</label>
-        <textarea id="ck-gift-note" rows="2" maxlength="200" placeholder="e.g. Happy Diwali, love Priya"></textarea>
+        <label for="ck-gift-note">Note</label>
+        <textarea id="ck-gift-note" rows="2" maxlength="200" placeholder="e.g. Happy birthday, love Priya"></textarea>
       </div>
       <label class="ck-remember"><input type="checkbox" id="ck-remember" checked> Remember my details on this phone</label>
     </form>
@@ -355,7 +355,7 @@ var VALIDATE_COUPON_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/v
 // this is just the UX pre-check, the backend enforces and prices it for real.
 var MIN_BOXES = MunchingoCart.MIN_BOXES;
 // Must match SUBSCRIPTION_DISCOUNT_PCT in webhook-backend/routes/checkout.js.
-var SUBSCRIPTION_DISCOUNT_PCT = 8;
+var SUBSCRIPTION_DISCOUNT_PCT = 5;
 // The coupon proactively advertised at checkout instead of a blank promo
 // field. Update (or blank out to hide the banner) when this code changes —
 // see coupons_migration_v2.sql for what's actually live in Supabase.
@@ -449,7 +449,7 @@ function renderSummary() {
   if (!subscribeChecked && lastQuote && lastQuote.key === quoteKey(cart) && lastQuote.next) {
     var np = lastQuote.next.pct ? (lastQuote.tiers || []).filter(function (t) { return t.pct; })[0] : null;
     nudgeHtml = '<div class="tier-nudge">Add <b>' + inr(lastQuote.next.need) + '</b> more in single boxes and ' + (np ? 'get <b>' + np.pct + '% off</b>' + (np.cap ? ' (up to ' + inr(np.cap) + ')' : '') : 'save <b>' + inr(lastQuote.next.off) + '</b>') + '.'
-      + '<small>More of a flavor you already have counts too. Gift sets are already priced below singles, so this offer is for single boxes.</small></div>';
+      + '<small>More of a Flavor you already have counts too. Sets are already priced below singles, so this offer is for single boxes.</small></div>';
   }
   if (!subscribeChecked && (!lastQuote || lastQuote.key !== quoteKey(cart))) refreshQuote(cart, quoteKey(cart));
 
@@ -502,7 +502,7 @@ function renderSummary() {
   });
 
   var aovProgressEl = document.getElementById('checkout-aov-progress');
-  aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart);
+  aovProgressEl.innerHTML = MunchingoCart.renderAovProgressHtml(cart, { subscribe: subscribeChecked });   // no box suggestion or step-up while Subscribe & Save is ticked
   MunchingoCart.initAovUpgrade(aovProgressEl, onCartChangedByPageAction);
 
   var crossSellEl = document.getElementById('checkout-cross-sell');
@@ -513,7 +513,7 @@ function renderSummary() {
 // When someone applies a code and the bag holds a gift set, say plainly why sets are different (they are priced as a deal already).
 function giftSetNote() {
   var has = MunchingoCart.getCart().some(function (c) { return c.slug === 'full-range-set' || String(c.slug).indexOf('trio-gift-set') === 0; });
-  return has ? ' Gift sets are already at their best price.' : '';
+  return has ? ' Sets are already at their best price.' : '';
 }
 function showPromoMsg(msg, isError) {
   var el = document.getElementById('ck-promo-msg');
