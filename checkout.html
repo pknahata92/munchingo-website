@@ -546,7 +546,7 @@ async function applyPromoCode() {
     var data = await res.json();
     if (!res.ok || !data.ok) {
       appliedCoupon = null;
-      showPromoMsg((data.error || 'That code is not valid.') + (/Trio or Full Range Sets/i.test(data.error || '') ? '' : giftSetNote()), true);
+      showPromoMsg((data.error || 'That code is not valid.') + (/Full Range Sets/i.test(data.error || '') ? '' : giftSetNote()), true);
     } else {
       appliedCoupon = { code: code.toUpperCase(), discountAmount: data.discountAmount, finalTotal: data.finalTotal };
       showPromoMsg('Applied — you saved ' + inr(data.discountAmount) + '.' + giftSetNote(), false);
