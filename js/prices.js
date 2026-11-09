@@ -10,6 +10,9 @@
   'use strict';
   var KEY = 'munchingo_prices';
   var API = 'https://munchingo-whatsapp-webhook.onrender.com/api/prices';
+  // A page may opt out of the reload (the stall tally, where a reload mid-sale could lose the open basket): put data-no-reload on its
+  // script tag. Then fresh prices update this page in memory and a 'munchingo:prices' event is dispatched instead.
+  var NO_RELOAD = !!(document.currentScript && document.currentScript.hasAttribute('data-no-reload'));
   var book = null;
   try { book = JSON.parse(localStorage.getItem(KEY)); } catch (e) { book = null; }
   if (!book || typeof book !== 'object') book = null;
@@ -117,6 +120,15 @@
       var freshRule = validRule(j.boxRule) ? { 3: j.boxRule[3], 4: j.boxRule[4] } : null;
       var fresh = canon(j.prices) + JSON.stringify(freshRule), had = canon(book) + JSON.stringify(rule);
       if (fresh === had) return;
+      if (NO_RELOAD) {
+        book = j.prices; rule = freshRule; window.MunchingoPrices.ready = true;
+        try {
+          localStorage.setItem(KEY, JSON.stringify(j.prices));
+          if (freshRule) localStorage.setItem(RULE_KEY, JSON.stringify(freshRule)); else localStorage.removeItem(RULE_KEY);
+        } catch (e) { /* storage blocked: the page still has the fresh prices in memory */ }
+        apply(); window.dispatchEvent(new Event('munchingo:prices'));
+        return;
+      }
       try {
         localStorage.setItem(KEY, JSON.stringify(j.prices));
         if (freshRule) localStorage.setItem(RULE_KEY, JSON.stringify(freshRule)); else localStorage.removeItem(RULE_KEY);

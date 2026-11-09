@@ -19,14 +19,27 @@
     { id: 'kesari', name: 'Kesari' },
     { id: 'lite', name: 'Sugar-Lite' },
   ];
+  // Single boxes follow the website's live prices (js/prices.js, the same book the shop reads), read at every tap and never frozen at
+  // page load; the numbers here are the offline fallback (the same launch prices as prices.js). Hampers are fixed (9 Nov 2026).
   var ITEMS = {
-    original: { name: 'Original', price: 250, mix: { original: 1 } },
-    ajwain: { name: 'Ajwain', price: 250, mix: { ajwain: 1 } },
-    kesari: { name: 'Kesari', price: 300, mix: { kesari: 1 } },
-    lite: { name: 'Sugar-Lite', price: 300, mix: { lite: 1 } },
-    h3: { name: 'Hamper of 3', price: 799, hamper: true, pick: 3 },
-    h4: { name: 'Hamper of 4', price: 999, hamper: true, pick: 4 },
+    original: { name: 'Original', slug: 'atta-original', fallback: 259, mix: { original: 1 } },
+    ajwain: { name: 'Ajwain', slug: 'atta-ajwain', fallback: 259, mix: { ajwain: 1 } },
+    kesari: { name: 'Kesari', slug: 'atta-kesari', fallback: 299, mix: { kesari: 1 } },
+    lite: { name: 'Sugar-Lite', slug: 'atta-lite-sugar', fallback: 329, mix: { lite: 1 } },
+    h3: { name: 'Hamper of 3', price: 899, hamper: true, pick: 3 },
+    h4: { name: 'Hamper of 4', price: 1149, hamper: true, pick: 4 },
   };
+  function priceOf(id) {
+    var it = ITEMS[id];
+    if (!it.slug) return it.price;
+    var p = window.MunchingoPrices && window.MunchingoPrices.price ? window.MunchingoPrices.price(it.slug, null) : null;
+    return typeof p === 'number' && p > 0 ? p : it.fallback;
+  }
+  function renderLabels() {
+    Array.prototype.forEach.call(document.querySelectorAll('button[data-item]'), function (b) {
+      var span = b.querySelector('span'); if (span && ITEMS[b.dataset.item]) span.textContent = rupees(priceOf(b.dataset.item));
+    });
+  }
   var TIERS = [{ min: 500, off: 50 }, { min: 1000, off: 100 }, { min: 2000, off: 250 }];   // loose-box total -> rupees off
   var $ = function (id) { return document.getElementById(id); };
   var rupees = function (n) { return '₹' + Math.round(n).toLocaleString('en-IN'); };
@@ -97,7 +110,7 @@
   // ── basket and payment ──
   function addLine(itemId, mix) {
     var it = ITEMS[itemId];
-    dayData(today).basket.push({ item: itemId, name: it.name, price: it.price, hamper: !!it.hamper, mix: mix });
+    dayData(today).basket.push({ item: itemId, name: it.name, price: priceOf(itemId), hamper: !!it.hamper, mix: mix });
     persist(); render();
   }
   function removeLine(i) { dayData(today).basket.splice(i, 1); persist(); render(); }
@@ -142,7 +155,7 @@
   function openMix(itemId) {
     pickItem = itemId; pick = {}; FLAV.forEach(function (f) { pick[f.id] = 0; });
     $('st-mix-title').textContent = ITEMS[itemId].name + ': which flavors?';
-    $('st-mix-ok').textContent = 'Add ' + rupees(ITEMS[itemId].price);
+    $('st-mix-ok').textContent = 'Add ' + rupees(priceOf(itemId));
     renderMix(); $('st-mix').hidden = false;
   }
   var need = function () { return ITEMS[pickItem].pick; };
@@ -306,6 +319,8 @@
   // ── wire up ──
   load();
   dayData(today);
+  renderLabels();
+  window.addEventListener('munchingo:prices', renderLabels);   // prices.js (data-no-reload) says fresh prices arrived: relabel, never reload mid-sale
   $('st-day').textContent = niceDay(today);
   document.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
@@ -349,5 +364,5 @@
   if (navigator.serviceWorker && navigator.serviceWorker.register) navigator.serviceWorker.register('/stall-sw.js', { scope: '/stall' }).catch(function () {});
 
   syncNow();
-  window.StallTally = { csv: csv, version: 5 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
+  window.StallTally = { csv: csv, version: 6 };   // version must match stall.js?v= in stall.html and stall-sw.js   // for the test and for a manual copy if sharing fails
 })();
