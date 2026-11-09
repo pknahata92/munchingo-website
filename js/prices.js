@@ -111,7 +111,7 @@
     if (typeof fetch !== 'function' || !/(^|\.)munchingo\.com$/.test(location.hostname)) return;
     fetch(API).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
       if (!j || !j.prices || typeof j.prices !== 'object') return;
-      // Compare whole entries (price, MRP, promo), not just the list of names: an array replacer in JSON.stringify would also
+      // Compare whole entries (price, MRP), not just the list of names: an array replacer in JSON.stringify would also
       // drop the nested keys, so a changed price used to look unchanged and returning visitors kept the old numbers.
       var canon = function (o) { return JSON.stringify(Object.keys(o || {}).sort().map(function (k) { return [k, o[k]]; })); };
       var freshRule = validRule(j.boxRule) ? { 3: j.boxRule[3], 4: j.boxRule[4] } : null;
