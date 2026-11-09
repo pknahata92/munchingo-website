@@ -263,7 +263,7 @@ src="https://www.facebook.com/tr?id=975114194987428&ev=PageView&noscript=1"
     <div class="ck-offers"><h2 class="ck-offers-h">Offers</h2>
     <label class="subscribe-toggle" id="ck-subscribe-label">
       <input type="checkbox" id="ck-subscribe">
-      <span><strong>Subscribe &amp; Save 5% on single boxes (not gift boxes)</strong> — a fresh box every month. Pause or cancel anytime on WhatsApp.</span>
+      <span><strong>Subscribe &amp; Save 5% on single boxes (not sets)</strong> — a fresh box every month. Pause or cancel anytime on WhatsApp.</span>
     </label>
 
     <div class="checkout-promo-featured" id="ck-promo-featured">
@@ -545,7 +545,7 @@ async function applyPromoCode() {
     var data = await res.json();
     if (!res.ok || !data.ok) {
       appliedCoupon = null;
-      showPromoMsg((data.error || 'That code is not valid.') + (/gift sets/i.test(data.error || '') ? '' : giftSetNote()), true);
+      showPromoMsg((data.error || 'That code is not valid.') + (/Trio or Full Range Sets/i.test(data.error || '') ? '' : giftSetNote()), true);
     } else {
       appliedCoupon = { code: code.toUpperCase(), discountAmount: data.discountAmount, finalTotal: data.finalTotal };
       showPromoMsg('Applied — you saved ' + inr(data.discountAmount) + '.' + giftSetNote(), false);
