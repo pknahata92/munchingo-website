@@ -936,6 +936,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .gb-fl>span:last-child{display:block;padding:10px 12px 12px;font-weight:600;font-size:13px}
 .gb-plus{position:absolute;top:8px;right:8px;min-width:30px;height:30px;padding:0 8px;border-radius:999px;background:#FFF6EA;color:var(--c);display:grid!important;place-items:center;font-weight:700;font-size:13px;line-height:30px}
 .gb-fl[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.gb-fl.picked[disabled]{opacity:1;cursor:default;transform:none}
 .gb-fl.gb-out{opacity:1}.gb-fl.gb-out img{filter:grayscale(1) brightness(.75)}.gb-fl.gb-out .gb-plus{display:none}
 .gb-so{position:absolute;left:0;right:0;top:34%;transform:translateY(-50%);margin:0 8px;background:rgba(42,26,18,.92);color:#fff;font-style:normal;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:7px 6px;border-radius:10px;line-height:1.2;z-index:2}
 .gb-so small{display:block;font-weight:600;letter-spacing:.02em;text-transform:none;font-size:11px;opacity:.85;margin-top:2px}
@@ -954,6 +955,8 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .gb-slot.full::after{display:none}
 .gb-slot img{width:100%;height:100%;object-fit:cover;animation:gb-pop .35s cubic-bezier(.2,1.6,.4,1)}
 .gb-slot .x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:0;font-size:13px;cursor:pointer;line-height:22px;padding:0}
+/* remove button: 22px circle, 36px tap area (transparent ring, kept inside the slot so it never reaches a neighbour) */
+.gb-slot .x::before{content:"";position:absolute;top:-4px;right:-4px;bottom:-10px;left:-10px}
 @keyframes gb-pop{from{transform:scale(.4);opacity:0}}
 @media (prefers-reduced-motion:reduce){.gb-slot img{animation:none}.gb-fl,.gb-opt{transition:none}}
 .gb-bar{height:6px;border-radius:9px;background:rgba(246,234,218,.12);margin:18px 0;overflow:hidden}
@@ -972,6 +975,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.12);padding:1.1rem 0;font-s
 .gb-total b{font-family:var(--f-body);font-size:34px;font-weight:700;letter-spacing:-.01em}
 .gb-cta{width:100%;margin-top:18px;padding:17px}
 .gb-cta[disabled]{background:rgba(246,234,218,.1);color:rgba(246,234,218,.78);box-shadow:none;cursor:not-allowed;transform:none}
+.gb-stepup{margin-top:16px;padding-top:14px;border-top:1px solid rgba(246,234,218,.14)}
 .gb-viewbag{display:block;text-align:center;margin-top:12px;color:var(--marigold-soft);font-weight:600;font-size:14px}
 .gb-fine{font-size:11px;text-align:center;margin:14px 0 0;opacity:.6}
 @media (max-width:900px){
@@ -1431,10 +1435,12 @@ html.mc-lock{overflow:hidden}
   .gb-flavours{grid-template-columns:1fr 1fr;gap:8px}
   .gb-fl{display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px 6px 6px}
   .gb-fl img{width:44px;height:44px;aspect-ratio:auto;border-radius:9px;flex:none}
-  .gb-fl>span:last-child{padding:0 26px 0 0;font-size:12.5px;line-height:1.25}
-  .gb-fl .gb-plus{top:50%;right:8px;transform:translateY(-50%);width:22px;height:22px;font-size:15px}
+  .gb-fl>span:last-child{padding:0;font-size:12.5px;line-height:1.25}
+  /* the +/tick badge rides the thumbnail's top-right corner so it never covers the Flavor name */
+  .gb-fl .gb-plus{top:2px;right:auto;left:36px;transform:none;width:20px;height:20px;min-width:20px;padding:0;line-height:20px;font-size:13px}
   .gb-panel{padding:18px;border-radius:20px;margin-top:6px}
-  .gb-count{font-size:inherit}
+  .gb-count{font-size:26px;line-height:1.1}
+  .gb-count small{font-size:16px}
   .gb-panel.gb-none .gb-row,.gb-panel.gb-none .gb-total{display:none}
   .gb-fine{display:none}
 }
@@ -1605,7 +1611,6 @@ html.mc-lock{overflow:hidden}
 /* Build a box page (28 Oct): real H1, names clear of the + button, readable corporate card */
 .gb .gb-h1{font-family:var(--f-display);font-size:clamp(2.8rem,6vw,5rem);line-height:1;margin:16px 0 18px;color:var(--ink);font-weight:400}
 .gb .gb-h1 .gb-l2{display:block;color:var(--terra)}
-@media (max-width:720px){.gb-fl>span:last-child{padding-right:38px}}
 body.v2 .pg-cta h2,.pg-cta h2{color:#FFF6EA}
 /* Builder paused (no set can be filled): the panel shows one card, nothing that can't finish */
 .gb-paused{display:grid;gap:12px}
@@ -1615,13 +1620,13 @@ body.v2 .pg-cta h2,.pg-cta h2{color:#FFF6EA}
 .gb-paused .gb-notify{justify-content:center}
 .gb-panel.gb-is-paused>*:not(.gb-paused):not(.gb-k){display:none!important}
 /* Phone tiles: "Sold out" sits where the + was, never over the Flavor name */
-@media (max-width:720px){
-  .gb-fl .gb-so{top:50%;left:auto;right:6px;margin:0;padding:3px 7px;font-size:9.5px;letter-spacing:.04em;border-radius:999px;transform:translateY(-50%)}
+@media (max-width:700px){
+  .gb-fl.gb-out{padding-bottom:28px}
+  .gb-fl .gb-so{top:auto;bottom:6px;left:auto;right:8px;margin:0;padding:3px 7px;font-size:9.5px;letter-spacing:.04em;border-radius:999px;transform:none}
   .gb-fl .gb-so small{display:none}
 }
 .wa-float{transition:opacity .25s ease,transform .25s ease,bottom .3s}
 body.wa-later .wa-float{opacity:0;pointer-events:none;transform:translateY(12px)}
-@media (max-width:720px){.gb-fl.gb-out>span:last-child{padding-right:70px}}
 
 .p2-have{font-size:13px;color:#2A1A12;background:#FFF6EA;border-radius:10px;padding:8px 12px;margin:0 0 12px}
 .p2-have a{font-weight:700;color:#A35A34;white-space:nowrap}

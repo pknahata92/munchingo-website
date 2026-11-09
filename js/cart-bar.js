@@ -33,7 +33,7 @@
   // A cheaper set the buyer could choose (js/cart.js suggestion()): only a tip here; the choice is made in the bag.
   function setHint(c) {
     var sg = c.suggestion && c.suggestion();
-    return sg ? 'Tip: save ' + inr(sg.saved) + ' as a ' + (sg.kind === 'trio' ? 'Trio' : 'Full Range') + ' set' : '';
+    return sg && c.suggestionHtml ? c.suggestionHtml(sg) : '';
   }
 
   function q(n) { return bar.querySelector('[data-mcb-' + n + ']'); }

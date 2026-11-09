@@ -88,8 +88,8 @@
         '<p class="gb-great" data-gb="great" hidden>✦ Great choice — every flavor, already in the box.</p>' +
         '<div class="gb-note" data-gb="note"><span>🎁</span><a href="#" data-gb="notelink">Add a gift note</a>' +
           '<textarea rows="3" maxlength="200" placeholder="Happy Diwali! Love, …" aria-label="Gift note"></textarea></div>' +
-        '<div class="gb-row" data-gb="cmprow"><span data-gb="cmp"></span></div>' +
-        '<div class="gb-row gb-save" data-gb="svrow"><b data-gb="sv"></b></div>' +
+        '<div class="gb-row" data-gb="cmprow"><span>Same boxes as singles</span><span data-gb="cmp"></span></div>' +
+        '<div class="gb-row gb-save" data-gb="svrow"><span>You save</span><b data-gb="sv"></b></div>' +
         '<div class="gb-total"><span>Total</span><b data-gb="tot">₹0</b></div>' +
         '<p class="gb-ship" data-gb="ship">Gift boxes ship free</p>' +
         '<div class="gb-stepup" data-gb="stepup" hidden><p data-gb="stepuptext"></p><button type="button" class="gb-btn-dark" data-gb="makefull">Make it the Full Range</button></div>' +
@@ -158,8 +158,8 @@
       $('tot').parentNode.style.display = full ? '' : 'none';
       // The comparison is with the same boxes bought as singles at today's website prices (never an MRP), shown once the set is full.
       var saving = singles - price, compare = full && saving > 0;
-      $('cmp').textContent = compare ? 'Same boxes as singles ' + inr(singles) : '';
-      $('sv').textContent = compare ? 'You save ' + inr(saving) : '';
+      $('cmp').textContent = compare ? inr(singles) : '';
+      $('sv').textContent = compare ? inr(saving) : '';
       $('cmprow').style.display = compare ? '' : 'none';
       $('svrow').style.display = compare ? '' : 'none';
       var from = left.querySelector('[data-gb-from]'); if (from) from.textContent = inr(SETS[3].price);

@@ -411,12 +411,19 @@
       msgClass = 'unlocked';
       msgHtml = 'Free shipping \u2713 you\'re all set';
     }
+    // The box suggestion sits beside the shipping line, never instead of it (approved wording only, spec section 5).
+    var sg = pendingMin ? null : suggestion(), cardHtml = '';
+    if (sg) {
+      cardHtml = '<div class="aov-actions"><button type="button" class="aov-upgrade-btn" data-aov-accept>' + suggestionHtml(sg) + '</button>' +
+        '<button type="button" class="aov-keep-btn" data-aov-keep data-sig="' + sg.sig + '">Keep as singles</button></div>';
+    }
     return '' +
       '<div class="aov-progress">' +
         '<div class="aov-progress-track">' +
           '<div class="aov-progress-fill" style="width:' + fillPct + '%"></div>' +
         '</div>' +
         '<p class="aov-progress-msg ' + msgClass + '">' + msgHtml + '</p>' +
+        cardHtml +
       '</div>';
   }
 
