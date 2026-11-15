@@ -63,10 +63,9 @@
     a.setAttribute('aria-label', 'Your bag, ' + n + (n === 1 ? ' item' : ' items'));
   }
 
-  // "Now shipping: baked 20 November": the bake date of the boxes now going out, from /api/stock `packing` (bake dates
-  // only, never a lot code). Absent, null, malformed or any fetch trouble leaves the line hidden, as before.
+  // "Now shipping: baked 20 November": the bake date of the boxes now going out, from `packing` in the /api/stock answer that
+  // js/cart.js fetches once (bake dates only, never a lot code). Absent, null, malformed or any fetch trouble: hidden.
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  var STOCK_API = 'https://munchingo-whatsapp-webhook.onrender.com/api/stock';
   function bakedText(iso) {
     var m = typeof iso === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
     if (!m) return null;
@@ -74,16 +73,17 @@
     if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== mo - 1 || dt.getUTCDate() !== d) return null;
     return 'Now shipping: baked ' + d + ' ' + MONTHS[mo - 1];
   }
+  // Renders from what js/cart.js already learned from its single /api/stock request; this file never fetches.
   function showBaked(slug) {
-    var el = document.querySelector('.pdp-baked');
-    if (!el || typeof fetch !== 'function') return;
-    try {
-      fetch(STOCK_API).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (j) {
-        var p = j && j.packing, text = p && typeof p === 'object' ? bakedText(p[slug]) : null;
-        if (!text) return;
-        el.textContent = text; el.hidden = false;
-      }).catch(function () { /* offline or backend asleep: the line stays hidden */ });
-    } catch (e) { /* the line stays hidden */ }
+    var el = document.querySelector('.pdp-baked'), C = window.MunchingoCart;
+    if (!el || !C || !C.packingFor) return;
+    function render() {
+      var text = bakedText(C.packingFor(slug));
+      if (!text) return;
+      el.textContent = text; el.hidden = false;
+    }
+    render();
+    document.addEventListener('munchingo:stock', render);
   }
 
   function start() {
