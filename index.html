@@ -53,24 +53,22 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Munchingo",
-  "alternateName": "Munchingo (Prashant Nahata)",
-  "url": "https://munchingo.com",
-  "logo": "https://munchingo.com/images/logo-gold-v2.png",
-  "image": "https://munchingo.com/images/box-original.jpg",
-  "description": "Munchingo bakes whole wheat atta cookies with pure desi ghee — no palm oil, no maida — in Bikaner, Rajasthan.",
-  "sameAs": [
-    "https://www.instagram.com/munchingo.india"
-  ],
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "H. No. 43, Sector 14",
-    "addressLocality": "Faridabad",
-    "addressRegion": "Haryana",
-    "postalCode": "121007",
-    "addressCountry": "IN"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Munchingo",
+      "url": "https://munchingo.com/",
+      "logo": "https://munchingo.com/images/logo-gold-v2.png",
+      "sameAs": [
+        "https://www.instagram.com/munchingo.india"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "name": "Munchingo",
+      "url": "https://munchingo.com/"
+    }
+  ]
 }
 </script>
 <!-- Meta Pixel Code -->
