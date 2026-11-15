@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var where = [area, st].filter(Boolean).join(', ');
       window.__pinBlocked = r.serviceable === false || r.valid === false; window.__pinNote = r.outside ? (r.note || 'We’re delivering in Delhi NCR only.') : '';   // plain text: showError() uses textContent, and the status line adds the notify link
       if (r.valid === false && !ip.state) { setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e'); return; }
-      if (r.serviceable === false) setStatus('', window.MunchingoPincode.message(r).html, '#9b3b2e');
+      if (r.serviceable === false) setStatus('', window.MunchingoPincode.message(Object.assign({}, r, { city: r.city || ip.district })).html, '#9b3b2e');   // India Post names the city for the notify link
       else if (r.serviceable === true) setStatus('ok', '✓ We deliver to ' + esc(where || v) + '.');
       else setStatus('ok', '✓ ' + esc(where || v) + '. We confirm delivery when you pay.');
       // The pincode decides the state (it drives the GST on your invoice); the city is filled when empty and otherwise checked against the pincode.

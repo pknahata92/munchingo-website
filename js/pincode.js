@@ -26,7 +26,12 @@
     if (!/^[1-9][0-9]{5}$/.test(pin)) return Promise.resolve({ pin: pin, valid: false, serviceable: false });
     if (memo[pin]) return memo[pin];
     memo[pin] = timed(API + pin, 7000).then(function (r) {
-      if (r && r.ok && r.serviceable !== null && r.serviceable !== undefined) return { pin: pin, valid: !!r.valid, serviceable: r.serviceable, outside: !!r.outside, note: r.message || '', city: r.city || r.district || '', state: r.state || '' };
+      if (r && r.ok && r.serviceable !== null && r.serviceable !== undefined) {
+        var res = { pin: pin, valid: !!r.valid, serviceable: r.serviceable, outside: !!r.outside, note: r.message || '', city: r.city || r.district || '', state: r.state || '' };
+        if (!res.outside || res.city) return res;
+        // The outside-the-area answer names no city: India Post does, for the notify link (the pincode stays the fallback).
+        return indiaPost(pin).then(function (p) { if (p.valid && p.city) res.city = p.city; return res; });
+      }
       return indiaPost(pin).then(function (p) { return { pin: pin, valid: p.valid, serviceable: null, city: p.city || '', state: p.state || '' }; });
     }).catch(function () {
       return indiaPost(pin).then(function (p) { return { pin: pin, valid: p.valid, serviceable: null, city: p.city || '', state: p.state || '' }; });
