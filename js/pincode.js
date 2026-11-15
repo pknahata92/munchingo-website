@@ -36,7 +36,10 @@
   function message(r) {
     var where = [r.city, r.state].filter(Boolean).join(', ');
     if (r.valid === false) return { cls: 'bad', html: 'That pincode does not look right. Please check the 6 digits.' };
-    if (r.outside) return { cls: 'bad', html: esc(r.note || 'We’re delivering in Delhi NCR only.') };   // outside the delivery area (Delhi NCR only, 2 Nov 2026)
+    if (r.outside) {
+      var who = r.city || r.pin;
+      return { cls: 'bad', html: esc(r.note || 'We’re delivering in Delhi NCR only.') + ' <a href="' + WA + '?text=' + encodeURIComponent('NOTIFY - ' + who) + '" target="_blank" rel="noopener">Tell me when you deliver to ' + esc(who) + '</a>' };
+    }   // outside the delivery area (Delhi NCR only, 2 Nov 2026)
     if (r.serviceable === false) return { cls: 'bad', html: 'We cannot deliver to ' + esc(r.pin) + ' yet. <a href="' + WA + '" target="_blank" rel="noopener">Message us on WhatsApp</a> and we will try to arrange it.' };
     if (r.serviceable === true) return { cls: 'ok', html: '✓ Delivery available' + (where ? ' to ' + esc(where) : ' to ' + esc(r.pin)) + '.' };
     if (r.valid === true) return { cls: 'ok', html: '✓ ' + esc(where || r.pin) + '. We confirm your pincode again at checkout.' };
