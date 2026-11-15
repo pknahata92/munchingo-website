@@ -1578,6 +1578,7 @@ html.mc-lock{overflow:hidden}
 .v2-qtyrow.v2-soldout .btn.sold-out{background:transparent;color:var(--ink-2);border:1.5px dashed rgba(42,26,18,.3);box-shadow:none;cursor:default}
 .v2-soldout-note{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid rgba(42,26,18,.12);font-size:14px;line-height:1.5;color:var(--ink-2)}
 .v2-soldout-note b{color:var(--ink)}
+.pdp-baked{margin:10px 0 0;font-size:13.5px;line-height:1.4;color:var(--ink-2)}
 .v2-soldout-note a{display:inline-block;margin-top:4px;color:var(--terra-deep);font-weight:600}
 .v2-sticky-buy.v2-soldout{display:none!important}
 /* Phone bottom bars: while the product's own bar shows, the bag bar steps aside; the product bar links to the bag */
