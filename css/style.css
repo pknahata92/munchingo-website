@@ -1464,7 +1464,7 @@ html.mc-lock{overflow:hidden}
 .pc-btn{border:0;border-radius:999px;padding:0 20px;background:var(--ink,#2A1A12);color:#FFF6EA;font:600 14px inherit;cursor:pointer;min-height:44px}
 .pc-msg{margin:7px 2px 0;font-size:13px;line-height:1.45;min-height:1.2em;color:var(--ink-3,#6b5a4e)}
 .pc-msg.ok{color:#2f6b4f;font-weight:600}.pc-msg.bad{color:#9b3b2e;font-weight:600}
-.pc-msg a{color:inherit}
+.pc-msg a,.ck-pin-status a{color:var(--terra-deep);text-decoration:underline}
 
 /* ── Cart page redesign (desktop two-column, product thumbnails, M watermark) ── */
 .cart-stage{position:relative;overflow:hidden;isolation:isolate;background:radial-gradient(55% 45% at 88% 12%,rgba(227,167,47,.12),transparent 70%)}
