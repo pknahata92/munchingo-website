@@ -16,23 +16,10 @@
   try { SOLD_OUT_SLUGS = JSON.parse(localStorage.getItem(STOCK_KEY)) || []; } catch (e) { SOLD_OUT_SLUGS = []; }
   if (!Array.isArray(SOLD_OUT_SLUGS)) SOLD_OUT_SLUGS = [];
 
-  // Bake dates of the boxes now shipping, per slug, from the same /api/stock response (bake dates only, never a lot
-  // code). Filled only after a good live answer; until then, or if it fails, packingFor() is null and pages show nothing.
-  var PACKING = {};
-  function packingFor(slug) {
-    var v = PACKING && Object.prototype.hasOwnProperty.call(PACKING, slug) ? PACKING[slug] : null;
-    return typeof v === 'string' ? v : null;
-  }
-
   function syncStock() {
     if (typeof fetch !== 'function' || !/(^|\.)munchingo\.com$/.test(location.hostname)) return;
     fetch(STOCK_API).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j) return;
-      if (j.packing && typeof j.packing === 'object' && !Array.isArray(j.packing)) {
-        PACKING = j.packing;
-        try { document.dispatchEvent(new CustomEvent('munchingo:stock')); } catch (e) { /* old browsers: the line just stays hidden */ }
-      }
-      if (!Array.isArray(j.soldOut)) return;
+      if (!j || !Array.isArray(j.soldOut)) return;
       var fresh = j.soldOut.slice().sort().join(','), had = SOLD_OUT_SLUGS.slice().sort().join(',');
       if (fresh === had) return;
       // Only reload if the new list could be remembered; with storage blocked (private mode) the next load would
@@ -551,7 +538,6 @@
 
   window.MunchingoCart = {
     getCart: getCart,
-    packingFor: packingFor,
     addToCart: addToCart,
     removeFromCart: removeFromCart,
     clearCart: clearCart,

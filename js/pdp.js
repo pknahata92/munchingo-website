@@ -63,29 +63,6 @@
     a.setAttribute('aria-label', 'Your bag, ' + n + (n === 1 ? ' item' : ' items'));
   }
 
-  // "Now shipping: baked 20 November": the bake date of the boxes now going out, from `packing` in the /api/stock answer that
-  // js/cart.js fetches once (bake dates only, never a lot code). Absent, null, malformed or any fetch trouble: hidden.
-  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  function bakedText(iso) {
-    var m = typeof iso === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-    if (!m) return null;
-    var y = +m[1], mo = +m[2], d = +m[3], dt = new Date(Date.UTC(y, mo - 1, d));
-    if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== mo - 1 || dt.getUTCDate() !== d) return null;
-    return 'Now shipping: baked ' + d + ' ' + MONTHS[mo - 1];
-  }
-  // Renders from what js/cart.js already learned from its single /api/stock request; this file never fetches.
-  function showBaked(slug) {
-    var el = document.querySelector('.pdp-baked'), C = window.MunchingoCart;
-    if (!el || !C || !C.packingFor) return;
-    function render() {
-      var text = bakedText(C.packingFor(slug));
-      if (!text) return;
-      el.textContent = text; el.hidden = false;
-    }
-    render();
-    document.addEventListener('munchingo:stock', render);
-  }
-
   function start() {
     var slug = slugOfPage(), C = window.MunchingoCart;
     if (!slug || !C) return;
@@ -93,7 +70,6 @@
     var out = !!(C.isSlugSoldOut && C.isSlugSoldOut(slug));
     if (out) applySoldOut(slug, name);
     syncSchema(out);
-    if (!out) showBaked(slug);
     bagLink();
     document.addEventListener('munchingo:cart', bagLink);
     window.addEventListener('pageshow', bagLink);
